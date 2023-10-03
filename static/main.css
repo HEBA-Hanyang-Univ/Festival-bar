@@ -1,0 +1,66 @@
+html {
+  font-size: 62.5%;
+}
+
+body {
+  padding-top: 10rem;
+  padding-bottom: 6.25rem;
+}
+
+header {
+  background-color: purple;
+  height: 10rem;
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  height: 50%;
+  background-color: #fff;
+  padding: 1.25rem 2.5rem;
+}
+nav img {
+  margin: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+nav span {
+  color: #3F4244;
+  text-align: center;
+  font-size: 1.875rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.subnav {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  width: 100%;
+  margin: 0 2.44rem;
+}
+
+#wrapper {
+  background-color: #f0f0f0;
+}
+
+footer {
+  background-color: #87DEFF;
+  height: 6.25rem;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+}
+footer button {
+  border: 0;
+  background-color: transparent;
+  color: #fff;
+  text-align: center;
+  font-family: "Inter", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 400;
+}/*# sourceMappingURL=main.css.map */
