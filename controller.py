@@ -121,11 +121,30 @@ def send_like(my_table, received_table):
                 return 'no likes left'
             break
     for j in range(0,len(table_data)):
-        if table_data[j]['table_no'] == received_table and table_data[i]['active'] == True:
+        if table_data[j]['table_no'] == received_table and table_data[j]['active'] == True:
             table_data[j]['received'].append(my_table)
             break
     
     write_json_file('table.json',table_data)
+
+# def send_like(my_table, table_list): # table_list = table numbers (list)
+#     with open('table.json', "r", encoding="utf-8") as f:
+#         table_data = json.load(f)
+#     if table_list != []:
+#         for i in range(0,len(table_data)):
+#             if table_data[i]['table_no'] == my_table and table_data[i]['active'] == True:
+#                 if table_data[i]['remained_likes'] > 0:
+#                     table_data[i]['remained_likes'] -= 1
+#                 else:
+#                     return 'no likes left'
+#                 break
+#         for table in table_list:
+#             for j in range(0,len(table_data)):
+#                 if table_data[j]['table_no'] == table and table_data[j]['active'] == True:
+#                     table_data[j]['received'].append(my_table)
+#                     break
+    
+#     write_json_file('table.json',table_data)
 
 ### block
 def block_table(my_table, received_table):
