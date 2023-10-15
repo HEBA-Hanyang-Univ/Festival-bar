@@ -1,0 +1,55 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard-dynamic-subset.css");
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:wght@700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html { font-size: 62.5%; }
+
+/* Body Styling */
+body {
+  min-height: 100vh;
+  width: 100%;
+  font-family: 'Pretendard', sans-serif;
+  background-color: #fff;
+  text-align: center;
+}
+
+span {
+  color: #000;
+  text-align: center;
+  font-style: normal;
+  line-height: normal;
+  white-space: nowrap;
+}
+
+p {
+  margin-top: 20px;
+  font-size: 16px;
+  color: #666;
+}
+
+/* Heading Styling */
+h1 { color: #333; }
+h4 { 
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+/* Button Styling */
+button { cursor: pointer; }
+
+input[type="button"] {
+  -webkit-appearance: button;
+  cursor: pointer;
+}
+
+input[type="number"] { -webkit-appearance: textfield; }
+
+textarea { resize: none; }
+textarea:focus { outline: none; }

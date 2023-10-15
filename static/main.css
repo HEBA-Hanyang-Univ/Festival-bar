@@ -25,10 +25,8 @@ nav img {
 }
 nav span {
   color: #3F4244;
-  text-align: center;
   font-size: 1.875rem;
   font-weight: 700;
-  white-space: nowrap;
 }
 
 #sub-nav {

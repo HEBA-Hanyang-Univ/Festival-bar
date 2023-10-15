@@ -1,60 +1,132 @@
-body {
-  background-color: #fff;
+#checkin-wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
 }
 
-.checkin-title {
-  margin-top: 14.81rem;
-  margin-left: 4.1rem;
-  margin-right: 4.05rem;
+.checkIn-title {
+  margin-top: 7.81rem;
+  margin-bottom: 4.06rem;
 }
-.checkin-title span {
-  color: #000;
-  text-align: center;
-  font-family: "Barlow", sans-serif;
-  font-size: 3.125rem;
-  font-weight: 700;
-  letter-spacing: 0.109rem;
-  text-transform: capitalize;
-  white-space: nowrap;
+.checkIn-title span {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: 0.19688rem;
 }
 
-.checkin-container {
-  margin: 9.5rem 2.125rem 16.62rem;
+.checkin-button-box {
+  margin: 0 auto;
+  padding-top: 1.19rem;
+  padding-bottom: 0.38rem;
+  width: 80%;
+  height: 20.6875rem;
 }
-
-.gender-selectbox {
-  margin-top: 1.12rem;
+.checkin-button-box .select-box {
+  width: 100%;
+  height: 9.5625rem;
 }
-
-.selectbox-title {
+.checkin-button-box .select-box .select-box-title {
+  border-bottom: 1px solid #000;
   text-align: left;
   padding-bottom: 0.56rem;
-  border-bottom: 0.06rem solid #000;
 }
-.selectbox-title span {
-  color: #000;
-  font-family: "Fira Sans", sans-serif;
+.checkin-button-box .select-box .select-box-title span {
   font-size: 1.5625rem;
   font-weight: 700;
-  text-transform: capitalize;
+  line-height: 80%;
+  padding-left: 0.44rem;
 }
-
-.selectbox-content {
-  margin: 1.13rem auto;
-  justify-content: space-between;
-  white-space: nowrap;
+.checkin-button-box .select-box .select-box-title .highlight {
+  color: #D90026;
 }
-.selectbox-content button {
-  width: 17.1rem;
-  height: 5.31rem;
+.checkin-button-box .gender-select .gender-button {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 1.13rem;
+  width: 100%;
+  height: 5.3125rem;
+}
+.checkin-button-box .gender-select .gender-button button {
+  width: 30%;
+  height: 4rem;
   border: 1px solid #000;
   border-radius: 0.625rem;
   background-color: #fff;
 }
-.selectbox-content button img {
-  width: 3.625rem;
-  height: 3.625rem;
+.checkin-button-box .gender-select .gender-button button img {
+  justify-content: center;
 }
-.selectbox-content .select-male {
-  margin-right: 2rem;
+.checkin-button-box .gender-select .gender-button .selected {
+  background-color: #87DEFF;
+}
+
+.input-group {
+  margin-top: 2.06rem;
+  transition: all 300ms ease;
+}
+.input-group .button-minus, .input-group .button-plus {
+  border: 1px solid #000;
+  background-color: #fff;
+  border-radius: 0.3125rem;
+  margin: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0;
+}
+.input-group .button-minus input::-webkit-inner-spin-button,
+.input-group .button-minus input ::-webkit-outer-spin-button, .input-group .button-plus input::-webkit-inner-spin-button,
+.input-group .button-plus input ::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+.input-group .quantity-field {
+  margin: 0 0 0.5rem;
+  width: 12.7rem;
+  height: 2.5rem;
+  border: none;
+  text-align: center;
+  color: #000;
+  font-family: "Pretendard", sans-serif;
+  font-size: 1.875rem;
+  font-weight: 500;
+}
+
+.self-introduce-content {
+  margin: 0 4.31rem;
+}
+.self-introduce-content .self-introduce-title {
+  text-align: start;
+}
+.self-introduce-content .self-introduce-title span {
+  font-size: 1.625rem;
+  font-weight: 700;
+}
+.self-introduce-content textarea {
+  border: 1px solid #e4e4e4;
+}
+
+.film-agree {
+  margin: 2.13rem 4.31rem;
+}
+.film-agree .film-agree-title {
+  text-align: start;
+}
+.film-agree .film-agree-title span {
+  font-size: 1.625rem;
+  font-weight: 700;
+}
+.film-agree .film-agree-content {
+  margin-top: 0.75rem;
+  padding: 0.63rem 1.31rem 0.56rem;
+  height: 8.5rem;
+  overflow: scroll;
+  text-align: start;
+  border: 1px solid #e4e4e4;
+}
+.film-agree .agree-checkbox {
+  float: right;
+  margin-top: 0.55rem;
 }/*# sourceMappingURL=checkIn.css.map */
