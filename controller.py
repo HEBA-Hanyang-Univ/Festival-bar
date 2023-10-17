@@ -66,12 +66,14 @@ def test_reset_all_tables():
 #############################################################
 
 ### set table
-def set_table(table_no, nums, gender):
+def set_table(table_no, nums, gender, photo, note):
     table_data = read_json_file(json_file)
     for i in range(0,len(table_data)):
         if table_data[i]['table_no'] == table_no:
             table_data[i]['nums'] = nums
             table_data[i]['gender'] = gender
+            table_data[i]['photo'] = photo
+            table_data[i]['note'] = note
             table_data[i]['active'] = True
             current_time = datetime.now()
             table_data[i]['start_time'] = current_time.strftime('%m-%d %H:%M')
