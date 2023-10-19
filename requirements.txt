@@ -1,18 +1,26 @@
-certifi==2020.12.5
-chardet==4.0.0
-click==7.1.2
-Flask==1.1.2
-Flask-JWT-Extended==3.25.0
-idna==2.10
-itsdangerous==1.1.0
-Jinja2==2.11.2
-MarkupSafe==1.1.1
-PyJWT==1.7.1
-requests==2.25.1
-six==1.15.0
-tinydb==4.3.0
-urllib3==1.26.3
-Werkzeug==1.0.1
-qrcode
-# Flask pyshorteners
-# flask_socketio
+pip
+
+Package            Version
+------------------ ---------
+certifi            2023.7.22
+click              8.1.7
+Flask              1.1.2
+Flask-JWT-Extended 3.25.0
+Flask-SocketIO     5.3.6
+idna               3.4
+itsdangerous       1.1.0
+Jinja2             2.11.2
+MarkupSafe         1.1.1
+PyJWT              1.7.1
+python-engineio    4.7.1
+python-socketio    5.9.0
+requests           2.31.0
+simple-websocket   0.10.1
+six                1.16.0
+urllib3            2.0.4
+websockets         10.4
+Werkzeug           1.0.1
+
+-----------------------------
+npm		   9.8.1
+node		   18.18.2

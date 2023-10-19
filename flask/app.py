@@ -36,12 +36,43 @@ import os
 import controller
 from datetime import timedelta
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../react/heba-festival/build/', static_url_path='/')
 app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
 # app.permanent_session_lifetime = timedelta(minutes=90)
 
 with open('table_token.json', "r", encoding="utf-8") as f:
     qr_data = json.load(f)
+
+@app.route('/')
+def index():
+    return app.send_static_file('index.html')
+
+@app.route('/get-data', methods=['GET'])
+def get_data():
+    output = dict()
+
+    # analyze what data has requested and return them
+    # (ex)
+    # for k,v in request.args:
+    #     ...
+    
+    # flask automatically JSONify dictionary
+    return output
+
+@app.route('/post-data', methods=['POST'])
+def post_data():
+    output = dict()
+
+    # analyze what request received and execute them
+    # (ex)
+    # for k,v in request.args:
+    #     ...
+
+    # record request is succeeded or failed
+    output['result'] = 'OK'
+
+    # flask automatically JSONify dictionary
+    return output
 
 @app.route('/table/<token>') 
 def handle_token(token):
@@ -79,4 +110,4 @@ def input():
         return render_template('hunting.html', table_info=table_info)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)
