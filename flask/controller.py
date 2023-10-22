@@ -83,14 +83,14 @@ def set_table(table_no, nums, gender, photo, note):
         write_json_file('table.json', table_data)
         return {'success': f'Table {table_no} active'}
     except Exception as e:
-        return {'error' : f'{e}'}
+        return {'error' : e}
 
 ### update table info
 def update_info(table_no, male_count, female_count, note):
-    try:
-        table_data = read_json_file(json_file)
-        index = table_no-1
+    table_data = read_json_file(json_file)
+    index = table_no-1
 
+    if table_data[index]['active'] == True:
         table_data[index]['note'] = note
 
         if male_count and not female_count:
@@ -107,20 +107,19 @@ def update_info(table_no, male_count, female_count, note):
         
         write_json_file('table.json', table_data)
 
-        return {"success" : "Update success"}
-
-    except Exception as e:
-        return {"error" : f"{e}"}
+        return {"success" : f"Update Table {table_no}"}
+    else:
+        return {"fail" : "Table active False"}
 
 ### get table number by token 
 def get_table_no_by_token(token):
-    with open('table_token.json', "r", encoding="utf-8") as f:
-        qr_data = json.load(f)
     try:
+        with open('table_token.json', "r", encoding="utf-8") as f:
+            qr_data = json.load(f)
         table_no = qr_data[token]
         return table_no
-    except KeyError:
-        return False
+    except Exception as e:
+        return {"error" : e}
 
 def get_table(table_no):
     with open('table.json', "r", encoding="utf-8") as f:
@@ -128,45 +127,45 @@ def get_table(table_no):
     return table_data[table_no-1]
             
 ### filtering
-def get_males_table():
-    with open('table.json', "r", encoding="utf-8") as f:
-        table_data = json.load(f)
-    try:
-        filtered_data = [(a['table_no'], a['nums']) for a in table_data if a['gender'] == 'male' and a['join'] == False]
-    except:
-        filtered_data = []
+# def get_males_table():
+#     with open('table.json', "r", encoding="utf-8") as f:
+#         table_data = json.load(f)
+#     try:
+#         filtered_data = [(a['table_no'], a['nums']) for a in table_data if a['gender'] == 'male' and a['join'] == False]
+#     except:
+#         filtered_data = []
 
-    return filtered_data
+#     return filtered_data
 
-def get_females_table():
-    with open('table.json', "r", encoding="utf-8") as f:
-        table_data = json.load(f)
-    try:
-        filtered_data = [(a['table_no'], a['nums']) for a in table_data if a['gender'] == 'female' and a['join'] == False]
-    except:
-        filtered_data = []
+# def get_females_table():
+#     with open('table.json', "r", encoding="utf-8") as f:
+#         table_data = json.load(f)
+#     try:
+#         filtered_data = [(a['table_no'], a['nums']) for a in table_data if a['gender'] == 'female' and a['join'] == False]
+#     except:
+#         filtered_data = []
 
-    return filtered_data
+#     return filtered_data
 
-def get_joined_table():
-    with open('table.json', "r", encoding="utf-8") as f:
-        table_data = json.load(f)
-    try:
-        filtered_data = [a['table_no'] for a in table_data if a['join'] == True]
-    except:
-        filtered_data = []
+# def get_joined_table():
+#     with open('table.json', "r", encoding="utf-8") as f:
+#         table_data = json.load(f)
+#     try:
+#         filtered_data = [a['table_no'] for a in table_data if a['join'] == True]
+#     except:
+#         filtered_data = []
 
-    return filtered_data
+#     return filtered_data
 
-def get_active_table():
-    with open('table.json', "r", encoding="utf-8") as f:
-        table_data = json.load(f)
-    try:
-        filtered_data = [a['table_no'] for a in table_data if a['active'] == True]
-    except:
-        filtered_data = []
+# def get_active_table():
+#     with open('table.json', "r", encoding="utf-8") as f:
+#         table_data = json.load(f)
+#     try:
+#         filtered_data = [a['table_no'] for a in table_data if a['active'] == True]
+#     except:
+#         filtered_data = []
 
-    return filtered_data
+#     return filtered_data
 
 ### send 
 def send_like(my_table, received_table):
@@ -179,33 +178,32 @@ def send_like(my_table, received_table):
                 if table_data[my_table-1]['likes'] > 0:
                     if table_data[received_table-1]['active'] == True: 
                         if table_data[received_table-1]['gender'] != "group":
-                            if my_table not in table_data[received_table-1]['rejected']:
 
-                                print('my table :', table_data[my_table-1]['table_no'])
-                                print('received table :', table_data[received_table-1]['table_no'])
+                            print('my table :', table_data[my_table-1]['table_no'])
+                            print('received table :', table_data[received_table-1]['table_no'])
 
-                                table_data[my_table-1]['likes'] -= 1
-                                table_data[my_table-1]['sent'].append(received_table)
-                                table_data[received_table-1]['received'].append(my_table)
-                                table_data[received_table-1]['record'].insert(0,[f'{my_table}번 테이블에서 하트를 보냈습니다.', datetime.now().strftime('%H:%M')])
+                            table_data[my_table-1]['likes'] -= 1
+                            table_data[my_table-1]['sent'].append(received_table)
+                            table_data[received_table-1]['received'].append(my_table)
+                            table_data[received_table-1]['record'].insert(0,[f'{my_table}번 테이블에서 하트를 보냈습니다.', datetime.now().strftime('%H:%M')])
 
-                                write_json_file('table.json',table_data)
+                            write_json_file('table.json',table_data)
                             
-                                return {"success" : "Good"}
-                            else:
-                                return {"fail" : "Rejected"}
+                            return {"success" : f"Send a like to Table {received_table}"}
                         else:
                             return {"fail" : "Already group"}
                     else:
                         return {"fail" : "Received table active False"}
                 else:
                     return {"fail" : "No likes left"}
-            else:
+            elif received_table not in table_data[my_table-1]['rejected']:
                 return {"fail" : "Already sent"}
+            else:
+                return {"fail" : "Rejected"}
         else:
             return {"fail" : "Same table"}
     except Exception as e:
-        return {"error" : f'{e}'}
+        return {"error" : e}
 
 ### reject
 def reject(my_table, reject_table):
@@ -213,11 +211,12 @@ def reject(my_table, reject_table):
         table_data = json.load(f)
 
     if reject_table in table_data[my_table-1]['received']:
-        table_data[my_table-1]['rejected'].append(reject_table)
+        table_data[reject_table-1]['rejected'].insert(0, my_table)
+        table_data[reject_table-1]['record'].insert(0,[f'{my_table}번 테이블에서 하트를 거절했습니다.', datetime.now().strftime('%H:%M')])
 
         write_json_file('table.json',table_data)
         
-        return {"success" : f"Reject {reject_table} table"}
+        return {"success" : f"Reject Table {reject_table}"}
     else:
         return {"fail" : "?"}
 
@@ -230,7 +229,7 @@ def add_likes(table_no, count):
     with open('table.json', "r", encoding="utf-8") as f:
         table_data = json.load(f)
 
-    table_data[table_no-1]['nums'] += count
+    table_data[table_no-1]['likes'] += count
 
     write_json_file('table.json',table_data)
 
@@ -257,7 +256,8 @@ def join_table(from_where, to_where):
                 table_data = json.load(f)
             if table_data[from_where-1]['gender'] != 'group' and table_data[to_where-1]['gender'] != 'group':
                 if table_data[from_where-1]['active'] and table_data[to_where-1]['active']:
-                    ## 합석으로 인한 정보 변경
+
+                    # 합석으로 인한 정보 변경
                     table_data[to_where-1]['nums'] += table_data[from_where-1]['nums']
                     table_data[to_where-1]['gender'] = "group"
                     table_data[to_where-1]['join'] = True
@@ -276,8 +276,9 @@ def join_table(from_where, to_where):
         else:
             return {"fail" : "My table"}
     except Exception as e:
-        return {"error" : f"{e}"}
+        return {"error" : e}
 
+### 테이블 비우기
 def reset_table_2(table_no):
     with open('table.json', "r", encoding="utf-8") as f:
         table_data = json.load(f)
@@ -290,5 +291,5 @@ def reset_table_2(table_no):
 ##########################################################
 ########################## test ##########################
 ##########################################################
-# reset_all_tables()
+reset_all_tables()
 # test_reset_table()

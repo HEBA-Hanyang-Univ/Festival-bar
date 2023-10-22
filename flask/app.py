@@ -35,9 +35,12 @@ import json
 import os
 import controller
 from datetime import timedelta
+# from flask_socketio import SocketIO
 
 app = Flask(__name__, static_folder='../react/heba-festival/build/', static_url_path='/')
 app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
+# socketio = SocketIO(app)
+
 # app.permanent_session_lifetime = timedelta(minutes=90)
 
 with open('table_token.json', "r", encoding="utf-8") as f:
@@ -139,21 +142,24 @@ def set_table():
         return output
 
 ### 테이블 정보 수정
-# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/update-info -d '{"token":"07d2eb50-731d-4227-8ed6-f17e2884ab04","m_count":3,"f_count":4,"note":"ccc"}'
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/update-info -d '{"token":"80b156da-ae18-4bfb-a413-2b6ce6532c69","m_count":3,"f_count":4,"note":"ccc"}'
 @app.route('/update-info', methods=["POST"])
 def update_info():
-    output = dict()
-    data = request.get_json()
+    try:
+        output = dict()
+        data = request.get_json()
 
-    token = data.get('token')
-    table_no = controller.get_table_no_by_token(token)
+        token = data.get('token')
+        table_no = controller.get_table_no_by_token(token)
 
-    m_count = data.get('m_count')
-    f_count = data.get('f_count')
-    note = data.get('note')
+        m_count = data.get('m_count')
+        f_count = data.get('f_count')
+        note = data.get('note')
 
-    output['result'] = controller.update_info(table_no, m_count, f_count, note)        
-    return output
+        output['result'] = controller.update_info(table_no, m_count, f_count, note)        
+        return output
+    except Exception as e:
+        return {"error" : e}
 
 ### send like
 # curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/send-like -d '{"token":"80b156da-ae18-4bfb-a413-2b6ce6532c69", "received_table":2}'
@@ -167,23 +173,6 @@ def send_like():
     
     output['result'] = controller.send_like(controller.get_table_no_by_token(token), received_table)
 
-    return output
-
-### join 
-# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/join -d '{"from_where":1, "to_where":2, "token":"bb7d-314147da97cd-9db4d2d0-ea5a-4a96"}'
-@app.route('/join', methods=["POST"])
-def join_table():
-    output = dict()
-    data = request.get_json()
-    token = data.get('token')
-    if controller.get_table_no_by_token(token) == 'admin':
-        from_where = data.get('from_where')
-        to_where = data.get('to_where')
-        
-        output['result'] = controller.join_table(from_where, to_where)
-        return output
-    
-    output['result'] = {"fail" : "Invalid token"}
     return output
 
 ### reject
@@ -225,7 +214,7 @@ def add_likes():
         output['result'] = {"fail" : "Invalid token"}
         return output
 
-### 시간 충전
+### 시간 추가
 # curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/add-time -d '{"token":"bb7d-314147da97cd-9db4d2d0-ea5a-4a96", "table_no":1, "minutes":5}'
 @app.route('/add-time', methods=["POST"])
 def add_time():
@@ -236,7 +225,7 @@ def add_time():
 
     if controller.get_table_no_by_token(token) == 'admin':
         table_no = data.get('table_no')
-        print(table_no)
+
         if controller.get_table(table_no)['active'] == True:
             minutes = data.get('minutes')
 
@@ -249,7 +238,7 @@ def add_time():
         output['result'] = {"fail" : "Invalid token"}
         return output
 
-### 테이블 비우기
+### 퇴장 처리
 # curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/reset-table -d '{"token":"bb7d-314147da97cd-9db4d2d0-ea5a-4a96", "table_no":1}'
 @app.route('/reset-table', methods=["POST"])
 def reset_table():
@@ -266,41 +255,22 @@ def reset_table():
         output['result'] = {"fail" : "Invalid token"}
         return output
 
-
-# @app.route('/table/<token>') 
-# def handle_token(token):
-#     table_info = controller.get_table(controller.get_table_no_by_token(token))
-
-#     if table_info['active']:
-#         return render_template('index.html', token=token, table_info=table_info)
-#     else:
-#         return render_template('input.html', token=token, table_info=table_info)    
-
-# @app.route('/hunting', methods=["POST"])
-# def input():
-#     if not request.form.get('gender'):
-#         token = request.form.get('token')
-#         table_info = controller.get_table(controller.get_table_no_by_token(token))
-
-#         if table_info['active']:
-#             return render_template('hunting.html', table_info=table_info)
-#         else:
-#             return render_template('input.html', token=token)    
-#     else:
-#         token = request.form.get('token')
-#         table_no = controller.get_table_no_by_token(token)
-#         count = int(request.form.get('count'))
-#         gender = request.form.get('gender')
-
-#         controller.set_table(table_no, count, gender)
-
-#         # session[str(table_no)] = token
-#         # session.permanent = True
-#         # print(session)
-
-#         table_info = controller.get_table(table_no)
+### 합석 처리 
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/join -d '{"from_where":1, "to_where":2, "token":"bb7d-314147da97cd-9db4d2d0-ea5a-4a96"}'
+@app.route('/join', methods=["POST"])
+def join_table():
+    output = dict()
+    data = request.get_json()
+    token = data.get('token')
+    if controller.get_table_no_by_token(token) == 'admin':
+        from_where = data.get('from_where')
+        to_where = data.get('to_where')
         
-#         return render_template('hunting.html', table_info=table_info)
+        output['result'] = controller.join_table(from_where, to_where)
+        return output
+    
+    output['result'] = {"fail" : "Invalid token"}
+    return output
 
 if __name__ == '__main__':
     # app.run(host='0.0.0.0', debug=True)
