@@ -220,6 +220,48 @@ def reject(my_table, reject_table):
     else:
         return {"fail" : "?"}
 
+### 직원 호출
+def call(table_no, count=None, minutes=None):
+    if table_no and not count and not minutes:
+        if not os.path.exists('admin.json'):
+            initial_data = {'record': [[f'[ 직원 호출 ] {table_no}번 테이블에서 직원을 호출합니다',datetime.now().strftime('%H:%M')]]}
+            with open('admin.json', 'w') as f:
+                json.dump(initial_data, f,ensure_ascii=False, indent=4)
+            return {"success" : "call"}
+        else:
+            data = read_json_file('admin.json')
+            if len(data['record']) == 20:
+                data['record'].pop()
+                data['record'].insert(0, [f'[ 직원 호출 ] {table_no}번 테이블에서 직원을 호출합니다',datetime.now().strftime('%H:%M')])
+                write_json_file('admin.json',data)
+                return {"success" : "call"}
+            else:
+                data['record'].insert(0, [f'[ 직원 호출 ] {table_no}번 테이블에서 직원을 호출합니다',datetime.now().strftime('%H:%M')])
+                write_json_file('admin.json',data)
+                return {"success" : "call"}
+    if table_no and count:
+        if not os.path.exists('admin.json'):
+            initial_data = {'record': [[f'[ 하트 충전 ] {table_no}번 테이블에 하트 {count}개 충전해주세요',datetime.now().strftime('%H:%M')]]}
+            with open('admin.json', 'w') as f:
+                json.dump(initial_data, f,ensure_ascii=False, indent=4)
+            return {"success" : "call"}
+        else:
+            data = read_json_file('admin.json')
+            data['record'].insert(0, [f'[ 하트 충전 ] {table_no}번 테이블에 하트 {count}개 충전해주세요',datetime.now().strftime('%H:%M')])
+            write_json_file('admin.json',data)
+            return {"success" : "call"}
+    if table_no and minutes:
+        if not os.path.exists('admin.json'):
+            initial_data = {'record': [[f'[ 시간 추가 ] {table_no}번 테이블에 시간 {minutes}분 추가해주세요',datetime.now().strftime('%H:%M')]]}
+            with open('admin.json', 'w') as f:
+                json.dump(initial_data, f,ensure_ascii=False, indent=4)
+            return {"success" : "call"}
+        else:
+            data = read_json_file('admin.json')
+            data['record'].insert(0, [f'[ 시간 추가 ] {table_no}번 테이블에 시간 {minutes}분 추가해주세요',datetime.now().strftime('%H:%M')])
+            write_json_file('admin.json',data)
+            return {"success" : "call"}
+
 ##########################################################
 ########################## 관리자 ##########################
 ##########################################################
@@ -254,8 +296,9 @@ def join_table(from_where, to_where):
         if from_where != to_where:
             with open('table.json', "r", encoding="utf-8") as f:
                 table_data = json.load(f)
-            if table_data[from_where-1]['gender'] != 'group' and table_data[to_where-1]['gender'] != 'group':
-                if table_data[from_where-1]['active'] and table_data[to_where-1]['active']:
+            if table_data[from_where-1]['active'] and table_data[to_where-1]['active']:
+                print(1111)
+                if table_data[from_where-1]['gender'] != 'group' and table_data[to_where-1]['gender'] != 'group':
 
                     # 합석으로 인한 정보 변경
                     table_data[to_where-1]['nums'] += table_data[from_where-1]['nums']
@@ -270,9 +313,9 @@ def join_table(from_where, to_where):
 
                     return {"success" : "Create group"}
                 else:
-                    return {"fail" : "Active False"}
+                    return {"fail" : "Already group"}
             else:
-                return {"fail" : "Already group"}
+                return {"fail" : "Active False"}
         else:
             return {"fail" : "My table"}
     except Exception as e:

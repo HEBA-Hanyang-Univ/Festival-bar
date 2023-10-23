@@ -81,7 +81,7 @@ def post_data():
     # flask automatically JSONify dictionary
     return output
 
-### 전체 테이블
+### 전체 테이블 조회
 # curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/get-all -d '{"token":"80b156da-ae18-4bfb-a413-2b6ce6532c69"}'
 @app.route('/get-all', methods=['POST'])
 def get_all():
@@ -100,7 +100,7 @@ def get_all():
         output['result'] = {"fail" : "Invalid token"}
         return output
 
-### table info 조회
+### 테이블 정보 조회
 # curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/get-table -d '{"token":"80b156da-ae18-4bfb-a413-2b6ce6532c69"}'
 @app.route('/get-table', methods=['POST'])
 def get_table():
@@ -161,7 +161,7 @@ def update_info():
     except Exception as e:
         return {"error" : e}
 
-### send like
+### 하트 보내기
 # curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/send-like -d '{"token":"80b156da-ae18-4bfb-a413-2b6ce6532c69", "received_table":2}'
 @app.route('/send-like', methods=["POST"])
 def send_like():
@@ -175,7 +175,7 @@ def send_like():
 
     return output
 
-### reject
+### 하트 거절
 # curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/reject -d '{"token":"80b156da-ae18-4bfb-a413-2b6ce6532c69", "reject":2}'
 @app.route('/reject', methods=["POST"])
 def reject():
@@ -192,13 +192,39 @@ def reject():
         output['result'] = {"fail" : "Invalid token"}
         return output
 
+### 직원 호출
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/call -d '{"token":"80b156da-ae18-4bfb-a413-2b6ce6532c69"}'
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/call -d '{"token":"80b156da-ae18-4bfb-a413-2b6ce6532c69", "count":2}'
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/call -d '{"token":"80b156da-ae18-4bfb-a413-2b6ce6532c69", "minutes":10}'
+@app.route('/call', methods=["POST"])
+def call():
+    output = dict()
+    data = request.get_json()
+    token = data.get('token')
+    count = data.get('count')
+    minutes = data.get('minutes')
+    table_no = controller.get_table_no_by_token(token)
+
+    if table_no and count:
+        output['result'] = controller.call(table_no, count=count)
+        return output
+    if table_no and minutes:
+        output['result'] = controller.call(table_no, minutes=minutes)
+        return output
+    elif table_no:
+        output['result'] = controller.call(table_no)
+        return output
+    else:
+        output['result'] = {"fail" : "Invalid token"}
+        return output
+
 ##########################################################
 ########################## 관리자 ##########################
 ##########################################################
 
 ### 하트 충전
-# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/add-likes -d '{"token":"bb7d-314147da97cd-9db4d2d0-ea5a-4a96", "table_no":1, "count":2}'
-@app.route('/add-likes', methods=["POST"])
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/admin/add-likes -d '{"token":"bb7d-314147da97cd-9db4d2d0-ea5a-4a96", "table_no":1, "count":2}'
+@app.route('/admin/add-likes', methods=["POST"])
 def add_likes():
     output = dict()
     data = request.get_json()
@@ -215,8 +241,8 @@ def add_likes():
         return output
 
 ### 시간 추가
-# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/add-time -d '{"token":"bb7d-314147da97cd-9db4d2d0-ea5a-4a96", "table_no":1, "minutes":5}'
-@app.route('/add-time', methods=["POST"])
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/admin/add-time -d '{"token":"bb7d-314147da97cd-9db4d2d0-ea5a-4a96", "table_no":1, "minutes":10}'
+@app.route('/admin/add-time', methods=["POST"])
 def add_time():
     output = dict()
     data = request.get_json()
@@ -239,8 +265,8 @@ def add_time():
         return output
 
 ### 퇴장 처리
-# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/reset-table -d '{"token":"bb7d-314147da97cd-9db4d2d0-ea5a-4a96", "table_no":1}'
-@app.route('/reset-table', methods=["POST"])
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/admin/reset-table -d '{"token":"bb7d-314147da97cd-9db4d2d0-ea5a-4a96", "table_no":1}'
+@app.route('/admin/reset-table', methods=["POST"])
 def reset_table():
     output = dict()
     data = request.get_json()
@@ -256,8 +282,8 @@ def reset_table():
         return output
 
 ### 합석 처리 
-# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/join -d '{"from_where":1, "to_where":2, "token":"bb7d-314147da97cd-9db4d2d0-ea5a-4a96"}'
-@app.route('/join', methods=["POST"])
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/admin/join -d '{"from_where":1, "to_where":2, "token":"bb7d-314147da97cd-9db4d2d0-ea5a-4a96"}'
+@app.route('/admin/join', methods=["POST"])
 def join_table():
     output = dict()
     data = request.get_json()
