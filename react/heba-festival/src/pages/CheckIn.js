@@ -107,7 +107,7 @@ export const CheckIn = () => {
           </div>
           <div className="agreeCheckBox">
             <input type="checkbox" id="agree" name="agree" checked={agree} onChange={handleAgreeChange}></input>
-            <label for="agree">Agree</label>
+            <label htmlFor="agree">Agree</label>
           </div>
         </div>
         <button className="submitBtn" type="submit" value={"Submit"}>
