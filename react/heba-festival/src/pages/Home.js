@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "styles/common.scss";
 import "styles/Home.scss";
+import Table from "components/Table";
 import HomeImg from "assets/images/home.svg";
 import AlarmImg from "assets/images/alarm.svg";
 import HeartImg from "assets/images/heart.svg";
@@ -40,6 +41,7 @@ export const Home = () => {
         </div>
       </header>
       <main id="container">
+        <Table />
         <div className="item">1</div>
         <div className="item">2</div>
         <div className="item">3</div>
