@@ -1,38 +1,39 @@
-#checkin-wrap {
+#checkInWrap {
   display: flex;
   flex-direction: column;
   justify-content: center;
   width: 100%;
 }
-.checkIn-title {
-  margin-top: 7.81rem;
-  margin-bottom: 4.06rem;
+.checkInTitle {
+  margin-top: 6.51rem;
+  margin-bottom: 3.86rem;
 
   span {
-    font-size:  2rem;
+    font-size:  2.2rem;
     font-weight: 800;
-    letter-spacing: 0.19688rem;
+    letter-spacing: 0.15rem;
   }
 }
 
-.checkin-button-box {
+.checkInButtonBox {
   margin: 0 auto;
   padding-top: 1.19rem;
   padding-bottom: 0.38rem;
   width: 80%;
-  height: 20.6875rem;
+  height: 18.375rem;
 
-  .select-box {
+  .selectBox {
     width: 100%;
-    height: 9.5625rem;
+    height: 8.5625rem;
 
-    .select-box-title {
+    .selectBoxTitle {
       border-bottom: 1px solid #000;
       text-align: left;
-      padding-bottom: 0.56rem;
+      padding-bottom: 0.26rem;
       
       span {
-        font-size: 1.5625rem;
+        margin: -0.25rem;
+        font-size: 1.2625rem;
         font-weight: 700;
         line-height: 80%;
         padding-left: 0.44rem;
@@ -44,11 +45,11 @@
     }
   }
   
-  .gender-select {
-    .gender-button {
+  .genderSelect {
+    .genderBtn {
       display: flex;
       justify-content: space-around;
-      margin-top: 1.13rem;
+      margin-top: 0.9rem;
       width: 100%;
       height: 5.3125rem;
 
@@ -71,18 +72,18 @@
   }
 }
 
-.input-group {
-  margin-top: 2.06rem;
+.inputGroup {
+  margin-top: 1.96rem;
   transition: all 300ms ease;
 
-  .button-minus, .button-plus {
+  .btnMinus, .btnPlus {
     border: 1px solid #000;
     background-color: #fff;
     border-radius: 0.3125rem;
 
     margin: 0;
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 2rem;
+    height: 2rem;
 
     text-align: center;
     font-weight: 700;
@@ -97,28 +98,28 @@
     }
   }
 
-  .quantity-field {
+  .quantityField {
     margin: 0 0 0.5rem;
-    width: 12.7rem;
+    width: 10.7rem;
     height: 2.5rem;
     border: none;
-    text-align: center;
+    text-align: center; 
 
     color: #000;
     font-family: 'Pretendard', sans-serif;
-    font-size: 1.875rem;
+    font-size: 1.575rem;
     font-weight: 500;
   }
 }
 
-.self-introduce-content {
-  margin: 0 4.31rem;
+.selfIntroduceContent {
+  margin: 0 3.31rem;
 
-  .self-introduce-title {
+  .selfIntroduceTitle {
     text-align: start;
 
     span {
-      font-size: 1.625rem;
+      font-size: 1.2625rem;
       font-weight: 700;
     }
   }
@@ -128,33 +129,75 @@
   }
 }
 
-.film-agree {
-  margin: 2.13rem 4.31rem;
+.filmAgree {
+  margin: 2.13rem 3.31rem;
 
-  .film-agree-title {
+  .filmAgreeTitle {
     text-align: start;
 
     span {
-      font-size: 1.625rem;
+      font-size: 1.2625rem;
       font-weight: 700;
     }
   }
 
-  .film-agree-content {
-    margin-top: 0.75rem;
-    padding: 0.63rem 1.31rem 0.56rem;
+  .filmAgreeContent {
+    margin-top: 0.35rem;
+    padding: 0.33rem 1.11rem 0.56rem;
     height: 8.5rem;
     overflow: scroll;
     text-align: start;
     border: 1px solid #e4e4e4;
+    font-size: 0.675rem;
+    font-weight: 500;
   }
 
-  .agree-checkbox {
+  .agreeCheckBox {
     float: right;
     margin-top: 0.55rem;
+    
+    input[type='checkbox'] {
+      border-radius: 0.3125rem;
+      border: 1px solid #C5C6CC;
+    } 
 
     label {
-      margin-top: ;
+      position: relative;
+      top: -0.35rem;
+      margin-left: 0.4rem;
+
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 0.875rem;
+      letter-spacing: 0.017rem;
     }
   }
 }
+
+.submitBtn {
+  display: flex;
+  margin: 0 auto;
+  margin-top: 5rem;
+  padding-top: 0.89rem;
+  width: 20.825rem;
+  height: 3.3rem;
+
+  justify-content: center;
+  border-radius: 0.625rem;
+  border: none;
+  background-color: #87DEFF;  
+
+  span {
+    color: #fff;
+    text-align: center;
+    font-family: 'Pretendard', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.25rem;
+  }
+}
+
+input[type="checkbox"] {
+  border-radius: 0.3125rem;
+  border: 1px solid #C5C6CC;
+} 
