@@ -11,6 +11,7 @@ export const CheckIn = () => {
   const [quantity, setQuantity] = useState(0);
   const [introduce, setIntroduce] = useState("");
   const [agree, setAgree] = useState(false);
+  const [token, setToken] = useState("");
   // 에러메시지 상태 추가
   
   // 하나의 성별만 선택
@@ -34,6 +35,29 @@ export const CheckIn = () => {
   const handleAgreeChange = (event) => {
     setAgree(event.target.checked);
   }
+
+  const handleSubmit = (e) => {
+    e. preventDefault();
+
+    const data = {
+      token: token,
+      gender: selectedGender,
+      nums: quantity,
+      note: introduce,
+      photo: agree,
+    };
+
+    fetch("/set-table", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+
+    .
+  }
+
 
   return (
     <div id="checkInWrap">

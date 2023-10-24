@@ -3,7 +3,7 @@ import { useEffect, React } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { CheckIn } from "pages/CheckIn";
 import { Landing } from "pages/Landing";
-import { Home } from "pages/Home";
+import Home from "pages/Home";
 import { Error } from "pages/Error";
 
 function App() {
