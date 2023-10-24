@@ -82,7 +82,7 @@ def post_data():
     return output
 
 ### 전체 테이블 조회
-# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/get-all -d '{"token":"80b156da-ae18-4bfb-a413-2b6ce6532c69"}'
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/get-all -d '{"token":"0b79fdd4-8cf8-4a5f-8506-904d1207e9fb"}'
 @app.route('/get-all', methods=['POST'])
 def get_all():
     output = dict()
@@ -101,7 +101,7 @@ def get_all():
         return output
 
 ### 테이블 정보 조회
-# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/get-table -d '{"token":"80b156da-ae18-4bfb-a413-2b6ce6532c69"}'
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/get-table -d '{"token":"0b79fdd4-8cf8-4a5f-8506-904d1207e9fb"}'
 @app.route('/get-table', methods=['POST'])
 def get_table():
     output = dict()
@@ -119,7 +119,7 @@ def get_table():
         return output
 
 ### 입력값 저장
-# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/set-table -d '{"token":"80b156da-ae18-4bfb-a413-2b6ce6532c69", "gender":"male", "nums":3, "note":"남자 셋", "photo":false, "referrer":"이유빈"}'
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/set-table -d '{"token":"0b79fdd4-8cf8-4a5f-8506-904d1207e9fb", "gender":"male", "nums":3, "note":"남자 셋", "photo":false, "referrer":"이유빈"}'
 @app.route('/set-table', methods=["POST"])
 def set_table():
     output = dict()
@@ -143,7 +143,7 @@ def set_table():
         return output
 
 ### 테이블 정보 수정
-# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/update-info -d '{"token":"80b156da-ae18-4bfb-a413-2b6ce6532c69","m_count":3,"f_count":4,"note":"ccc"}'
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/update-info -d '{"token":"0b79fdd4-8cf8-4a5f-8506-904d1207e9fb","m_count":3,"f_count":4,"note":"ccc"}'
 @app.route('/update-info', methods=["POST"])
 def update_info():
     try:
@@ -163,7 +163,7 @@ def update_info():
         return {"error" : e}
 
 ### 하트 보내기
-# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/send-like -d '{"token":"80b156da-ae18-4bfb-a413-2b6ce6532c69", "received_table":2}'
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/send-like -d '{"token":"0b79fdd4-8cf8-4a5f-8506-904d1207e9fb", "received_table":2}'
 @app.route('/send-like', methods=["POST"])
 def send_like():
     output = dict()
@@ -177,7 +177,7 @@ def send_like():
     return output
 
 ### 하트 거절
-# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/reject -d '{"token":"80b156da-ae18-4bfb-a413-2b6ce6532c69", "reject":2}'
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/reject -d '{"token":"0b79fdd4-8cf8-4a5f-8506-904d1207e9fb", "reject":2}'
 @app.route('/reject', methods=["POST"])
 def reject():
     output = dict()
@@ -194,11 +194,11 @@ def reject():
         return output
 
 ### 직원 호출 / 합석 처리 요청 ( 일단 시간 추가 요청, 하트 충전 요청 없음 )
-# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/call -d '{"token":"80b156da-ae18-4bfb-a413-2b6ce6532c69", "join":false}'
-# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/call -d '{"token":"80b156da-ae18-4bfb-a413-2b6ce6532c69", "join":true}'
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/call -d '{"token":"0b79fdd4-8cf8-4a5f-8506-904d1207e9fb", "join":false}'
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/call -d '{"token":"0b79fdd4-8cf8-4a5f-8506-904d1207e9fb", "join":true}'
 
-# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/call -d '{"token":"80b156da-ae18-4bfb-a413-2b6ce6532c69", "likes_count":2}'
-# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/call -d '{"token":"80b156da-ae18-4bfb-a413-2b6ce6532c69", "minutes":10}'
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/call -d '{"token":"0b79fdd4-8cf8-4a5f-8506-904d1207e9fb", "likes_count":2}'
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/call -d '{"token":"0b79fdd4-8cf8-4a5f-8506-904d1207e9fb", "minutes":10}'
 @app.route('/call', methods=["POST"])
 def call():
     output = dict()
@@ -234,7 +234,7 @@ def call():
 ##########################################################
 
 ### 하트 충전
-# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/admin/add-likes -d '{"token":"bb7d-314147da97cd-9db4d2d0-ea5a-4a96", "table_no":1, "count":2}'
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/admin/add-likes -d '{"token":"5ea91197-09ef-42e9-9bd9-d1d183b6db70", "table_no":1, "count":2}'
 @app.route('/admin/add-likes', methods=["POST"])
 def add_likes():
     output = dict()
@@ -252,7 +252,7 @@ def add_likes():
         return output
 
 ### 시간 추가
-# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/admin/add-time -d '{"token":"bb7d-314147da97cd-9db4d2d0-ea5a-4a96", "table_no":1, "minutes":10}'
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/admin/add-time -d '{"token":"5ea91197-09ef-42e9-9bd9-d1d183b6db70", "table_no":1, "minutes":10}'
 @app.route('/admin/add-time', methods=["POST"])
 def add_time():
     output = dict()
@@ -276,7 +276,7 @@ def add_time():
         return output
 
 ### 퇴장 처리
-# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/admin/reset-table -d '{"token":"bb7d-314147da97cd-9db4d2d0-ea5a-4a96", "table_no":1}'
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/admin/reset-table -d '{"token":"5ea91197-09ef-42e9-9bd9-d1d183b6db70", "table_no":1}'
 @app.route('/admin/reset-table', methods=["POST"])
 def reset_table():
     output = dict()
@@ -293,7 +293,7 @@ def reset_table():
         return output
 
 ### 합석 처리 
-# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/admin/join -d '{"from_where":1, "to_where":2, "token":"bb7d-314147da97cd-9db4d2d0-ea5a-4a96"}'
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/admin/join -d '{"from_where":1, "to_where":2, "token":"5ea91197-09ef-42e9-9bd9-d1d183b6db70"}'
 @app.route('/admin/join', methods=["POST"])
 def join_table():
     output = dict()
