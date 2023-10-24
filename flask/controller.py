@@ -32,7 +32,8 @@ def reset_table(table_no):
             "rejected" : [],
             "record" : [], # str list
             "photo" : False,
-            "note" : "" 
+            "note" : "",
+            "referrer" : "" 
         }
 
 def test_reset_table(table_no):
@@ -48,7 +49,8 @@ def test_reset_table(table_no):
             "rejected" : [],
             "record" : [],
             "photo" : False, 
-            "note" : ""
+            "note" : "",
+            "referrer" : ""
         }
 
 def reset_all_tables():
@@ -68,7 +70,7 @@ def test_reset_all_tables():
 #############################################################
 
 ### set table
-def set_table(table_no, nums, gender, photo, note):
+def set_table(table_no, nums, gender, photo, note, referrer):
     table_data = read_json_file(json_file)
     try:
         index = table_no-1
@@ -76,6 +78,7 @@ def set_table(table_no, nums, gender, photo, note):
         table_data[index]['gender'] = gender
         table_data[index]['photo'] = photo
         table_data[index]['note'] = note
+        table_data[index]['referrer'] = referrer
         table_data[index]['active'] = True
         current_time = datetime.now()
         table_data[index]['start_time'] = current_time.strftime('%m-%d %H:%M')
@@ -221,8 +224,47 @@ def reject(my_table, reject_table):
         return {"fail" : "?"}
 
 ### 직원 호출
-def call(table_no, count=None, minutes=None):
-    if table_no and not count and not minutes:
+def call(table_no, join, likes_count=None, minutes=None):
+    # if table_no and not likes_count and not minutes:
+    #     if not os.path.exists('admin.json'):
+    #         initial_data = {'record': [[f'[ 직원 호출 ] {table_no}번 테이블에서 직원을 호출합니다',datetime.now().strftime('%H:%M')]]}
+    #         with open('admin.json', 'w') as f:
+    #             json.dump(initial_data, f,ensure_ascii=False, indent=4)
+    #         return {"success" : "call"}
+    #     else:
+    #         data = read_json_file('admin.json')
+    #         if len(data['record']) == 20:
+    #             data['record'].pop()
+    #             data['record'].insert(0, [f'[ 직원 호출 ] {table_no}번 테이블에서 직원을 호출합니다',datetime.now().strftime('%H:%M')])
+    #             write_json_file('admin.json',data)
+    #             return {"success" : "call"}
+    #         else:
+    #             data['record'].insert(0, [f'[ 직원 호출 ] {table_no}번 테이블에서 직원을 호출합니다',datetime.now().strftime('%H:%M')])
+    #             write_json_file('admin.json',data)
+    #             return {"success" : "call"}
+    # if table_no and likes_count:
+    #     if not os.path.exists('admin.json'):
+    #         initial_data = {'record': [[f'[ 하트 충전 ] {table_no}번 테이블에 하트 {likes_count}개 충전해주세요',datetime.now().strftime('%H:%M')]]}
+    #         with open('admin.json', 'w') as f:
+    #             json.dump(initial_data, f,ensure_ascii=False, indent=4)
+    #         return {"success" : "call"}
+    #     else:
+    #         data = read_json_file('admin.json')
+    #         data['record'].insert(0, [f'[ 하트 충전 ] {table_no}번 테이블에 하트 {likes_count}개 충전해주세요',datetime.now().strftime('%H:%M')])
+    #         write_json_file('admin.json',data)
+    #         return {"success" : "call"}
+    # if table_no and minutes:
+    #     if not os.path.exists('admin.json'):
+    #         initial_data = {'record': [[f'[ 시간 추가 ] {table_no}번 테이블에 시간 {minutes}분 추가해주세요',datetime.now().strftime('%H:%M')]]}
+    #         with open('admin.json', 'w') as f:
+    #             json.dump(initial_data, f,ensure_ascii=False, indent=4)
+    #         return {"success" : "call"}
+    #     else:
+    #         data = read_json_file('admin.json')
+    #         data['record'].insert(0, [f'[ 시간 추가 ] {table_no}번 테이블에 시간 {minutes}분 추가해주세요',datetime.now().strftime('%H:%M')])
+    #         write_json_file('admin.json',data)
+    #         return {"success" : "call"}
+    if not join:
         if not os.path.exists('admin.json'):
             initial_data = {'record': [[f'[ 직원 호출 ] {table_no}번 테이블에서 직원을 호출합니다',datetime.now().strftime('%H:%M')]]}
             with open('admin.json', 'w') as f:
@@ -239,28 +281,24 @@ def call(table_no, count=None, minutes=None):
                 data['record'].insert(0, [f'[ 직원 호출 ] {table_no}번 테이블에서 직원을 호출합니다',datetime.now().strftime('%H:%M')])
                 write_json_file('admin.json',data)
                 return {"success" : "call"}
-    if table_no and count:
+    else:
         if not os.path.exists('admin.json'):
-            initial_data = {'record': [[f'[ 하트 충전 ] {table_no}번 테이블에 하트 {count}개 충전해주세요',datetime.now().strftime('%H:%M')]]}
+            initial_data = {'record': [[f'[ 합석 요청 ] {table_no}번 테이블의 합석 처리를 진행해주세요',datetime.now().strftime('%H:%M')]]}
             with open('admin.json', 'w') as f:
                 json.dump(initial_data, f,ensure_ascii=False, indent=4)
             return {"success" : "call"}
         else:
             data = read_json_file('admin.json')
-            data['record'].insert(0, [f'[ 하트 충전 ] {table_no}번 테이블에 하트 {count}개 충전해주세요',datetime.now().strftime('%H:%M')])
-            write_json_file('admin.json',data)
-            return {"success" : "call"}
-    if table_no and minutes:
-        if not os.path.exists('admin.json'):
-            initial_data = {'record': [[f'[ 시간 추가 ] {table_no}번 테이블에 시간 {minutes}분 추가해주세요',datetime.now().strftime('%H:%M')]]}
-            with open('admin.json', 'w') as f:
-                json.dump(initial_data, f,ensure_ascii=False, indent=4)
-            return {"success" : "call"}
-        else:
-            data = read_json_file('admin.json')
-            data['record'].insert(0, [f'[ 시간 추가 ] {table_no}번 테이블에 시간 {minutes}분 추가해주세요',datetime.now().strftime('%H:%M')])
-            write_json_file('admin.json',data)
-            return {"success" : "call"}
+            if len(data['record']) == 20:
+                data['record'].pop()
+                data['record'].insert(0, [f'[ 합석 요청 ] {table_no}번 테이블의 합석 처리를 진행해주세요',datetime.now().strftime('%H:%M')])
+                write_json_file('admin.json',data)
+                return {"success" : "call"}
+            else:
+                data['record'].insert(0, [f'[ 합석 요청 ] {table_no}번 테이블의 합석 처리를 진행해주세요',datetime.now().strftime('%H:%M')])
+                write_json_file('admin.json',data)
+                return {"success" : "call"}
+
 
 ##########################################################
 ########################## 관리자 ##########################

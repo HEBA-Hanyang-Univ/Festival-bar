@@ -1,4 +1,4 @@
-### generate table token
+## generate table token
 # import uuid
 # import json
 # tokens = {}
@@ -7,13 +7,13 @@
 #     token = str(uuid.uuid4())
 #     tokens[token] = user_data
 
-# for i in range(1,41):
+# for i in range(1,36):
 #     generate_token(i)
 
 # with open('table_token.json', "w", encoding="utf-8") as f:
 #     json.dump(tokens, f)
 
-### generate qr code
+## generate qr code
 # import qrcode
 # def create_qc(token):
 
@@ -49,7 +49,7 @@ with open('table_token.json', "r", encoding="utf-8") as f:
 @app.route('/<token>')
 def index(token):
     table_no = controller.get_table_no_by_token(token)
-    if table_no:
+    if type(table_no) == int:
         session['token'] = token
         session['table_info'] = controller.get_table(controller.get_table_no_by_token(token))
 
@@ -119,7 +119,7 @@ def get_table():
         return output
 
 ### 입력값 저장
-# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/set-table -d '{"token":"80b156da-ae18-4bfb-a413-2b6ce6532c69", "gender":"male", "nums":3, "note":"aaa", "photo":false}'
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/set-table -d '{"token":"80b156da-ae18-4bfb-a413-2b6ce6532c69", "gender":"male", "nums":3, "note":"남자 셋", "photo":false, "referrer":"이유빈"}'
 @app.route('/set-table', methods=["POST"])
 def set_table():
     output = dict()
@@ -128,17 +128,18 @@ def set_table():
     token = data.get('token')
     table_no = controller.get_table_no_by_token(token)
 
-    if table_no:
+    if type(table_no) == int:
         gender = data.get('gender')
         nums = data.get('nums')
         note = data.get('note')
         photo = data.get('photo')
+        referrer = data.get('referrer')
 
-        result = controller.set_table(table_no, nums, gender, photo, note)  
+        result = controller.set_table(table_no, nums, gender, photo, note, referrer)  
         output['result'] = result
         return output
     else:
-        output['result'] = {'error': 'Token is missing or invalid'}
+        output['result'] = {"fail" : "Invalid token"}
         return output
 
 ### 테이블 정보 수정
@@ -184,7 +185,7 @@ def reject():
 
     token = data.get('token')
     table_no = controller.get_table_no_by_token(token)
-    if table_no:
+    if type(table_no) == int:
         reject_table = data.get('reject')
         output['result'] = controller.reject(table_no, reject_table)
         return output
@@ -192,27 +193,37 @@ def reject():
         output['result'] = {"fail" : "Invalid token"}
         return output
 
-### 직원 호출
-# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/call -d '{"token":"80b156da-ae18-4bfb-a413-2b6ce6532c69"}'
-# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/call -d '{"token":"80b156da-ae18-4bfb-a413-2b6ce6532c69", "count":2}'
+### 직원 호출 / 합석 처리 요청 ( 일단 시간 추가 요청, 하트 충전 요청 없음 )
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/call -d '{"token":"80b156da-ae18-4bfb-a413-2b6ce6532c69", "join":false}'
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/call -d '{"token":"80b156da-ae18-4bfb-a413-2b6ce6532c69", "join":true}'
+
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/call -d '{"token":"80b156da-ae18-4bfb-a413-2b6ce6532c69", "likes_count":2}'
 # curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/call -d '{"token":"80b156da-ae18-4bfb-a413-2b6ce6532c69", "minutes":10}'
 @app.route('/call', methods=["POST"])
 def call():
     output = dict()
     data = request.get_json()
     token = data.get('token')
-    count = data.get('count')
-    minutes = data.get('minutes')
+    join = data.get('join')
+    # likes_count = data.get('likes_count')
+    # minutes = data.get('minutes')
     table_no = controller.get_table_no_by_token(token)
 
-    if table_no and count:
-        output['result'] = controller.call(table_no, count=count)
-        return output
-    if table_no and minutes:
-        output['result'] = controller.call(table_no, minutes=minutes)
-        return output
-    elif table_no:
-        output['result'] = controller.call(table_no)
+    # if table_no and likes_count:
+    #     output['result'] = controller.call(table_no, likes_count=likes_count)
+    #     return output
+    # if table_no and minutes:
+    #     output['result'] = controller.call(table_no, minutes=minutes)
+    #     return output
+    # elif table_no:
+    #     output['result'] = controller.call(table_no)
+    #     return output
+    # else:
+    #     output['result'] = {"fail" : "Invalid token"}
+    #     return output
+
+    if type(table_no) == int:
+        output['result'] = controller.call(table_no, join)
         return output
     else:
         output['result'] = {"fail" : "Invalid token"}
