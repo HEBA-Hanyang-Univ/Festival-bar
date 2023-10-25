@@ -6,6 +6,8 @@ import Male from "assets/images/male.png";
 import Female from "assets/images/female.png";
 import Mixed from "assets/images/mixed.png";
 
+// TODO : 서버로부터 테이블 번호 요청 후 렌더링
+
 export const CheckIn = () => {
   const [selectedGender, setSelectedGender] = useState(null);
   const [quantity, setQuantity] = useState(0);
@@ -55,9 +57,16 @@ export const CheckIn = () => {
       },
     })
 
-    .
-  }
+      .then((response) => response.json())
+      .then((result) => {
+        console.log("서버 응답: ", result);
 
+        if (result.result && result.result.error) {
+          console.error("서버 에러: ", result.reult.error)
+        }
+      })
+
+  }
 
   return (
     <div id="checkInWrap">

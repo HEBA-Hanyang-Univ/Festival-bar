@@ -63,6 +63,18 @@ class Home extends Component {
           <Table />
           <Table />
           <Table />
+          <Table />
+          <Table />
+          <Table />
+          <Table />
+          <Table />
+          <Table />
+          <Table />
+          <Table />
+          <Table />
+          <Table />
+          <Table />
+          <Table />
         </main>
         <footer>
           <button className="callServer">직원호출</button>
