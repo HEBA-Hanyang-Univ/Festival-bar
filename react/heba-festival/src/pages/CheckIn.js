@@ -5,8 +5,9 @@ import "styles/common.scss";
 import Male from "assets/images/male.png";
 import Female from "assets/images/female.png";
 import Mixed from "assets/images/mixed.png";
+import QuantityControl from "components/QuantityControl";
 
-// TODO : 서버로부터 테이블 번호 요청 후 렌더링
+//  TODO : 서버로부터 테이블 번호 요청 후 렌더링
 
 export const CheckIn = () => {
   const [selectedGender, setSelectedGender] = useState(null);
@@ -109,11 +110,11 @@ export const CheckIn = () => {
               <span className="highlight">*</span>
               <span>인원 수</span>
             </div>
-            <div className="inputGroup">
-              <button type="button" className="btnMinus" onClick={() => handleQuantityChange('decrement')}>-</button> 
-              <input type="number" step={"1"} max={"15"} value={quantity} name="quantity" className="quantityField"></input>
-              <button type="button" className="btnPlus" onClick={() => handleQuantityChange('increment')}>+</button>
-            </div>
+            <QuantityControl
+              quantity={quantity}
+              onIncrement={() => handleQuantityChange("increment")}
+              onDecrement={() => handleQuantityChange("decrement")}>
+            </QuantityControl>
           </div>
         </div>
         <div className="selfIntroduceContent">

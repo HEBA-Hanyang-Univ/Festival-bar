@@ -16,8 +16,187 @@
   left: 50%;
   transform: translate(-50%, -50%);
   width: 24rem;
-  border: 1px solid #000;
+  border: 1px solid #87deff;
   border-radius: 1.4375rem;
   background-color: #fff;
   height: fit-content;
+}
+
+.modalTitle {
+  height: 3rem;
+  text-align: left;
+  margin-top: 1.3rem;
+  margin-left: 2rem;
+
+  span {
+    color: #000;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  height: 10rem;
+  margin: 0 auto;
+
+  span {
+    color: #000;
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+
+  button {
+    margin: 2.3rem auto 0;
+    height: 1.9rem;
+    align-items: center;
+    width: 8rem;
+    border: none;
+    border-radius: 0.625rem;
+    background-color: #87deff;
+
+    span {
+      color: #fff;
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+  }
+}
+
+.serverContent { padding-top: 2rem; }
+.heartContent { padding-top: 0.5rem; }
+
+.heartChargeBtnBox {
+  margin-top: -1rem;
+}
+
+.whiteBtn {
+  margin-right: 0.5rem !important; 
+  border: 1px solid #87deff !important;
+  background-color: #fff !important;
+
+  span {
+    color: #2d63a4 !important;
+  }
+}
+
+.closeBtnBox {
+  margin-top: 1.5rem;
+  display: flex;
+  float: right;
+  width: 2rem;
+  height: 2rem;
+
+  .closeBtn {
+    position: fixed;
+    right: 2rem;
+    border: none;
+    background-color: transparent;
+
+    img {
+      width: 1.3rem;
+      height: 1.3rem;
+    }
+  }
+}
+
+.myPageWrap {
+  display: flex;
+  flex-direction: column;
+  width: 85% !important;
+}
+
+.myPageTitle {
+  margin: 0 auto;
+
+  span {
+    color: #000;
+    font-size: 2rem;
+    font-weight: 600;
+    letter-spacing: 0.1rem;
+  }
+}
+
+.myPageContent {
+  height: 30rem;
+  display: flex;
+  flex-direction: column;
+
+  .modifyCount {
+    margin-top: 2.8rem;
+    margin-left: 4rem;
+    margin-right: 2rem;
+    display: flex;
+
+    .genderImgBox {
+      display: flex;
+      flex-direction: column;
+      margin-right: 3.58rem;
+
+      img {
+        width: 6.5rem;
+        height: 5.5rem  ;
+      }
+      
+      span {
+        margin-top: 0.5rem;
+        color: #000;
+        text-align: center;
+        font-size: 1.3rem;
+        font-weight: 600;
+        letter-spacing: 0.0625rem;
+      }
+    }
+    .modifyCountBox {
+      span {
+        color: #000;
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: 500;
+        letter-spacing: 0.065rem;
+      }
+    }
+  }
+}
+
+.modifyIntroduce {
+  margin-top: 3rem;
+  
+  .modifyIntroduceTitle {
+    display: flex;
+    flex-direction: column;
+
+    span {
+      color: #000;
+      font-size: 1.5rem;
+      font-weight: 400;
+      letter-spacing: 0.065rem;
+    }
+
+    textarea {
+      margin: 0 auto;
+      margin-top: 1rem;
+      width: 28rem;
+
+      border-radius: 0.875rem;
+      border: 1.5px solid #bababa;
+    }
+  }
+}
+
+.myPageBtn {
+  margin: 2rem auto 3rem;
+  border: none;
+  border-radius: 5.9375rem;
+  background-color: #87deff;
+  width: 15rem;
+  height: 4rem;
+
+  span {
+    color: #fff;
+    font-size: 1.3rem;
+    font-weight: 700;
+  }
 }

@@ -95,7 +95,6 @@ nav {
 }
 
 #container {
-  background-color: #f8f9fb;
   margin: 0.9rem 1.6rem 1.8rem 1.6rem;
   overflow-y : scroll;
   height: calc(100vh);
@@ -103,6 +102,11 @@ nav {
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(10, 7.2rem);
   gap: 1.4rem;
+  scrollbar-width: none;
+  
+  &::-webkit-scrollbar {
+    display: none;
+  }
   
   .item {
     background-color: pink;
