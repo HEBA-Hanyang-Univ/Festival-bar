@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 my_dir = os.path.dirname(__file__)
 json_file = os.path.join(my_dir, 'table.json')
 
+
 def read_json_file(file_name):
     try:
         with open(file_name, "r", encoding="utf-8") as f:
@@ -18,6 +19,15 @@ def read_json_file(file_name):
 def write_json_file(file_name, data):
     with open(file_name, "w") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
+
+global qr_data
+qr_data = read_json_file('table_token.json')
+global table_data
+table_data = read_json_file('table.json')
+
+def write_table_data():
+    write_json_file(json_file, table_data)
+
 
 def reset_table(table_no):
     return {
@@ -58,14 +68,12 @@ def reset_all_tables():
     for i in range(1, 41):
         b = reset_table(i)
         table_data.append(b)
-    write_json_file('table.json',table_data)
 
 def test_reset_all_tables():
     table_data = []
     for i in range(1, 21):
         b = test_reset_table(i)
         table_data.append(b)
-    write_json_file('table.json',table_data)
     
 #############################################################
 
@@ -116,17 +124,12 @@ def update_info(table_no, male_count, female_count, note):
 
 ### get table number by token 
 def get_table_no_by_token(token):
-    try:
-        with open('table_token.json', "r", encoding="utf-8") as f:
-            qr_data = json.load(f)
-        table_no = qr_data[token]
-        return table_no
-    except Exception as e:
-        return {"error" : e}
+    table_no = qr_data.get(token)
+    return table_no
 
 def get_table(table_no):
-    with open('table.json', "r", encoding="utf-8") as f:
-        table_data = json.load(f)
+    if table_no == None:
+        return None
     return table_data[table_no-1]
             
 ### filtering
@@ -173,9 +176,6 @@ def get_table(table_no):
 ### send 
 def send_like(my_table, received_table):
     try:
-        with open('table.json', "r", encoding="utf-8") as f:
-                table_data = json.load(f)
-
         if my_table != received_table:
             if my_table not in table_data[received_table-1]['received']:
                 if table_data[my_table-1]['likes'] > 0:
@@ -189,8 +189,6 @@ def send_like(my_table, received_table):
                             table_data[my_table-1]['sent'].append(received_table)
                             table_data[received_table-1]['received'].append(my_table)
                             table_data[received_table-1]['record'].insert(0,[f'{my_table}번 테이블에서 하트를 보냈습니다.', datetime.now().strftime('%H:%M')])
-
-                            write_json_file('table.json',table_data)
                             
                             return {"success" : f"Send a like to Table {received_table}"}
                         else:
@@ -210,14 +208,10 @@ def send_like(my_table, received_table):
 
 ### reject
 def reject(my_table, reject_table):
-    with open('table.json', "r", encoding="utf-8") as f:
-        table_data = json.load(f)
 
     if reject_table in table_data[my_table-1]['received']:
         table_data[reject_table-1]['rejected'].insert(0, my_table)
         table_data[reject_table-1]['record'].insert(0,[f'{my_table}번 테이블에서 하트를 거절했습니다.', datetime.now().strftime('%H:%M')])
-
-        write_json_file('table.json',table_data)
         
         return {"success" : f"Reject Table {reject_table}"}
     else:
@@ -311,8 +305,6 @@ def add_likes(table_no, count):
 
     table_data[table_no-1]['likes'] += count
 
-    write_json_file('table.json',table_data)
-
     return {"success" : f"Add {count} likes on Table {table_no}"}
  
 ### 시간 충전
@@ -324,16 +316,12 @@ def add_time(table_no, minutes):
     new_end_time = end_time + timedelta(minutes=minutes)
     table_data[table_no-1]['end_time'] = new_end_time.strftime('%m-%d %H:%M')  # datetime 객체를 문자열로 변환하여 저장
 
-    write_json_file('table.json',table_data)
-
     return {"success" : f"Add {minutes} minutes on Table {table_no}"}
 
 ### 합석 처리
 def join_table(from_where, to_where):
     try:
         if from_where != to_where:
-            with open('table.json', "r", encoding="utf-8") as f:
-                table_data = json.load(f)
             if table_data[from_where-1]['active'] and table_data[to_where-1]['active']:
                 print(1111)
                 if table_data[from_where-1]['gender'] != 'group' and table_data[to_where-1]['gender'] != 'group':
@@ -347,8 +335,6 @@ def join_table(from_where, to_where):
 
                     table_data[from_where-1] = reset_table(from_where)
 
-                    write_json_file('table.json',table_data)
-
                     return {"success" : "Create group"}
                 else:
                     return {"fail" : "Already group"}
@@ -361,8 +347,6 @@ def join_table(from_where, to_where):
 
 ### 테이블 비우기
 def reset_table_2(table_no):
-    with open('table.json', "r", encoding="utf-8") as f:
-        table_data = json.load(f)
     table_data[table_no-1] = reset_table(table_no)
 
     write_json_file('table.json',table_data)
