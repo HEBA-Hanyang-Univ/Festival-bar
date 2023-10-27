@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 my_dir = os.path.dirname(__file__)
 json_file = os.path.join(my_dir, 'table.json')
 
-
 def read_json_file(file_name):
     try:
         with open(file_name, "r", encoding="utf-8") as f:
@@ -27,7 +26,6 @@ table_data = read_json_file('table.json')
 
 def write_table_data():
     write_json_file(json_file, table_data)
-
 
 def reset_table(table_no):
     return {
@@ -65,7 +63,7 @@ def test_reset_table(table_no):
 
 def reset_all_tables():
     table_data = []
-    for i in range(1, 41):
+    for i in range(1, 35):
         b = reset_table(i)
         table_data.append(b)
 
@@ -82,19 +80,22 @@ def set_table(table_no, nums, gender, photo, note, referrer):
     table_data = read_json_file(json_file)
     try:
         index = table_no-1
-        table_data[index]['nums'] = nums
-        table_data[index]['gender'] = gender
-        table_data[index]['photo'] = photo
-        table_data[index]['note'] = note
-        table_data[index]['referrer'] = referrer
-        table_data[index]['active'] = True
-        current_time = datetime.now()
-        table_data[index]['start_time'] = current_time.strftime('%m-%d %H:%M')
-        table_data[index]['end_time'] = (current_time + timedelta(hours=1.5)).strftime('%m-%d %H:%M')
-        write_json_file('table.json', table_data)
-        return {'success': f'Table {table_no} active'}
-    except Exception as e:
-        return {'error' : e}
+        if table_data[index]['active'] == False:
+            table_data[index]['nums'] = nums
+            table_data[index]['gender'] = gender
+            table_data[index]['photo'] = photo
+            table_data[index]['note'] = note
+            table_data[index]['referrer'] = referrer
+            table_data[index]['active'] = True
+            current_time = datetime.now()
+            table_data[index]['start_time'] = current_time.strftime('%m-%d %H:%M')
+            table_data[index]['end_time'] = (current_time + timedelta(hours=1.5)).strftime('%m-%d %H:%M')
+            write_json_file('table.json', table_data)
+            return {'result': 'ok'}
+        else:
+            return {'result' : 'fail'}
+    except:
+        return {'result' : 'fail'}
 
 ### update table info
 def update_info(table_no, male_count, female_count, note):
@@ -118,9 +119,9 @@ def update_info(table_no, male_count, female_count, note):
         
         write_json_file('table.json', table_data)
 
-        return {"success" : f"Update Table {table_no}"}
+        return {'result': 'ok'}
     else:
-        return {"fail" : "Table active False"}
+        return {'result' : 'fail'}
 
 ### get table number by token 
 def get_table_no_by_token(token):
@@ -190,21 +191,21 @@ def send_like(my_table, received_table):
                             table_data[received_table-1]['received'].append(my_table)
                             table_data[received_table-1]['record'].insert(0,[f'{my_table}번 테이블에서 하트를 보냈습니다.', datetime.now().strftime('%H:%M')])
                             
-                            return {"success" : f"Send a like to Table {received_table}"}
+                            return {'result': 'ok'}
                         else:
-                            return {"fail" : "Already group"}
+                            return {'result' : 'fail'}
                     else:
-                        return {"fail" : "Received table active False"}
+                        return {'result' : 'fail'}
                 else:
-                    return {"fail" : "No likes left"}
+                    return {'result' : 'fail'}
             elif received_table not in table_data[my_table-1]['rejected']:
-                return {"fail" : "Already sent"}
+                return {'result' : 'fail'}
             else:
-                return {"fail" : "Rejected"}
+                return {'result' : 'fail'}
         else:
-            return {"fail" : "Same table"}
-    except Exception as e:
-        return {"error" : e}
+            return {'result' : 'fail'}
+    except:
+        return {'result' : 'fail'}
 
 ### reject
 def reject(my_table, reject_table):
@@ -213,9 +214,9 @@ def reject(my_table, reject_table):
         table_data[reject_table-1]['rejected'].insert(0, my_table)
         table_data[reject_table-1]['record'].insert(0,[f'{my_table}번 테이블에서 하트를 거절했습니다.', datetime.now().strftime('%H:%M')])
         
-        return {"success" : f"Reject Table {reject_table}"}
+        return {"result" : "ok"}
     else:
-        return {"fail" : "?"}
+        return {"result" : "fail"}
 
 ### 직원 호출
 def call(table_no, join, likes_count=None, minutes=None):
@@ -258,41 +259,43 @@ def call(table_no, join, likes_count=None, minutes=None):
     #         data['record'].insert(0, [f'[ 시간 추가 ] {table_no}번 테이블에 시간 {minutes}분 추가해주세요',datetime.now().strftime('%H:%M')])
     #         write_json_file('admin.json',data)
     #         return {"success" : "call"}
-    if not join:
-        if not os.path.exists('admin.json'):
-            initial_data = {'record': [[f'[ 직원 호출 ] {table_no}번 테이블에서 직원을 호출합니다',datetime.now().strftime('%H:%M')]]}
-            with open('admin.json', 'w') as f:
-                json.dump(initial_data, f,ensure_ascii=False, indent=4)
-            return {"success" : "call"}
-        else:
-            data = read_json_file('admin.json')
-            if len(data['record']) == 20:
-                data['record'].pop()
-                data['record'].insert(0, [f'[ 직원 호출 ] {table_no}번 테이블에서 직원을 호출합니다',datetime.now().strftime('%H:%M')])
-                write_json_file('admin.json',data)
-                return {"success" : "call"}
+    try:
+        if not join:
+            if not os.path.exists('admin.json'):
+                initial_data = {'record': [[f'[ 직원 호출 ] {table_no}번 테이블에서 직원을 호출합니다',datetime.now().strftime('%H:%M')]]}
+                with open('admin.json', 'w') as f:
+                    json.dump(initial_data, f,ensure_ascii=False, indent=4)
+                return {"result" : "ok"}
             else:
-                data['record'].insert(0, [f'[ 직원 호출 ] {table_no}번 테이블에서 직원을 호출합니다',datetime.now().strftime('%H:%M')])
-                write_json_file('admin.json',data)
-                return {"success" : "call"}
-    else:
-        if not os.path.exists('admin.json'):
-            initial_data = {'record': [[f'[ 합석 요청 ] {table_no}번 테이블의 합석 처리를 진행해주세요',datetime.now().strftime('%H:%M')]]}
-            with open('admin.json', 'w') as f:
-                json.dump(initial_data, f,ensure_ascii=False, indent=4)
-            return {"success" : "call"}
+                data = read_json_file('admin.json')
+                if len(data['record']) == 20:
+                    data['record'].pop()
+                    data['record'].insert(0, [f'[ 직원 호출 ] {table_no}번 테이블에서 직원을 호출합니다',datetime.now().strftime('%H:%M')])
+                    write_json_file('admin.json',data)
+                    return {"result" : "ok"}
+                else:
+                    data['record'].insert(0, [f'[ 직원 호출 ] {table_no}번 테이블에서 직원을 호출합니다',datetime.now().strftime('%H:%M')])
+                    write_json_file('admin.json',data)
+                    return {"result" : "ok"}
         else:
-            data = read_json_file('admin.json')
-            if len(data['record']) == 20:
-                data['record'].pop()
-                data['record'].insert(0, [f'[ 합석 요청 ] {table_no}번 테이블의 합석 처리를 진행해주세요',datetime.now().strftime('%H:%M')])
-                write_json_file('admin.json',data)
-                return {"success" : "call"}
+            if not os.path.exists('admin.json'):
+                initial_data = {'record': [[f'[ 합석 요청 ] {table_no}번 테이블의 합석 처리를 진행해주세요',datetime.now().strftime('%H:%M')]]}
+                with open('admin.json', 'w') as f:
+                    json.dump(initial_data, f,ensure_ascii=False, indent=4)
+                return {"result" : "ok"}
             else:
-                data['record'].insert(0, [f'[ 합석 요청 ] {table_no}번 테이블의 합석 처리를 진행해주세요',datetime.now().strftime('%H:%M')])
-                write_json_file('admin.json',data)
-                return {"success" : "call"}
-
+                data = read_json_file('admin.json')
+                if len(data['record']) == 20:
+                    data['record'].pop()
+                    data['record'].insert(0, [f'[ 합석 요청 ] {table_no}번 테이블의 합석 처리를 진행해주세요',datetime.now().strftime('%H:%M')])
+                    write_json_file('admin.json',data)
+                    return {"result" : "ok"}
+                else:
+                    data['record'].insert(0, [f'[ 합석 요청 ] {table_no}번 테이블의 합석 처리를 진행해주세요',datetime.now().strftime('%H:%M')])
+                    write_json_file('admin.json',data)
+                    return {"result" : "ok"}
+    except:
+        return {"result" : "fail"}
 
 ##########################################################
 ########################## 관리자 ##########################
@@ -305,7 +308,7 @@ def add_likes(table_no, count):
 
     table_data[table_no-1]['likes'] += count
 
-    return {"success" : f"Add {count} likes on Table {table_no}"}
+    return {"result" : "ok"}
  
 ### 시간 충전
 def add_time(table_no, minutes):
@@ -316,14 +319,13 @@ def add_time(table_no, minutes):
     new_end_time = end_time + timedelta(minutes=minutes)
     table_data[table_no-1]['end_time'] = new_end_time.strftime('%m-%d %H:%M')  # datetime 객체를 문자열로 변환하여 저장
 
-    return {"success" : f"Add {minutes} minutes on Table {table_no}"}
+    return {"result" : "ok"}
 
 ### 합석 처리
 def join_table(from_where, to_where):
     try:
         if from_where != to_where:
             if table_data[from_where-1]['active'] and table_data[to_where-1]['active']:
-                print(1111)
                 if table_data[from_where-1]['gender'] != 'group' and table_data[to_where-1]['gender'] != 'group':
 
                     # 합석으로 인한 정보 변경
@@ -335,22 +337,22 @@ def join_table(from_where, to_where):
 
                     table_data[from_where-1] = reset_table(from_where)
 
-                    return {"success" : "Create group"}
+                    return {"result" : "ok"}
                 else:
-                    return {"fail" : "Already group"}
+                    return {"result" : "fail"}
             else:
-                return {"fail" : "Active False"}
+                return {"result" : "fail"}
         else:
-            return {"fail" : "My table"}
-    except Exception as e:
-        return {"error" : e}
+            return {"result" : "fail"}
+    except:
+        return {"result" : "fail"}
 
 ### 테이블 비우기
 def reset_table_2(table_no):
     table_data[table_no-1] = reset_table(table_no)
 
     write_json_file('table.json',table_data)
-    return {"success" : f"Reset Table {table_no}"}
+    return {"result" : "ok"}
 
 
 ##########################################################
