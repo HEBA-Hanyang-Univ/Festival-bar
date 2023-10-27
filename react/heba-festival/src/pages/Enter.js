@@ -20,6 +20,7 @@ export const Enter = () => {
       response = await response.json();
       if (!response.result.hasOwnProperty('error')) {
         secureLocalStorage.setItem("token", token);
+	secureLocalStorage.setItem("table_no", response.result.table_no);
         isValid = true;
       }
     } catch (error) {

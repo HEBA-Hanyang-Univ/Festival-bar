@@ -1,11 +1,12 @@
-import React, { useState } from "react";  
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";  
+import { Link, useNavigate } from "react-router-dom";
 import "styles/CheckIn.scss";
 import "styles/common.scss";
 import Male from "assets/images/male.png";
 import Female from "assets/images/female.png";
 import Mixed from "assets/images/mixed.png";
 import QuantityControl from "components/QuantityControl";
+import secureLocalStorage from "react-secure-storage";
 
 //  TODO : 서버로부터 테이블 번호 요청 후 렌더링
 
@@ -14,9 +15,16 @@ export const CheckIn = () => {
   const [quantity, setQuantity] = useState(0);
   const [introduce, setIntroduce] = useState("");
   const [agree, setAgree] = useState(false);
-  const [token, setToken] = useState("");
+  const token = secureLocalStorage.getItem('token');
+  const navigate = useNavigate();
   // 에러메시지 상태 추가
   
+  useEffect(() => {
+    if (token == null) {
+      navigate('/error');
+    }
+  });
+
   // 하나의 성별만 선택
   const handleGenderSelect = (gender) => {
     setSelectedGender(gender);
@@ -42,30 +50,33 @@ export const CheckIn = () => {
   const handleSubmit = (e) => {
     e. preventDefault();
 
+    if (selectedGender==null || quantity == 0) return;
+
     const data = {
       token: token,
       gender: selectedGender,
       nums: quantity,
       note: introduce,
       photo: agree,
+      referrer: "", // TODO : set referrer
     };
 
-    fetch("/set-table", {
+    fetch("http://150.230.252.177:5000/set-table", {
+      mode:'cors',
       method: "POST",
       body: JSON.stringify(data),
       headers: {
         "Content-Type": "application/json",
       },
     })
+    .then((response) => response.json())
+    .then((result) => {
+      console.log("서버 응답: ", result);
 
-      .then((response) => response.json())
-      .then((result) => {
-        console.log("서버 응답: ", result);
-
-        if (result.result && result.result.error) {
-          console.error("서버 에러: ", result.reult.error)
-        }
-      })
+      if (result.result && result.result.error) {
+        console.error("서버 에러: ", result.reult.error)
+      }
+    })
 
   }
 
@@ -144,7 +155,7 @@ export const CheckIn = () => {
             <label htmlFor="agree">Agree</label>
           </div>
         </div>
-        <button className="submitBtn" type="submit" value={"Submit"}>
+        <button className="submitBtn" type="submit" value={"Submit"} onClick={handleSubmit}>
           {selectedGender && quantity > 0 ? (
             <Link to={"/landing"} style={{textDecorationLine: "none",}}><span>Submit</span></Link>
           ) : (

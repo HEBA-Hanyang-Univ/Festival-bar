@@ -2,8 +2,11 @@ import React from "react";
 import "styles/Error.scss";
 import "styles/common.scss";
 import ErrorImg from "assets/images/error.png";
+import secureLocalStorage from "react-secure-storage";
+
 
 export const Error = () => {
+  secureLocalStorage.clear(); // remove all the local storage if error occurs
   return (
     <div className="errorWrap">
       <div className="errorBox">
