@@ -35,7 +35,7 @@ def get_all(load_json=True, check_token=True):
     if check_token == True:
         token = data.get('token')
         if controller.get_table(controller.get_table_no_by_token(token)) == None:
-            output['result'] = {"fail" : "Invalid token"}
+            output['result'] = "fail"
             return output
 
     if load_json == True:
@@ -64,7 +64,7 @@ def get_table():
         output['result'] = table_info
         return output
     else:
-        output['result'] = {'error': 'Token is missing or invalid'}
+        output['result'] = "fail"
         return output
 
 
@@ -92,7 +92,7 @@ def set_table():
         output['result'] = result
         return output
     else:
-        output['result'] = {"fail" : "Invalid token"}
+        output['result'] = "fail"
         return output
 
 
@@ -117,7 +117,7 @@ def update_info():
         output['result'] = controller.update_info(table_no, m_count, f_count, note)        
         return output
     except Exception as e:
-        return {"error" : e}
+        return "fail"
 
 
 
@@ -155,7 +155,7 @@ def reject():
         output['result'] = controller.reject(table_no, reject_table)
         return output
     else:
-        output['result'] = {"fail" : "Invalid token"}
+        output['result'] = "fail"
         return output
 
 
@@ -195,6 +195,6 @@ def call():
         output['result'] = controller.call(table_no, join)
         return output
     else:
-        output['result'] = {"fail" : "Invalid token"}
+        output['result'] = "fail"
         return output
 
