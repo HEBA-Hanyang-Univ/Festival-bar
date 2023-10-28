@@ -23,9 +23,12 @@ global qr_data
 qr_data = read_json_file('table_token.json')
 global table_data
 table_data = read_json_file('table.json')
+global admin
+admin = {"record" : []}
 
 def write_table_data():
     write_json_file(json_file, table_data)
+    write_json_file('admin.json', admin)
 
 def reset_table(table_no):
     return {
@@ -61,23 +64,23 @@ def test_reset_table(table_no):
             "referrer" : ""
         }
 
-def reset_all_tables():
-    table_data = []
-    for i in range(1, 35):
-        b = reset_table(i)
-        table_data.append(b)
+# def reset_all_tables():
+#     global table_data
+#     table_data = []
+#     for i in range(1, 35):
+#         b = reset_table(i)
+#         table_data.append(b)
 
-def test_reset_all_tables():
-    table_data = []
-    for i in range(1, 21):
-        b = test_reset_table(i)
-        table_data.append(b)
+# def test_reset_all_tables():
+#     table_data = []
+#     for i in range(1, 21):
+#         b = test_reset_table(i)
+#         table_data.append(b)
     
 #############################################################
 
 ### set table
 def set_table(table_no, nums, gender, photo, note, referrer):
-    table_data = read_json_file(json_file)
     try:
         index = table_no-1
         if table_data[index]['active'] == False:
@@ -90,16 +93,22 @@ def set_table(table_no, nums, gender, photo, note, referrer):
             current_time = datetime.now()
             table_data[index]['start_time'] = current_time.strftime('%m-%d %H:%M')
             table_data[index]['end_time'] = (current_time + timedelta(hours=1.5)).strftime('%m-%d %H:%M')
-            write_json_file('table.json', table_data)
             return "ok"
         else:
             return "fail"
     except:
         return "fail"
 
+def set_table_admin(dic):
+    key_list = list(dic.keys())
+    key_list.remove('token')
+    index = dic['table_no']-1
+    for key in key_list:
+        table_data[index][key] = dic[key]
+    return "ok"
+
 ### update table info
 def update_info(table_no, male_count, female_count, note):
-    table_data = read_json_file(json_file)
     index = table_no-1
 
     if table_data[index]['active'] == True:
@@ -116,8 +125,6 @@ def update_info(table_no, male_count, female_count, note):
         if male_count and female_count:
             table_data[index]['gender'] = 'group'
             table_data[index]['nums'] = male_count + female_count
-        
-        write_json_file('table.json', table_data)
 
         return "ok"
     else:
@@ -132,47 +139,6 @@ def get_table(table_no):
     if table_no == None:
         return None
     return table_data[table_no-1]
-            
-### filtering
-# def get_males_table():
-#     with open('table.json', "r", encoding="utf-8") as f:
-#         table_data = json.load(f)
-#     try:
-#         filtered_data = [(a['table_no'], a['nums']) for a in table_data if a['gender'] == 'male' and a['join'] == False]
-#     except:
-#         filtered_data = []
-
-#     return filtered_data
-
-# def get_females_table():
-#     with open('table.json', "r", encoding="utf-8") as f:
-#         table_data = json.load(f)
-#     try:
-#         filtered_data = [(a['table_no'], a['nums']) for a in table_data if a['gender'] == 'female' and a['join'] == False]
-#     except:
-#         filtered_data = []
-
-#     return filtered_data
-
-# def get_joined_table():
-#     with open('table.json', "r", encoding="utf-8") as f:
-#         table_data = json.load(f)
-#     try:
-#         filtered_data = [a['table_no'] for a in table_data if a['join'] == True]
-#     except:
-#         filtered_data = []
-
-#     return filtered_data
-
-# def get_active_table():
-#     with open('table.json', "r", encoding="utf-8") as f:
-#         table_data = json.load(f)
-#     try:
-#         filtered_data = [a['table_no'] for a in table_data if a['active'] == True]
-#     except:
-#         filtered_data = []
-
-#     return filtered_data
 
 ### send 
 def send_like(my_table, received_table):
@@ -181,10 +147,10 @@ def send_like(my_table, received_table):
             if my_table not in table_data[received_table-1]['received']:
                 if table_data[my_table-1]['likes'] > 0:
                     if table_data[received_table-1]['active'] == True: 
-                        if table_data[received_table-1]['gender'] != "group":
+                        if table_data[my_table-1]['gender'] != 'group' and table_data[received_table-1]['gender'] != "group":
 
-                            print('my table :', table_data[my_table-1]['table_no'])
-                            print('received table :', table_data[received_table-1]['table_no'])
+                            # print('my table :', table_data[my_table-1]['table_no'])
+                            # print('received table :', table_data[received_table-1]['table_no'])
 
                             table_data[my_table-1]['likes'] -= 1
                             table_data[my_table-1]['sent'].append(received_table)
@@ -219,83 +185,15 @@ def reject(my_table, reject_table):
         return "fail"
 
 ### 직원 호출
-def call(table_no, join, likes_count=None, minutes=None):
-    # if table_no and not likes_count and not minutes:
-    #     if not os.path.exists('admin.json'):
-    #         initial_data = {'record': [[f'[ 직원 호출 ] {table_no}번 테이블에서 직원을 호출합니다',datetime.now().strftime('%H:%M')]]}
-    #         with open('admin.json', 'w') as f:
-    #             json.dump(initial_data, f,ensure_ascii=False, indent=4)
-    #         return {"success" : "call"}
-    #     else:
-    #         data = read_json_file('admin.json')
-    #         if len(data['record']) == 20:
-    #             data['record'].pop()
-    #             data['record'].insert(0, [f'[ 직원 호출 ] {table_no}번 테이블에서 직원을 호출합니다',datetime.now().strftime('%H:%M')])
-    #             write_json_file('admin.json',data)
-    #             return {"success" : "call"}
-    #         else:
-    #             data['record'].insert(0, [f'[ 직원 호출 ] {table_no}번 테이블에서 직원을 호출합니다',datetime.now().strftime('%H:%M')])
-    #             write_json_file('admin.json',data)
-    #             return {"success" : "call"}
-    # if table_no and likes_count:
-    #     if not os.path.exists('admin.json'):
-    #         initial_data = {'record': [[f'[ 하트 충전 ] {table_no}번 테이블에 하트 {likes_count}개 충전해주세요',datetime.now().strftime('%H:%M')]]}
-    #         with open('admin.json', 'w') as f:
-    #             json.dump(initial_data, f,ensure_ascii=False, indent=4)
-    #         return {"success" : "call"}
-    #     else:
-    #         data = read_json_file('admin.json')
-    #         data['record'].insert(0, [f'[ 하트 충전 ] {table_no}번 테이블에 하트 {likes_count}개 충전해주세요',datetime.now().strftime('%H:%M')])
-    #         write_json_file('admin.json',data)
-    #         return {"success" : "call"}
-    # if table_no and minutes:
-    #     if not os.path.exists('admin.json'):
-    #         initial_data = {'record': [[f'[ 시간 추가 ] {table_no}번 테이블에 시간 {minutes}분 추가해주세요',datetime.now().strftime('%H:%M')]]}
-    #         with open('admin.json', 'w') as f:
-    #             json.dump(initial_data, f,ensure_ascii=False, indent=4)
-    #         return {"success" : "call"}
-    #     else:
-    #         data = read_json_file('admin.json')
-    #         data['record'].insert(0, [f'[ 시간 추가 ] {table_no}번 테이블에 시간 {minutes}분 추가해주세요',datetime.now().strftime('%H:%M')])
-    #         write_json_file('admin.json',data)
-    #         return {"success" : "call"}
-    try:
-        if not join:
-            if not os.path.exists('admin.json'):
-                initial_data = {'record': [[f'[ 직원 호출 ] {table_no}번 테이블에서 직원을 호출합니다',datetime.now().strftime('%H:%M')]]}
-                with open('admin.json', 'w') as f:
-                    json.dump(initial_data, f,ensure_ascii=False, indent=4)
-                return "ok"
-            else:
-                data = read_json_file('admin.json')
-                if len(data['record']) == 20:
-                    data['record'].pop()
-                    data['record'].insert(0, [f'[ 직원 호출 ] {table_no}번 테이블에서 직원을 호출합니다',datetime.now().strftime('%H:%M')])
-                    write_json_file('admin.json',data)
-                    return "ok"
-                else:
-                    data['record'].insert(0, [f'[ 직원 호출 ] {table_no}번 테이블에서 직원을 호출합니다',datetime.now().strftime('%H:%M')])
-                    write_json_file('admin.json',data)
-                    return "ok"
-        else:
-            if not os.path.exists('admin.json'):
-                initial_data = {'record': [[f'[ 합석 요청 ] {table_no}번 테이블의 합석 처리를 진행해주세요',datetime.now().strftime('%H:%M')]]}
-                with open('admin.json', 'w') as f:
-                    json.dump(initial_data, f,ensure_ascii=False, indent=4)
-                return "ok"
-            else:
-                data = read_json_file('admin.json')
-                if len(data['record']) == 20:
-                    data['record'].pop()
-                    data['record'].insert(0, [f'[ 합석 요청 ] {table_no}번 테이블의 합석 처리를 진행해주세요',datetime.now().strftime('%H:%M')])
-                    write_json_file('admin.json',data)
-                    return "ok"
-                else:
-                    data['record'].insert(0, [f'[ 합석 요청 ] {table_no}번 테이블의 합석 처리를 진행해주세요',datetime.now().strftime('%H:%M')])
-                    write_json_file('admin.json',data)
-                    return "ok"
-    except:
-        return "fail"
+def call(table_no, join):
+    if len(admin['record']) == 20:
+        admin['record'].pop()
+    if not join:
+        admin['record'].insert(0, [f'[ 직원 호출 ] {table_no}번 테이블에서 직원을 호출합니다',datetime.now().strftime('%H:%M')])
+        return "ok"
+    else:
+        admin['record'].insert(0, [f'[ 합석 요청 ] {table_no}번 테이블의 합석 처리를 진행해주세요',datetime.now().strftime('%H:%M')])
+        return "ok"
 
 ##########################################################
 ########################## 관리자 ##########################
@@ -303,8 +201,6 @@ def call(table_no, join, likes_count=None, minutes=None):
 
 ### 하트 충전
 def add_likes(table_no, count):
-    with open('table.json', "r", encoding="utf-8") as f:
-        table_data = json.load(f)
 
     table_data[table_no-1]['likes'] += count
 
@@ -312,8 +208,6 @@ def add_likes(table_no, count):
  
 ### 시간 충전
 def add_time(table_no, minutes):
-    with open('table.json', "r", encoding="utf-8") as f:
-        table_data = json.load(f)
 
     end_time = datetime.strptime(table_data[table_no-1]['end_time'], '%m-%d %H:%M')
     new_end_time = end_time + timedelta(minutes=minutes)
@@ -351,7 +245,6 @@ def join_table(from_where, to_where):
 def reset_table_2(table_no):
     table_data[table_no-1] = reset_table(table_no)
 
-    write_json_file('table.json',table_data)
     return "ok"
 
 

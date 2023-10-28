@@ -2,14 +2,7 @@ from flask_app import *
 from flask import request, session
 import controller
 
-
-
-with open('table.json', 'r', encoding='utf-8') as f:
-    table_data = json.load(f)
-
-
-
-
+table_data = controller.table_data
 
 @app.route('/<token>')
 def index(token):
@@ -21,14 +14,11 @@ def index(token):
         return app.send_static_file('index.html')
 
 
-
-
-
 ### 전체 테이블 조회
 ### 플라스크를 통한 호출이 아닌 직접 호출 시 매개변수 체크 필수
 # curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/get-all -d '{"token":"0b79fdd4-8cf8-4a5f-8506-904d1207e9fb"}'
 @app.route('/get-all', methods=['POST'])
-def get_all(load_json=True, check_token=True):
+def get_all(check_token=True):
     output = dict()
     data = request.get_json()
     
@@ -38,15 +28,8 @@ def get_all(load_json=True, check_token=True):
             output['result'] = "fail"
             return output
 
-    if load_json == True:
-        with open('table.json', "r", encoding="utf-8") as f:
-            table_data = json.load(f)
     output['result'] = table_data
     return output
-
-
-
-
 
 
 ### 테이블 정보 조회
@@ -70,14 +53,15 @@ def get_table():
 
 
 
-
 ### 입력값 저장
-# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/set-table -d '{"token":"0b79fdd4-8cf8-4a5f-8506-904d1207e9fb", "gender":"male", "nums":3, "note":"남자 셋", "photo":false, "referrer":"이유빈"}'
+### client ###
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/set-table -d '{"token":"0b79fdd4-8cf8-4a5f-8506-904d1207e9fb", "gender":"male", "nums":3, "note":"남자 셋", "photo":false, "referrer":"이유빈"}' 
+### admin ### param --> admin token, table_no / + 바꾸려는 값들
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/set-table -d '{"token":"5ea91197-09ef-42e9-9bd9-d1d183b6db70", "table_no":1, "active":true}' 
 @app.route('/set-table', methods=["POST"])
 def set_table():
     output = dict()
     data = request.get_json()
-
     token = data.get('token')
     table_no = controller.get_table_no_by_token(token)
 
@@ -91,10 +75,15 @@ def set_table():
         result = controller.set_table(table_no, nums, gender, photo, note, referrer)  
         output['result'] = result
         return output
+
+    if table_no == 'admin':
+        result = controller.set_table_admin(data)
+        output['result'] = result
+        return output
+                
     else:
         output['result'] = "fail"
         return output
-
 
 
 
@@ -174,22 +163,7 @@ def call():
     data = request.get_json()
     token = data.get('token')
     join = data.get('join')
-    # likes_count = data.get('likes_count')
-    # minutes = data.get('minutes')
     table_no = controller.get_table_no_by_token(token)
-
-    # if table_no and likes_count:
-    #     output['result'] = controller.call(table_no, likes_count=likes_count)
-    #     return output
-    # if table_no and minutes:
-    #     output['result'] = controller.call(table_no, minutes=minutes)
-    #     return output
-    # elif table_no:
-    #     output['result'] = controller.call(table_no)
-    #     return output
-    # else:
-    #     output['result'] = {"fail" : "Invalid token"}
-    #     return output
 
     if type(table_no) == int:
         output['result'] = controller.call(table_no, join)
@@ -197,4 +171,3 @@ def call():
     else:
         output['result'] = "fail"
         return output
-
