@@ -10,6 +10,7 @@ import HeartImg from "assets/images/heart.svg";
 import TimeImg from "assets/images/time.svg";
 import HeartChargeModal from "components/Modal/HeartChargeModal";
 import MyPageModal from "components/Modal/MyPageModal";
+import HuntingSuccessModal from "components/Modal/HuntingSucessModal";
 
 
 class Home extends Component {
