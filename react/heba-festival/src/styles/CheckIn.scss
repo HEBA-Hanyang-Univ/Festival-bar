@@ -192,6 +192,7 @@
     font-weight: 700;
     line-height: 1.25rem;
   }
+
 }
 
 input[type="checkbox"] {
@@ -201,4 +202,10 @@ input[type="checkbox"] {
 
 .headSelect {
   margin-top: 3rem;
+}
+
+.submitBtnChecked {
+  text-decoration: none;
+  font-size: 1.15rem;
+  margin-top: -0.03rem;
 }

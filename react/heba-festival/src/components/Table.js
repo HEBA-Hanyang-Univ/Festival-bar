@@ -12,16 +12,16 @@ class Table extends React.Component {
   render() {
     let backgroundColor = "#E2E2E2";
 
-    if (this.props.huntingSuccess) {
-      backgroundColor = "#9A66FF";  // 합석 테이블
-    } else if (this.props.gender === "male") {
-      backgroundColor = "87DEFF";   // 성별 남성
+    if (this.props.gender === "male") {
+      backgroundColor = "#87DEFF"; // 성별 남성
     } else if (this.props.gender === "female") {
-      backgroundColor = "FFC5F1";   // 성별 여성
-    } else {
-      backgroundColor = "F9F16A";   // 성별 혼성
+      backgroundColor = "#FFC5F1"; // 성별 여성
+    } else if (this.props.huntingSuccess) {
+      backgroundColor = "#9A66FF"; // 합석 테이블
+    } else if (this.props.gender === "mixed") {
+      backgroundColor = "#F9F16A"; // 성별 혼성 또는 기본값
     }
-
+  
     // 스타일 객체 생성
     const tableStyle = {
       backgroundColor: backgroundColor,
@@ -35,7 +35,7 @@ class Table extends React.Component {
         <div className="tableContents">
           <div className="tableState">     
             <img src={tableState} alt="table heart img"></img>
-          </div>
+          </div> 
           <div className="tableCount">
             <img src={HeadImg} alt="table head img"></img>
             <span className="double">x</span>

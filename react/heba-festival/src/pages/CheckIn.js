@@ -174,7 +174,7 @@ export const CheckIn = () => {
         </div>
         <button className="submitBtn" type="submit" value={"Submit"}>
           {selectedGender && quantity > 0 ? (
-            <Link to={"/landing"} style={{textDecorationLine: "none",}}><span>Submit</span></Link>
+            <Link to={"/landing"} className="submitBtnChecked"><span >제출하기</span></Link>
           ) : (
             <span>제출하기</span>
           )}
