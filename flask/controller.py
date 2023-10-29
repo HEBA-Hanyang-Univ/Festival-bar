@@ -1,6 +1,7 @@
 import json
 import os
 from datetime import datetime, timedelta
+import pytz
 
 my_dir = os.path.dirname(__file__)
 json_file = os.path.join(my_dir, 'table.json')
@@ -91,8 +92,10 @@ def set_table(table_no, nums, gender, photo, note, referrer):
             table_data[index]['referrer'] = referrer
             table_data[index]['active'] = True
             current_time = datetime.now()
-            table_data[index]['start_time'] = current_time.strftime('%m-%d %H:%M')
-            table_data[index]['end_time'] = (current_time + timedelta(hours=1.5)).strftime('%m-%d %H:%M')
+            korea_tz = pytz.timezone('Asia/Seoul')
+            korea_time = current_time.astimezone(korea_tz)
+            table_data[index]['start_time'] = korea_time.strftime('%m-%d %H:%M')
+            table_data[index]['end_time'] = (korea_time + timedelta(hours=1.5)).strftime('%m-%d %H:%M')
             return "ok"
         else:
             return "fail"
