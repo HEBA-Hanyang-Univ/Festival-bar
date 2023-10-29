@@ -8,7 +8,7 @@ import Dashed from "assets/images/dashed.svg";
 import HomeImg from "assets/images/home.svg";
 import AlarmImg from "assets/images/alarm.svg";
 import SendHeartImg from "assets/images/SendHeart.svg";
-import TimeImg from "assets/images/Time.svg";
+import TimeImg from "assets/images/time.svg";
 import CallServerImg from "assets/images/server.svg";
 import HeartChargeImg from "assets/images/chargeHeart.svg";
 import OrderImg from "assets/images/order.svg";
@@ -16,15 +16,20 @@ import MyPageImg from "assets/images/myPage.svg";
 import HeartChargeModal from "components/Modal/HeartChargeModal";
 import MyPageModal from "components/Modal/MyPageModal";
 import HuntingSuccessModal from "components/Modal/HuntingSucessModal";
+import SendHeartModal from "components/Modal/SendHeartModal";
 
 
 class Home extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
+      // 하단바 모달
       isOpenServerModal: false,
       isOpenHeartChargeModal: false,
       isOpenMyPageModal: false,
+
+      // 하트 보냄
     };
   }
 
@@ -62,27 +67,43 @@ class Home extends Component {
             <img className="alarmImg" src={AlarmImg} alt="alarm img"></img>
           </nav>
           <div id="subNav">
-            <div className="subBtn">
-              <button className="all">전체</button>
+            <div id="subNavFilter">
+              <div className="filterBtn">
+                <button className="allFilter filterActive" on>
+                  <span>전체</span>
+                </button>
+              </div>
+              <div className="filterBtn">
+                <button className="womanFilter">
+                  <span>여자</span>
+                </button>
+              </div>  
+              <div className="filterBtn">
+                <button className="manFilter">
+                  <span>남자</span>
+                </button>
+              </div>
+              <div className="filterBtn">
+                <button className="coupleFilter">
+                  <span>혼성</span>
+                </button>
+              </div>
             </div>
-            <div className="subBtn">
-              <button className="female">여자만</button>
-            </div>  
-            <div className="subBtn">
-              <button className="male">남자만</button>
-            </div>
-            <div className="subBtn leftoverHeart">
-              <img src={SendHeartImg} alt="heart img"></img>
-              <span>x3</span>
-            </div>
-            <div className="subBtn leftoverTime">
-              <img src={TimeImg} alt="time img"></img>
-              <span>90:00</span>
+            <div id="statusWindow">
+              <div className="leftoverHeart">
+                <img src={SendHeartImg}></img>
+                <span className="heartMultiple">X</span>
+                {/* TODO: 자신의 테이블에서 보낼 수 있는 하트 개수 표시하기 */}
+                <span>4</span>
+              </div>
+              <div className="leftoverTime">
+                <img src={TimeImg}></img>
+                {/* 서버에서 입장과 동시에 90분 타이머 가동 */}
+                <span>90:00</span>
+              </div>
             </div>
           </div>
         </header>
-
-
         <main id="container">
           <Table />
           <Table />

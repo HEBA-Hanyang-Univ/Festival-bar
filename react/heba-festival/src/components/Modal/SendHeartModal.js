@@ -28,7 +28,7 @@ function ServerModal({ onClose }) {
           </div>
           <div className="modalContent serverContent">
             <span>직원을 호출하시겠습니까?</span>
-            <button onClick={handleClose}>
+            <button onC lick={handleClose}>
               <span>직원호출</span>
             </button>
           </div>

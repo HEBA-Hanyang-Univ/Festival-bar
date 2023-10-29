@@ -1,16 +1,17 @@
 .errorWrap {
   display: flex;
   position: relative;
+  align-items: center;
   justify-content: center;
 
   .errorBox {
+    display: flex;
     width: 85%;
     height: 26.875rem;
     position: absolute;
     top: 50%;
     transform: translate(0, 65%);
     background-color: #fff;
-
 
     border-radius: 2.375rem;
     border: 1px solid #000;

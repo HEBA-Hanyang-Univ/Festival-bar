@@ -1,7 +1,10 @@
 import React from "react";
 import "styles/Table.scss";
-import tableState from "assets/images/heart.svg";
-import HeadImg from "assets/images/head.svg";
+import Icon from "assets/images/icon.svg";
+import HeartRecieved from "assets/images/ReceivedHeart.svg";
+import HeartSended from "assets/images/SendHeart.svg";
+import CoupleMatched from "assets/images/Matched.svg";
+import HeartBroken from "assets/images/BrokenHeart.svg";
 
 class Table extends React.Component {
 
@@ -28,21 +31,24 @@ class Table extends React.Component {
     };
 
     return (
-      <div className="table" style={tableStyle}>
+      <button className="table" style={tableStyle}>
         <div className="tableTitle">
-          <span>{this.props.tableNumber}번 테이블</span>
+          {/* TODO: 테이블 정보값에 따라서 테이블 번호, 여성,남성,혼성테이블 구분 */}
+          <span>n</span>
+          <span>번 테이블</span>
+          <span className="tableGenderInfo">여성테이블</span>
         </div>
         <div className="tableContents">
-          <div className="tableState">     
-            <img src={tableState} alt="table heart img"></img>
-          </div> 
-          <div className="tableCount">
-            <img src={HeadImg} alt="table head img"></img>
-            <span className="double">x</span>
-            <span className="headCount">4</span>
+          <img src={HeartRecieved}></img>
+          <div className="tableHeadInfo">
+            <img src={Icon}></img>
+            <div className="tableHeadInfoSpan">
+              <span>X</span>
+              <span>2</span>
+            </div>
           </div>
         </div>
-      </div>
+      </button>
     );
   }
 }
