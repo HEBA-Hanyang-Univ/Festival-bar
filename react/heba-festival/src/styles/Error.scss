@@ -6,6 +6,7 @@
 
   .errorBox {
     display: flex;
+    flex-direction: column;
     width: 85%;
     height: 26.875rem;
     position: absolute;
