@@ -24,7 +24,7 @@ export const Landing = () => {
       })
       .then((res) => res.json())
       .then((response) => {
-        if (response.result.hasOwnProperty('error')) {
+        if (response.result === 'fail') {
           navigate('/error');
         } else {
 	  if (response.result.active === true) {
@@ -32,7 +32,6 @@ export const Landing = () => {
 	  } else {
 	    setLink('/checkin');
 	  }
-	  console.log(link);
 	}
       });
     } catch (error) {

@@ -18,10 +18,24 @@ export const Enter = () => {
         headers: { "Content-Type": "application/json", },
       });
       response = await response.json();
-      if (!response.result.hasOwnProperty('error')) {
+      if (!(response.result === 'fail')) {
+	// token is valid, but need additional auth
         secureLocalStorage.setItem("token", token);
 	secureLocalStorage.setItem("table_no", response.result.table_no);
-        isValid = true;
+	const startTime = secureLocalStorage.getItem("start_time");
+	if (startTime == null) {
+	  // in this case, a user enter our system first time.
+	  // but there is a posibility that he/she is a abnormal user(delete cache, or delayed enterance after limited time)
+	  secureLocalStorage.setItem("start_time", response.result.start_time);
+	  isValid = true;
+	} else {
+	  // compare response start_time and local-saved start_time to validate enterance
+	  if (startTime === response.result.start_time) {
+	    isValid = true;
+	  } else {
+	    isValid = false;
+	  }
+	}
       }
     } catch (error) {
       window.alert(error);
@@ -32,10 +46,8 @@ export const Enter = () => {
     fetchData().then(() => {
       console.log(isValid);
       if (isValid === true) {
-        console.log('redirect to landing');
         navigate('/landing');
       } else {
-        console.log('redirect to error');
         navigate('/error');
       }
     });
