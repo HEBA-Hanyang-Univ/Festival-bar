@@ -1,5 +1,5 @@
-import React, { useState } from "react";  
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";  
+import { Link, useNavigate } from "react-router-dom";
 import "styles/CheckIn.scss";
 import "styles/common.scss";
 import Man from "assets/images/Man.svg";
@@ -9,6 +9,7 @@ import WomanSelected from "assets/images/WomanSelected.svg";
 import Couple from "assets/images/Couple.svg";
 import CoupleSelected from "assets/images/CoupleSelected.svg";
 import QuantityControl from "components/QuantityControl";
+import secureLocalStorage from "react-secure-storage";
 
 //  TODO : 서버로부터 테이블 번호 요청 후 렌더링
 
@@ -18,7 +19,16 @@ export const CheckIn = () => {
   const [introduce, setIntroduce] = useState("");
   const [friendCode, setfriendCode] = useState("");
   const [agree, setAgree] = useState(false);
+  const token = secureLocalStorage.getItem('token');
+  const navigate = useNavigate();
   
+  // check token
+  useEffect(() => {
+    if (token == null) {
+      navigate('/error');
+    }
+  });
+
   // 하나의 성별만 선택
   const handleGenderSelect = (gender) => {
     setSelectedGender(gender);
@@ -48,14 +58,19 @@ export const CheckIn = () => {
   const handleSubmit = (e) => {
     e. preventDefault();
 
+    if (selectedGender == null || quantity == 0) return;
+
     const data = {
+      token: token,
       gender: selectedGender,
       nums: quantity,
       note: introduce,
       photo: agree,
+      referrer: friendCode,
     };
 
-    fetch("/set-table", {
+    fetch("http://150.230.252.177:5000/set-table", {
+      mode:'cors',
       method: "POST",
       body: JSON.stringify(data),
       headers: {
@@ -172,7 +187,7 @@ export const CheckIn = () => {
             <label htmlFor="agree">동의합니다</label>
           </div>
         </div>
-        <button className="submitBtn" type="submit" value={"Submit"}>
+        <button className="submitBtn" type="submit" value={"Submit"} onClick={handleSubmit}>
           {selectedGender && quantity > 0 ? (
             <Link to={"/landing"} className="submitBtnChecked"><span >제출하기</span></Link>
           ) : (
