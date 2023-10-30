@@ -5,6 +5,7 @@ import pytz
 
 my_dir = os.path.dirname(__file__)
 json_file = os.path.join(my_dir, 'table.json')
+json_file2 = os.path.join(my_dir, 'admin.json')
 
 def read_json_file(file_name):
     try:
@@ -16,20 +17,21 @@ def read_json_file(file_name):
             json.dump(data, f)
     return data
 
-def write_json_file(file_name, data):
+def write_json_file(file_name, data, file_name2, data2):
     with open(file_name, "w") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
+    with open(file_name2, "w") as f:
+        json.dump(data2, f, ensure_ascii=False, indent=4)
 
 global qr_data
 qr_data = read_json_file('table_token.json')
 global table_data
 table_data = read_json_file('table.json')
 global admin
-admin = {"record" : []}
+admin = read_json_file('admin.json')
 
 def write_table_data():
-    write_json_file(json_file, table_data)
-    write_json_file('admin.json', admin)
+    write_json_file(json_file, table_data, json_file2, admin)
 
 def reset_table(table_no):
     return {
@@ -94,8 +96,8 @@ def set_table(table_no, nums, gender, photo, note, referrer):
             current_time = datetime.now()
             korea_tz = pytz.timezone('Asia/Seoul')
             korea_time = current_time.astimezone(korea_tz)
-            table_data[index]['start_time'] = korea_time.strftime('%m-%d %H:%M')
-            table_data[index]['end_time'] = (korea_time + timedelta(hours=1.5)).strftime('%m-%d %H:%M')
+            table_data[index]['start_time'] = korea_time.strftime('%H:%M')
+            table_data[index]['end_time'] = (korea_time + timedelta(hours=1.5)).strftime('%H:%M')
             return "ok"
         else:
             return "fail"
@@ -189,13 +191,17 @@ def reject(my_table, reject_table):
 
 ### 직원 호출
 def call(table_no, join):
+    current_time = datetime.now()
+    korea_tz = pytz.timezone('Asia/Seoul')
+    korea_time = current_time.astimezone(korea_tz)
+
     if len(admin['record']) == 20:
         admin['record'].pop()
     if not join:
-        admin['record'].insert(0, [f'[ 직원 호출 ] {table_no}번 테이블에서 직원을 호출합니다',datetime.now().strftime('%H:%M')])
+        admin['record'].insert(0, [f'[ 직원 호출 ] {table_no}번 테이블에서 직원을 호출합니다',korea_time.strftime('%H:%M')])
         return "ok"
     else:
-        admin['record'].insert(0, [f'[ 합석 요청 ] {table_no}번 테이블의 합석 처리를 진행해주세요',datetime.now().strftime('%H:%M')])
+        admin['record'].insert(0, [f'[ 합석 요청 ] {table_no}번 테이블의 합석 처리를 진행해주세요',korea_time.strftime('%H:%M')])
         return "ok"
 
 ##########################################################
@@ -212,9 +218,9 @@ def add_likes(table_no, count):
 ### 시간 충전
 def add_time(table_no, minutes):
 
-    end_time = datetime.strptime(table_data[table_no-1]['end_time'], '%m-%d %H:%M')
+    end_time = datetime.strptime(table_data[table_no-1]['end_time'], '%H:%M')
     new_end_time = end_time + timedelta(minutes=minutes)
-    table_data[table_no-1]['end_time'] = new_end_time.strftime('%m-%d %H:%M')  # datetime 객체를 문자열로 변환하여 저장
+    table_data[table_no-1]['end_time'] = new_end_time.strftime('%H:%M')  # datetime 객체를 문자열로 변환하여 저장
 
     return "ok"
 
@@ -231,6 +237,10 @@ def join_table(from_where, to_where):
                     table_data[to_where-1]['join'] = True
                     table_data[to_where-1]['end_time'] = table_data[to_where-1]['end_time'] if table_data[to_where-1]['end_time'] > table_data[from_where-1]['end_time'] else table_data[from_where-1]['end_time']
                     table_data[to_where-1]['note'] = ""
+                    current_time = datetime.now()
+                    korea_tz = pytz.timezone('Asia/Seoul')
+                    korea_time = current_time.astimezone(korea_tz)
+                    table_data[to_where-1]['record'].insert(0, [f'{from_where}번 테이블과 성공적으로 매칭 되었습니다!',korea_time.strftime('%H:%M')])
 
                     table_data[from_where-1] = reset_table(from_where)
 
