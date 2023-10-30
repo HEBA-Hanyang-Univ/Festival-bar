@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import secureLocalStorage from "react-secure-storage";
 
 export const Enter = () => {
-  const { token } = useParams();
+  const { token, reset } = useParams();
   let isValid = false;
   const navigate = useNavigate();
   
@@ -28,13 +28,11 @@ export const Enter = () => {
 	  // but there is a posibility that he/she is a abnormal user(delete cache, or delayed enterance after limited time)
 	  secureLocalStorage.setItem("start_time", response.result.start_time);
 	  isValid = true;
-	} else {
+	  alert("first time enterance");
+	} else if (startTime === response.result.start_time) {
 	  // compare response start_time and local-saved start_time to validate enterance
-	  if (startTime === response.result.start_time) {
-	    isValid = true;
-	  } else {
-	    isValid = false;
-	  }
+	  isValid = true;
+	  alert("enterance again");
 	}
       }
     } catch (error) {
@@ -43,8 +41,10 @@ export const Enter = () => {
   };
 
   useEffect(() => {
+    if (reset === "true") {
+      secureLocalStorage.clear();
+    }
     fetchData().then(() => {
-      console.log(isValid);
       if (isValid === true) {
         navigate('/landing');
       } else {

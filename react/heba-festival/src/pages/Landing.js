@@ -16,7 +16,7 @@ export const Landing = () => {
 
   const fetchData = async() => {
     try {
-      let response = await fetch('http://150.230.252.177:5000/get-table', {
+      await fetch('http://150.230.252.177:5000/get-table', {
         mode:'cors',
 	method:'POST',
 	headers:{'Content-Type':'application/json',},

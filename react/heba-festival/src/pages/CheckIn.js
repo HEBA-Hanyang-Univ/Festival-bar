@@ -56,9 +56,9 @@ export const CheckIn = () => {
   }
 
   const handleSubmit = (e) => {
-    e. preventDefault();
+    e.preventDefault();
 
-    if (selectedGender == null || quantity == 0) return;
+    if (selectedGender == null || quantity === 0) return;
 
     const data = {
       token: token,
