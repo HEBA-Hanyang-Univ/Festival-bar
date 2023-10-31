@@ -119,7 +119,7 @@ export const CheckIn = () => {
                 onClick={() => handleGenderSelect("female")}
               >
                 {selectedGender === "female" ? (
-                  <img src={WomanSelected} style={{width: '6.5rem', height: '4.5rem', marginBottom: '0.6rem'}} alt="female selected img" />
+                  <img src={WomanSelected} style={{width: '6.5rem', height: '4.5rem', marginBottom: '0.6rem'}} alt="woman selected img" />
                 ) :
                   <img src={Woman} style={{width: '6.5rem', height: '4.5rem', marginBottom: '0.6rem'}} alt="female img" />
                 }

@@ -46,10 +46,10 @@ export const Landing = () => {
   return (
     <div className="homeWrap">
       <div className="homeImg">
-        <img src={TigerImg}></img>
+        <img src={TigerImg} alt="tiger img"></img>
       </div>
       <div className="homeTitle">
-        <img src={Logo}></img>
+        <img src={Logo} alt="logo"></img>
       </div>
       <div className="homeSubtitle">
         <span>올바른 만남이 모여 인연이 되다.</span>

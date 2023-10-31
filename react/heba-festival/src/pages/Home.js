@@ -1,4 +1,4 @@
-import React,{ Component } from "react";
+import React,{ Component, useState } from "react";
 import { Link } from "react-router-dom";
 import ServerModal from "components/Modal/ServerModal";
 import "styles/common.scss";
@@ -19,43 +19,76 @@ import HuntingSuccessModal from "components/Modal/HuntingSucessModal";
 import SendHeartModal from "components/Modal/SendHeartModal";
 
 
-class Home extends Component {
+// class Home extends Component {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      // 하단바 모달
-      isOpenServerModal: false,
-      isOpenHeartChargeModal: false,
-      isOpenMyPageModal: false,
 
-      // 하트 보냄
-    };
-  }
 
-  onClickButton = (modalType) => {
+//   constructor(props) {
+//     super(props);
+//     this.state = {
+//       // 하단바 모달
+//       isOpenServerModal: false,
+//       isOpenHeartChargeModal: false,
+//       isOpenMyPageModal: false,
+
+//       // 하트 보냄
+//     };
+//   }
+
+//   onClickButton = (modalType) => {
+//     if (modalType === "server") {
+//       this.setState({ isOpenServerModal: true });
+//     } else if (modalType === "heartCharge") {
+//       this.setState({ isOpenHeartChargeModal: true });
+//     } else if (modalType === "myPage") {
+//       this.setState({ isOpenMyPageModal: true });
+//     }
+//   };
+
+//   onCloseModal = (modalType) => {
+//     if (modalType === "server") {
+//       this.setState({ isOpenServerModal: false });
+//     } else if (modalType === "heartCharge") {
+//       this.setState({ isOpenHeartChargeModal: false });
+//     } else if (modalType === "myPage") {
+//       this.setState({ isOpenMyPageModal:false });
+//     }
+//   };
+
+//   // Creating tables
+
+//   render() {
+
+const Home = () => {
+  const [isOpenServerModal, setIsOpenServerModal] = useState(false);
+  const [isOpenHeartChargeModal, setIsOpenHeartChargeModal] = useState(false);
+  const [isOpenMyPageModal, setIsOpenMyPageModal] = useState(false);
+  const [filter, setFilter] = useState('all'); // 기본 필터는 전체
+
+  const onClickButton = (modalType) => {
     if (modalType === "server") {
-      this.setState({ isOpenServerModal: true });
+      setIsOpenServerModal(true);
     } else if (modalType === "heartCharge") {
-      this.setState({ isOpenHeartChargeModal: true });
+      setIsOpenHeartChargeModal(true);
     } else if (modalType === "myPage") {
-      this.setState({ isOpenMyPageModal: true });
+      setIsOpenMyPageModal(true);
     }
   };
 
-  onCloseModal = (modalType) => {
+  const onCloseModal = (modalType) => {
     if (modalType === "server") {
-      this.setState({ isOpenServerModal: false });
+      setIsOpenServerModal(false);
     } else if (modalType === "heartCharge") {
-      this.setState({ isOpenHeartChargeModal: false });
+      setIsOpenHeartChargeModal(false);
     } else if (modalType === "myPage") {
-      this.setState({ isOpenMyPageModal:false });
+      setIsOpenMyPageModal(false);
     }
   };
 
-  render() {
-
-  return (
+  // Creating Tables
+  const tables = Array.from({ length: 40 }, (_, i) => <Table key={i + 1} tableNumber={i + 1} gender=""/>)
+  
+return (
     <div>
       <div id="wrapper">
         <header>
@@ -69,113 +102,89 @@ class Home extends Component {
           <div id="subNav">
             <div id="subNavFilter">
               <div className="filterBtn">
-                <button className="allFilter filterActive" on>
+                <button className="allFilter filterActive" onClick={() => setFilter('all')}>
                   <span>전체</span>
                 </button>
               </div>
               <div className="filterBtn">
-                <button className="womanFilter">
+                <button className="femaleFilter" onClick={() => setFilter('female')}>
                   <span>여자</span>
                 </button>
               </div>  
               <div className="filterBtn">
-                <button className="manFilter">
+                <button className="maleFilter" onClick={() => setFilter('male')}>
                   <span>남자</span>
                 </button>
               </div>
               <div className="filterBtn">
-                <button className="coupleFilter">
+                <button className="mixedFilter" onClick={() => setFilter('mixed')}>
                   <span>혼성</span>
                 </button>
               </div>
             </div>
             <div id="statusWindow">
               <div className="leftoverHeart">
-                <img src={SendHeartImg}></img>
+                <img src={SendHeartImg} alt="sendHeart img"></img>
                 <span className="heartMultiple">X</span>
                 {/* TODO: 자신의 테이블에서 보낼 수 있는 하트 개수 표시하기 */}
                 <span>4</span>
               </div>
               <div className="leftoverTime">
-                <img src={TimeImg}></img>
-                {/* 서버에서 입장과 동시에 90분 타이머 가동 */}
+                <img src={TimeImg} alt="time img"></img>
+                {/* TODO: 서버에서 입장과 동시에 90분 타이머 가동 */}
                 <span>90:00</span>
               </div>
             </div>
           </div>
         </header>
         <main id="container">
-          <Table />
-          <Table />
-          <Table />
-          <Table />
-          <Table />
-          <Table />
-          <Table />
-          <Table />
-          <Table />
-          <Table />
-          <Table />
-          <Table />
-          <Table />
-          <Table />
-          <Table />
-          <Table />
-          <Table />
-          <Table />
-          <Table />
-          <Table />
-          <Table />
-          <Table />
-          <Table />
-          <Table />
-          <Table />
-          <Table />
+          {React.Children.toArray(tables).filter(table => filter === 'all' || table.props.gender === filter)}
         </main>
         <footer>
-          <button className="callServer" onClick={() => this.onClickButton("server")}>
+          <button className="callServer" onClick={() => onClickButton("server")}>
             <div className="btnBox">
-              <img src={CallServerImg} style={{width: '2.2rem', height: '2.2rem', marginBottom: '0.2rem'}}></img>
+              <img src={CallServerImg} style={{width: '2.2rem', height: '2.2rem', marginBottom: '0.2rem'}} alt="footer callServer img"></img>
               <span>직원호출</span>
             </div>
-            <img src={Dashed}></img>
+            <img src={Dashed} alt="dashed img"></img>
           </button>
-          {this.state.isOpenServerModal && (
-            <ServerModal open={this.state.isOpenServerModal} onClose={() => this.onCloseModal("server")}></ServerModal>
+          {isOpenServerModal && (
+            <ServerModal open={isOpenServerModal} onClose={() => onCloseModal("server")}></ServerModal>
           )} 
-          <button className="chargeHeart" onClick={() => this.onClickButton("heartCharge")}>
+          <button className="chargeHeart" onClick={() => onClickButton("heartCharge")}>
             <div className="btnBox">
-              <img src={HeartChargeImg} style={{width: '3rem', height: '1.6rem', marginTop: '0.3rem',marginBottom: '0.5rem'}}></img>
+              <img src={HeartChargeImg} style={{width: '3rem', height: '1.6rem', marginTop: '0.3rem',marginBottom: '0.5rem'}} alt="footer heartCharge img"></img>
               <span>하트충전</span>
             </div>
-            <img src={Dashed}></img>
+            <img src={Dashed} alt="dashed img"></img>
           </button>
-          {this.state.isOpenHeartChargeModal && (
-            <HeartChargeModal open={this.state.isOpenHeartChargeModal} onClose={() => this.onCloseModal("heartCharge")}></HeartChargeModal>
+          {isOpenHeartChargeModal && (
+            <HeartChargeModal open={isOpenHeartChargeModal} onClose={() => onCloseModal("heartCharge")}></HeartChargeModal>
           )} 
           <button className="order">
+            {/* TODO: 식파마 페이지로 이동 */}
             <Link to={"/landing"} className="orderLink">
               <div className="btnBox" style={{display: 'flex', width: '100%'}}>
-                <img src={OrderImg} style={{width:'3rem', height:'2.2rem', marginBottom: '0.2rem'}}></img>
+                <img src={OrderImg} style={{width:'3rem', height:'2.2rem', marginBottom: '0.2rem'}} alt="footer order img"></img>
                 <span>주문하기</span>
               </div>
             </Link>  
-            <img src={Dashed} style={{ width:'0.1rem', float:'right'}}></img> 
+            <img src={Dashed} style={{ width:'0.1rem', float:'right'}} alt="dashed img"></img> 
           </button>
-          <button className="myPage" onClick={() => this.onClickButton("myPage")}>
+          <button className="myPage" onClick={() => onClickButton("myPage")}>
             <div className="btnBox">
-              <img src={MyPageImg} style={{width: '2rem', height: '2rem',marginTop: '0.1rem', marginBottom: '0.3rem'}}></img>
+              <img src={MyPageImg} style={{width: '2rem', height: '2rem',marginTop: '0.1rem', marginBottom: '0.3rem'}} alt="myPage img"></img>
               <span>마이페이지</span>
             </div>         
           </button>
-          {this.state.isOpenMyPageModal && (
-            <MyPageModal open={this.state.isOpenMyPageModal} onClose={() => this.onCloseModal("myPage")}></MyPageModal>
+          {isOpenMyPageModal && (
+            <MyPageModal open={isOpenMyPageModal} onClose={() => onCloseModal("myPage")}></MyPageModal>
           )} 
         </footer>
       </div>
     </div>
-    
-  )}
-}
+  );
+};
+
 
 export default Home;
