@@ -5,10 +5,17 @@ import "styles/Landing.scss";
 import TigerImg from "assets/images/Tiger.svg";
 import Logo from "assets/images/Logo.svg";
 import secureLocalStorage from "react-secure-storage";
+import LockModal from "components/Modal/LockModal";
 
 export const Landing = () => {
   const navigate = useNavigate();
   const [link, setLink] = useState("/error");
+  const [isModalOpen, setIsModalOpen] = useState(true);
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   const token = secureLocalStorage.getItem('token');
   if (token == null) {
     navigate('/error');
@@ -45,6 +52,8 @@ export const Landing = () => {
 
   return (
     <div className="homeWrap">
+      {/* 랜딩페이지 들어가자마자 열리도록? */}
+      {isModalOpen && <LockModal onClose={handleCloseModal} />}
       <div className="homeImg">
         <img src={TigerImg} alt="tiger img"></img>
       </div>

@@ -162,7 +162,7 @@
 }
 
 .modifyIntroduce {
-  margin-top: 3rem;
+  margin-top: 1.6rem;
   
   .modifyIntroduceTitle {
     display: flex;
@@ -187,7 +187,7 @@
 }
 
 .myPageBtn {
-  margin: 2rem auto 3rem;
+  margin: 1rem auto 3rem;
   border: none;
   border-radius: 5.9375rem;
   background-color: #87deff;
@@ -205,3 +205,33 @@
   margin-top: 1rem;
 }
 
+.lockModalImg {
+  margin-top: -0.7rem;
+  margin-bottom: 0.3rem;
+
+  img {
+    width: 4rem;
+    height: 6rem;
+  }
+}
+
+.enterCode {
+  margin-bottom: 1.2rem;
+
+  .enterCodeField {
+    outline: none;
+    border: 3px solid #FFC555;
+    border-radius: 0.94rem;
+    width: 10rem;
+    height: 3.2rem;
+    text-align: center;
+    padding-left: 0.6rem;
+
+    font-size: 3rem;
+    letter-spacing: 0.7rem;
+
+    &:focus {
+      caret-color: transparent;
+    }
+  }
+}

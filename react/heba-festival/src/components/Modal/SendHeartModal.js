@@ -3,6 +3,7 @@ import "styles/Modal.scss";
 import useOutSideClick from "./useOutSideClick";
 import ModalContainer from "./ModalContainer";
 
+// 원하는 테이블에 하트 보내기
 function ServerModal({ onClose }) {
   const modalRef = useRef(null)
   const handleClose = () => {

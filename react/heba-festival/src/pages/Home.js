@@ -15,9 +15,7 @@ import OrderImg from "assets/images/order.svg";
 import MyPageImg from "assets/images/myPage.svg";
 import HeartChargeModal from "components/Modal/HeartChargeModal";
 import MyPageModal from "components/Modal/MyPageModal";
-import HuntingSuccessModal from "components/Modal/HuntingSucessModal";
-import SendHeartModal from "components/Modal/SendHeartModal";
-
+import HuntingSuccessModal from "components/Modal/HuntingSucessModal"; 
 
 // class Home extends Component {
 

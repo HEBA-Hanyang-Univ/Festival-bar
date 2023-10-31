@@ -1,14 +1,16 @@
+.tableWrap {
+  width: calc(30%);
+}
+
 .table {
   display: flex;
   flex-direction: column;
-  // width: 100%;
-  // height: 100%;
-
-  width: calc(33.3333% - 1rem);
+  width: 100%;
   height: 5.5rem;
   margin-bottom: 3rem;
   border: none;
   border-radius: 0.625rem;
+  flex-shrink: 0;
 
   .tableTitle {
     text-align: left !important;

@@ -59,47 +59,50 @@
               <div className="myPageTitle">
                 <span>마이페이지</span>
               </div>
-              <div className="myPageContent">
-                <div className="modifyCount">
-                  <div className="genderImgBox">
-                    <img src={Man} alt="man img"></img>
-                    <span>남자</span>
+              {/* TODO: 마이페이지 수정 로직 */}
+              <form>
+                <div className="myPageContent">
+                  <div className="modifyCount">
+                    <div className="genderImgBox">
+                      <img src={Man} alt="man img"></img>
+                      <span>남자</span>
+                    </div>
+                    <div className="modifyCountBox">
+                      <span>인원 수를 선택하세요</span>
+                      {/* 남자 +- 버튼 */}
+                      <QuantityControl
+                        quantity={quantityMan}
+                        onIncrement={() => handleQuantityChange("increment", "male")}
+                        onDecrement={() => handleQuantityChange("decrement", "male")}>
+                      </QuantityControl>
+                    </div>
                   </div>
-                  <div className="modifyCountBox">
-                    <span>인원 수를 선택하세요</span>
-                    {/* 남자 +- 버튼 */}
-                    <QuantityControl
-                      quantity={quantityMan}
-                      onIncrement={() => handleQuantityChange("increment", "male")}
-                      onDecrement={() => handleQuantityChange("decrement", "male")}>
-                    </QuantityControl>
+                  <div className="modifyCount" style={{marginTop: '1.8rem'}}>
+                    <div className="genderImgBox">
+                      <img src={Woman} alt="woman img" style={{width : '7.5rem', height: '7rem', marginRight: '-1rem', marginLeft:'-0.4rem'}}></img>
+                      <span style={{marginTop: '-0.5rem'}}>여자</span>
+                    </div>
+                    <div className="modifyCountBox">
+                      <span>인원 수를 선택하세요</span>
+                      {/* 여자 +- 버튼 */}
+                      <QuantityControl
+                        quantity={quantityWoman}
+                        onIncrement={() => handleQuantityChange("increment", "female")}
+                        onDecrement={() => handleQuantityChange("decrement", "female")}>
+                      </QuantityControl>
+                    </div>
+                  </div>
+                  <div className="modifyIntroduce">
+                    <div className="modifyIntroduceTitle">
+                      <span>한줄 소개</span>
+                      <textarea name="introduce" cols={"20"} rows={"1"} spellCheck="false" value={modifyIntroduce} onChange={handleModifyIntroduce}></textarea>
+                    </div>
                   </div>
                 </div>
-                <div className="modifyCount" style={{marginTop: '1.8rem'}}>
-                  <div className="genderImgBox">
-                    <img src={Woman} alt="woman img" style={{width : '7.5rem', height: '7rem', marginRight: '-1rem', marginLeft:'-0.4rem'}}></img>
-                    <span style={{marginTop: '-0.5rem'}}>여자</span>
-                  </div>
-                  <div className="modifyCountBox">
-                    <span>인원 수를 선택하세요</span>
-                    {/* 여자 +- 버튼 */}
-                    <QuantityControl
-                      quantity={quantityWoman}
-                      onIncrement={() => handleQuantityChange("increment", "female")}
-                      onDecrement={() => handleQuantityChange("decrement", "female")}>
-                </QuantityControl>
-                  </div>
-                </div>
-                <div className="modifyIntroduce">
-                  <div className="modifyIntroduceTitle">
-                    <span>한줄 소개</span>
-                    <textarea name="introduce" cols={"20"} rows={"2"} spellCheck="false" value={modifyIntroduce} onChange={handleModifyIntroduce}></textarea>
-                  </div>
-                </div>
-              </div>
-              <button className="myPageBtn" type="submit">
-                <span>수정하기</span>
-              </button>
+                <button className="myPageBtn" type="submit">
+                  <span>수정하기</span>
+                </button>
+              </form>
             </div>
           </div>
         </ModalContainer>
