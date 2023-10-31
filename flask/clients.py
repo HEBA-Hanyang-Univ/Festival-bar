@@ -1,8 +1,11 @@
 from flask_app import *
 from flask import request, session
 import controller
+import random
+import copy
 
 table_data = controller.table_data
+table_code_list = controller.table_code_list
 
 @app.route('/<token>')
 def index(token):
@@ -33,29 +36,53 @@ def get_all(check_token=True):
 
 
 ### 테이블 정보 조회
+### client ###
 # curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/get-table -d '{"token":"0b79fdd4-8cf8-4a5f-8506-904d1207e9fb"}'
+
+### admin ### param --> +) admin_token
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/get-table -d '{"admin_token":"5ea91197-09ef-42e9-9bd9-d1d183b6db70", "token":"0b79fdd4-8cf8-4a5f-8506-904d1207e9fb"}'
 @app.route('/get-table', methods=['POST'])
 def get_table():
     output = dict()
 
     data = request.get_json()  
     token = data.get('token')
+    admin_token = data.get('admin_token')
     table_info = controller.get_table(controller.get_table_no_by_token(token))
 
     if table_info:
-        table_info = controller.get_table(controller.get_table_no_by_token(token))
-        output['result'] = table_info
+        if not admin_token:
+            output['result'] = copy.copy(table_info)
+            del output['result']['code']
+            return output
+        else:
+            output['result'] = table_info
+            return output
+    else:
+        output['result'] = "fail"
+        return output
+
+### 테이블 인증 (토큰 + 코드 4자리)
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/check-code -d '{"token":"0b79fdd4-8cf8-4a5f-8506-904d1207e9fb", "code":4147}'
+@app.route('/check-code', methods=['POST'])
+def check_code():
+    output = dict()
+
+    data = request.get_json()  
+    token = data.get('token')
+    code = data.get('code')
+    table_info = controller.get_table(controller.get_table_no_by_token(token))
+    if table_info['code'] == code:
+        output['result'] = "ok"
         return output
     else:
         output['result'] = "fail"
         return output
 
-
-
-
 ### 입력값 저장
 ### client ###
 # curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/set-table -d '{"token":"0b79fdd4-8cf8-4a5f-8506-904d1207e9fb", "gender":"male", "nums":3, "note":"남자 셋", "photo":false, "referrer":"이유빈"}' 
+
 ### admin ### param --> admin token, table_no / + 바꾸려는 값들
 # curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/set-table -d '{"token":"5ea91197-09ef-42e9-9bd9-d1d183b6db70", "table_no":1, "active":true}' 
 @app.route('/set-table', methods=["POST"])
@@ -71,8 +98,12 @@ def set_table():
         note = data.get('note')
         photo = data.get('photo')
         referrer = data.get('referrer')
-
-        result = controller.set_table(table_no, nums, gender, photo, note, referrer)  
+        while True:
+            random_code = random.randint(100000, 999999)
+            if random_code not in table_code_list:
+                break
+        
+        result = controller.set_table(table_no, nums, gender, photo, note, referrer, random_code)  
         output['result'] = result
         return output
 
