@@ -236,20 +236,10 @@
   }
 }
 
-.modalBtnBox {
-  margin: 0 auto;
-  
-  button {
-    width: 5rem;
-    height: 2rem;
-  }
 
-  .btnFiled {
-    span {
-      
-    }
-  }
-
+.tableInfoBtn {
+  display: flex;
+  justify-content: space-around;
 }
 
 // Admin
@@ -334,5 +324,35 @@
     text-align: center;
     font-size: 1.6rem;
     font-weight: 700;
+  }
+}
+
+.adminBtnBox {
+  margin: 2rem auto;
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+
+  button {
+    width: 12rem;
+    height: 4rem;
+    border-radius: 6rem;
+  }
+
+  .btnFilled {
+    border: none;
+    background-color: #87deff;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #fff;
+  }
+}
+
+.tableInfoBox {
+  margin: 3rem auto;
+
+  .tableInfo {
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 180%;
   }
 }
