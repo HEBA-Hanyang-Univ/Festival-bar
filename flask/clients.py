@@ -110,18 +110,29 @@ def get_table():
     token = data.get('token')
     admin_token = data.get('admin_token')
     code = data.get('code')
+    if isinstance(code, str) :
+        try : 
+            code = int(code)
+        except Exception as e:
+            pass
     table_info = controller.get_table(controller.get_table_no_by_token(token))
 
-    if table_info and table_info['code'] == code and not admin_token:
-        output['result'] = copy.copy(table_info)
-        del output['result']['code']
-        return output
-    elif controller.get_table_no_by_token(admin_token) == 'admin' and table_info:
-        output['result'] = table_info
-        return output
-    else:
-        output['result'] = "fail"
-        return output
+    print('token: ', end='')
+    print(token)
+    print('code: ', end='')
+    print(type(code), end=', ')
+    print(code)
+    if table_info :
+        if controller.get_table_no_by_token(admin_token) == 'admin' \
+           or table_info['active'] and table_info['code'] == code :
+            output['result'] = table_info
+            return output
+        elif table_info['active'] == False :
+            output['result'] = 'inactive'
+            return output
+    
+    output['result'] = "fail"
+    return output
 
 
 
