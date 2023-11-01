@@ -4,7 +4,7 @@ import useOutSideClick from "./useOutSideClick";
 import ModalContainer from "./ModalContainer";
 
 // 원하는 테이블에 하트 보내기
-function ServerModal({ onClose }) {
+function SendHeartModal({ onClose, tableNumber }) {
   const modalRef = useRef(null)
   const handleClose = () => {
     onClose ?.();
@@ -25,13 +25,17 @@ function ServerModal({ onClose }) {
       <div className="overlay">
         <div className="modalWrap" ref={modalRef}>
           <div className="modalTitle">
-            <span>직원 호출</span>
+            <span>{tableNumber}번 테이블</span>
           </div>
-          <div className="modalContent serverContent">
-            <span>직원을 호출하시겠습니까?</span>
-            <button onClick={handleClose}>
-              <span>직원호출</span>
+          <div className="modalContent">
+            <div className="SendHeartTop">
+              <img></img>
+            </div>
+            {/* TODO: 해당 테이블에 하트 보내기 */}
+            <button>
+              <span>하트 보내기</span>
             </button>
+            <button onClick={handleClose}>취소</button>
           </div>
         </div>
       </div>
@@ -39,4 +43,4 @@ function ServerModal({ onClose }) {
   )
 }
 
-export default ServerModal;
+export default SendHeartModal;
