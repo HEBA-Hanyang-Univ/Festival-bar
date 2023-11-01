@@ -8,11 +8,18 @@ import Title from "assets/images/Title.svg";
 import Tiger from "assets/images/Tiger.svg";
 import Call from "assets/images/Call.svg";
 
+import TableInfoModal from "components/Modal/AdminModal/TableInfoModal";
+import TimeModal from "components/Modal/AdminModal/TimeModal";
+import HeartModal from "components/Modal/AdminModal/HeartModal";
+import ExitTableModal from "components/Modal/AdminModal/ExitTableModal";
+import JoinTableModal from "components/Modal/AdminModal/JoinTableModal";
+
 export let Box = ({
   number,
   value,
   isSelected,
   person,
+  time,
   onBoxClick,
   onButtonClick,
 }) => {
@@ -45,9 +52,10 @@ export let Box = ({
 
   const personnumberStyle = {
     position: "absolute",
-    marginTop: "32px",
+    marginTop: "28px",
     marginLeft: "30px",
-    fontSize: "2.5rem",
+    fontSize: "4rem",
+    fontWeight: "800",
   };
   const buttonStyle = {
     backgroundColor: isSelected ? "black" : color,
@@ -58,6 +66,13 @@ export let Box = ({
     position: "absolute",
     top: "10px",
     left: "120px",
+  };
+  const timeStyle = {
+    position: "absolute",
+    marginTop: "75px",
+    marginLeft: "-32px",
+    fontSize: "2.5rem",
+    fontWeight: "800",
   };
 
   const handleButtonClick = (event, boxNumber) => {
@@ -73,27 +88,88 @@ export let Box = ({
       {person !== 0 && person !== "0" && (
         <span style={personnumberStyle}>{person} </span>
       )}
+      <span style={timeStyle}>{time} </span>
     </div>
   );
 };
 
 function Admin() {
-  const [isModalVisible, setModalVisible] = useState(false);
+  // const [isModalVisible, setModalVisible] = useState(false);
+  const [isOpenTableInfoModal, setIsOpenTableInfoModal] = useState(false);
+  const [isOpenTimeModal, setIsOpenTimeModal] = useState(false);
+  const [isOpenHeartModal, setIsOpenHeartModal] = useState(false);
+  const [isOpenExitModal, setIsOpenExitModal] = useState(false);  
+  const [isOpenJoinTableModal, setIsOpenJoinTableModal] = useState(false);
   const [popupType, setPopupType] = useState(null);
   const [selectedBox, setSelectedBox] = useState(null);
   const [selectedBoxes, setSelectedBoxes] = useState([]);
   const [boxtext, setBoxText] = useState("");
 
+  const boxData = Array.from({ length: 30 }, (_, index) => {
+    const number = index + 1;
+    const value =
+      index % 6 === 0
+        ? "woman"
+        : index % 6 === 1
+        ? "man"
+        : index % 6 === 2
+        ? "mix"
+        : index % 6 === 3
+        ? "join"
+        : "empty";
+    const person = value === "empty" ? "" : value === "mix" ? "3" : "2";
+    const time = value === "empty" ? "" : "19:30"; // 예시 시간, 필요에 따라 수정하세요
+    return { number, value, person, time };
+  });
+
+  const boxesPerRow = 6;
+  const totalRows = Math.ceil(boxData.length / boxesPerRow);
+
+  const arrangedBoxData = Array.from({ length: totalRows }, (_, rowIndex) => {
+    const start = rowIndex * boxesPerRow;
+    const end = start + boxesPerRow;
+    const rowBoxes = boxData.slice(start, end);
+    return rowBoxes;
+  });
+
+  const onClickButton = (modalType) => {
+    if (modalType === "tableInfo") {
+      setIsOpenTableInfoModal(true);
+    } else if (modalType === "time") {
+      setIsOpenTimeModal(true);
+    } else if (modalType === "heart") {
+      setIsOpenHeartModal(true);
+    } else if (modalType === "exit") {
+      setIsOpenExitModal(true);
+    } else if (modalType === "joinTable") {
+      setIsOpenJoinTableModal(true);
+    }
+  }
+
+  const onCloseModal = (modalType) => {
+    if(modalType === "tableInfo") {
+      setIsOpenTableInfoModal(false);
+    } else if (modalType === "time") {
+      setIsOpenTimeModal(false);
+    } else if (modalType === "heart") {
+      setIsOpenHeartModal(false);
+    } else if (modalType === "exit") {
+      setIsOpenExitModal(false);
+    } else if (modalType === "joinTable") {
+      setIsOpenJoinTableModal(false);
+    }
+  }
+
   const handleBoxClick = (boxNumber) => {
     setSelectedBox(boxNumber);
     const selectedBoxText = `${boxNumber}번 테이블`;
     setBoxText(selectedBoxText);
-    openPopup("box");
+    // openPopup("box");
   };
 
   const [isButtonSelected, setIsButtonSelected] = useState(false);
   const toggleModal = () => {
-    setModalVisible(!isModalVisible);
+    setIsOpenTableInfoModal(!isOpenTableInfoModal);
   };
 
   const handleButtonClick = (event, boxNumber) => {
@@ -120,11 +196,6 @@ function Admin() {
     }
   }, [isButtonSelected]);
 
-  const [isTimePlusVisible, setTimePlusVisible] = useState(false);
-  const [isHeartPlusVisible, setHeartPlusVisible] = useState(false);
-  const [isTableExitVisible, setTableExitVisible] = useState(false);
-  const [isTableMixVisible, setTableMixVisible] = useState(false);
-
   let alarmData = [
     {
       alarm: "[시간 충전] 5번 테이블에 시간을 N분 충전해 주세요",
@@ -147,6 +218,7 @@ function Admin() {
       time: "19:20",
     },
   ];
+
   const CurrentDateTime = () => {
     let [currentDateTime, setCurrentDateTime] = useState(new Date());
 
@@ -167,58 +239,28 @@ function Admin() {
     );
   };
 
-  const [value, setValue] = useState(0);
+  // const handlePopupClick = (type) => {
+  //   if (selectedBoxes.length > 0) {
+  //     openPopup(type);
+  //   }
+  // };
 
-  const increaseValue = () => {
-    setValue(value + 10);
-  };
+  // const openPopup = (type) => {
+  //   setPopupType(type);
+  //   toggleModal();
+  // };
 
-  const decreaseValue = () => {
-    setValue(value - 10);
-  };
-
-  const upValue = () => {
-    setValue(value + 1);
-  };
-
-  const downValue = () => {
-    setValue(value - 1);
-  };
-
-  const handlePopupClick = (type) => {
-    if (selectedBoxes.length > 0) {
-      openPopup(type);
-    }
-  };
-
-  const openPopup = (type) => {
-    setPopupType(type);
-    toggleModal();
-  };
-
-  const closePopup = () => {
-    setPopupType(null);
-    toggleModal();
-    setSelectedBoxes([]);
-    setValue(0);
-  };
+  // const closePopup = () => {
+  //   setPopupType(null);
+  //   toggleModal();
+  //   setSelectedBoxes([]);
+  //   setValue(0);
+  // };
 
   const [selectedOption, setSelectedOption] = useState("1");
 
   const handleChange = (event) => {
     setSelectedOption(event.target.value);
-  };
-
-  const exitPopup = () => {
-    setPopupType(null);
-    toggleModal();
-  };
-
-  const switchPopupClick = (type) => {
-    exitPopup();
-    setTimeout(() => {
-      setPopupType(type);
-    }, 0);
   };
 
   return (
@@ -246,7 +288,7 @@ function Admin() {
           </p>
           <img class="title-bell" src={Call} alt="Call Image" />
         </div>
-        {/*  알람 데이터 연결 */}
+        {/*  TODO: 알람 데이터 연결 */}
         <div className="alarm-container">
           {alarmData.map((item, index) => (
             <div key={index} className="alarm-item">
@@ -260,7 +302,7 @@ function Admin() {
         <div class="bottom-line"></div>
       </header>
       <div class="table-list">
-        {/* 각 테이블에 해당하는 인원수 데이터 연결 */}
+        {/* TODO: 각 테이블에 해당하는 인원수 데이터 연결 */}
         <div class="tableman">8</div>
         <div class="tablewom">8</div>
         <div class="tablecou">2</div>
@@ -281,7 +323,7 @@ function Admin() {
           <p class="info_title">혼성 T</p>
         </div>
 
-        <div class="info_table4">
+        <div class="info_table4 q">
           <p class="info_title">합성 T</p>
         </div>
 
@@ -292,454 +334,69 @@ function Admin() {
 
       <div class="box-lists">
         <div class="table-container">
-          {/* 각 박스에 인원수 및 고객 정보 연결 */}
-          <Box
-            number={1}
-            value="woman"
-            person="2"
-            isSelected={selectedBoxes.includes(1)}
-            onBoxClick={handleBoxClick}
-            onButtonClick={handleButtonClick}
-          />
-          <Box
-            number={2}
-            value=""
-            person=""
-            isSelected={selectedBoxes.includes(2)}
-            onBoxClick={handleBoxClick}
-            onButtonClick={handleButtonClick}
-          />
-          <Box
-            number={3}
-            value="woman"
-            person="2"
-            isSelected={selectedBoxes.includes(3)}
-            onBoxClick={handleBoxClick}
-            onButtonClick={handleButtonClick}
-          />
-          <Box
-            number={4}
-            value="mix"
-            person="3"
-            isSelected={selectedBoxes.includes(4)}
-            onBoxClick={handleBoxClick}
-            onButtonClick={handleButtonClick}
-          />
-          <Box
-            number={5}
-            value="join"
-            person="2"
-            isSelected={selectedBoxes.includes(5)}
-            onBoxClick={handleBoxClick}
-            onButtonClick={handleButtonClick}
-          />
-          <Box
-            number={6}
-            value="man"
-            person="2"
-            isSelected={selectedBoxes.includes(6)}
-            onBoxClick={handleBoxClick}
-            onButtonClick={handleButtonClick}
-          />
-        </div>
-        <div class="table-container">
-          <Box
-            number={7}
-            value="join"
-            person="2"
-            isSelected={selectedBoxes.includes(7)}
-            onBoxClick={handleBoxClick}
-            onButtonClick={handleButtonClick}
-          />
-          <Box
-            number={8}
-            value="man"
-            person="2"
-            isSelected={selectedBoxes.includes(8)}
-            onBoxClick={handleBoxClick}
-            onButtonClick={handleButtonClick}
-          />
-          <Box
-            number={9}
-            value="woman"
-            person="2"
-            isSelected={selectedBoxes.includes(9)}
-            onBoxClick={handleBoxClick}
-            onButtonClick={handleButtonClick}
-          />
-          <Box
-            number={10}
-            value="join"
-            person="2"
-            isSelected={selectedBoxes.includes(10)}
-            onBoxClick={handleBoxClick}
-            onButtonClick={handleButtonClick}
-          />
-          <Box
-            number={11}
-            value="woman"
-            person="2"
-            isSelected={selectedBoxes.includes(11)}
-            onBoxClick={handleBoxClick}
-            onButtonClick={handleButtonClick}
-          />
-          <Box
-            number={12}
-            value="woman"
-            person="2"
-            isSelected={selectedBoxes.includes(12)}
-            onBoxClick={handleBoxClick}
-            onButtonClick={handleButtonClick}
-          />
-        </div>
-        <div class="table-container">
-          <Box
-            number={13}
-            value="empty"
-            person=""
-            isSelected={selectedBoxes.includes(13)}
-            onBoxClick={handleBoxClick}
-            onButtonClick={handleButtonClick}
-          />
-          <Box
-            number={14}
-            value="join"
-            person="2"
-            isSelected={selectedBoxes.includes(14)}
-            onBoxClick={handleBoxClick}
-            onButtonClick={handleButtonClick}
-          />
-          <Box
-            number={15}
-            value=""
-            person=""
-            isSelected={selectedBoxes.includes(15)}
-            onBoxClick={handleBoxClick}
-            onButtonClick={handleButtonClick}
-          />
-          <Box
-            number={16}
-            value="woman"
-            person="2"
-            isSelected={selectedBoxes.includes(16)}
-            onBoxClick={handleBoxClick}
-            onButtonClick={handleButtonClick}
-          />
-          <Box
-            number={17}
-            value="man"
-            person="2"
-            isSelected={selectedBoxes.includes(17)}
-            onBoxClick={handleBoxClick}
-            onButtonClick={handleButtonClick}
-          />
-          <Box
-            number={18}
-            value=""
-            person=""
-            isSelected={selectedBoxes.includes(18)}
-            onBoxClick={handleBoxClick}
-            onButtonClick={handleButtonClick}
-          />
-        </div>
-        <div class="table-container">
-          <Box
-            number={19}
-            value="join"
-            person="2"
-            isSelected={selectedBoxes.includes(19)}
-            onBoxClick={handleBoxClick}
-            onButtonClick={handleButtonClick}
-          />
-          <Box
-            number={20}
-            value="man"
-            person="2"
-            isSelected={selectedBoxes.includes(20)}
-            onBoxClick={handleBoxClick}
-            onButtonClick={handleButtonClick}
-          />
-          <Box
-            number={21}
-            value="woman"
-            person="2"
-            isSelected={selectedBoxes.includes(21)}
-            onBoxClick={handleBoxClick}
-            onButtonClick={handleButtonClick}
-          />
-          <Box
-            number={22}
-            value="man"
-            person="2"
-            isSelected={selectedBoxes.includes(22)}
-            onBoxClick={handleBoxClick}
-            onButtonClick={handleButtonClick}
-          />
-          <Box
-            number={23}
-            value="join"
-            person="4"
-            isSelected={selectedBoxes.includes(23)}
-            onBoxClick={handleBoxClick}
-            onButtonClick={handleButtonClick}
-          />
-          <Box
-            number={24}
-            value="man"
-            person="2"
-            isSelected={selectedBoxes.includes(24)}
-            onBoxClick={handleBoxClick}
-            onButtonClick={handleButtonClick}
-          />
-        </div>
-        <div class="table-container">
-          <Box
-            number={25}
-            value="woman"
-            person="2"
-            isSelected={selectedBoxes.includes(25)}
-            onBoxClick={handleBoxClick}
-            onButtonClick={handleButtonClick}
-          />
-          <Box
-            number={26}
-            value="man"
-            person="4"
-            isSelected={selectedBoxes.includes(26)}
-            onBoxClick={handleBoxClick}
-            onButtonClick={handleButtonClick}
-          />
-          <Box
-            number={27}
-            value=""
-            person="0"
-            isSelected={selectedBoxes.includes(27)}
-            onBoxClick={handleBoxClick}
-            onButtonClick={handleButtonClick}
-          />
-          <Box
-            number={28}
-            value="mix"
-            person="2"
-            isSelected={selectedBoxes.includes(28)}
-            onBoxClick={handleBoxClick}
-            onButtonClick={handleButtonClick}
-          />
-          <Box
-            number={29}
-            value="man"
-            person="2"
-            isSelected={selectedBoxes.includes(29)}
-            onBoxClick={handleBoxClick}
-            onButtonClick={handleButtonClick}
-          />
-          <Box
-            number={30}
-            value="join"
-            person="2"
-            isSelected={selectedBoxes.includes(30)}
-            onBoxClick={handleBoxClick}
-            onButtonClick={handleButtonClick}
-          />
-        </div>
-      </div>
-      {isModalVisible && (
-        <div className="modal">
-          <div className="modal-content">
-            {popupType === "box" && (
-              <div id="layer_bg" className="modal-container">
-                <div id="popup" className="modal-box">
-                  <div className="boxtitle">
-                    <div className="close-button" onClick={closePopup}>
-                      x
-                    </div>
-                    <h2 className="boxname">{boxtext}</h2>
-                  </div>
-
-                  <div className="contentposi">
-                    <div className="boxcontent">
-                      <span className="boxvalue">인원수 : n</span>
-                      {/* 인원수 연결 */}
-                      <br />
-                      {/*  입장,퇴장 시간연결 */}
-                      <span className="boxvalue">입장시간 : 19:30</span>
-                      <br />
-                      <span className="boxvalue">퇴장시간 : 21:00</span>
-                    </div>
-                    <div className="boxbuttons">
-                      <button
-                        className="boxbtn"
-                        onClick={() => switchPopupClick("time")}
-                      >
-                        시간추가
-                      </button>
-                      <button
-                        className="boxbtn"
-                        onClick={() => switchPopupClick("heart")}
-                      >
-                        하트추가
-                      </button>
-                      <button
-                        className="boxbtn"
-                        onClick={() => switchPopupClick("exit")}
-                      >
-                        퇴장처리
-                      </button>
-                      <button
-                        className="boxbtn"
-                        onClick={() => switchPopupClick("mix")}
-                      >
-                        합석처리
-                      </button>
-                    </div>
-                  </div>
-                </div>
+          {Array.from({ length: boxesPerRow }, (_, columnIndex) => (
+              <div className="table-column" key={columnIndex}>
+                {Array.from({ length: totalRows }, (_, rowIndex) => {
+                  const boxIndex = rowIndex * boxesPerRow + columnIndex;
+                  const box = boxData[boxIndex];
+                  if (box) {
+                    return (
+                      <Box
+                        key={box.number}
+                        number={box.number}
+                        value={box.value}
+                        person={box.person}
+                        time={box.time}
+                        isSelected={selectedBoxes.includes(box.number)}
+                        onBoxClick={handleBoxClick}
+                        onButtonClick={handleButtonClick}
+                      />
+                    );
+                  }
+                  return null;
+                })}
               </div>
-            )}
-            {popupType === "time" && (
-              <div id="layer_bg" className="modal-container">
-                <div id="popup" className="modal-content">
-                  <div className="close-button" onClick={closePopup}>
-                    x
-                  </div>
-                  <h2 className="classname">
-                    {selectedBoxes.join(", ")}번 테이블
-                  </h2>
-
-                  <div className="content-area">
-                    <button className="adjust-button" onClick={decreaseValue}>
-                      -
-                    </button>
-                    <span className="value">{value}분</span>
-                    <button className="adjust-button" onClick={increaseValue}>
-                      +
-                    </button>
-                  </div>
-                  <button className="plus-button" onClick={closePopup}>
-                    시간추가
-                  </button>
-                </div>
-              </div>
-            )}
-            {popupType === "heart" && (
-              <div id="layer_bg" className="modal-container">
-                <div id="popup" className="modal-content">
-                  <div className="close-button" onClick={closePopup}>
-                    x
-                  </div>
-                  <h2 className="classname">
-                    {selectedBoxes.join(", ")}번 테이블
-                  </h2>
-
-                  <div className="content-area">
-                    <button className="adjust-button" onClick={downValue}>
-                      -
-                    </button>
-                    <span className="value">{value}개</span>
-                    <button className="adjust-button" onClick={upValue}>
-                      +
-                    </button>
-                  </div>
-                  <button className="plus-button" onClick={closePopup}>
-                    하트추가
-                  </button>
-                </div>
-              </div>
-            )}
-            {popupType === "exit" && (
-              <div id="layer_bg" className="modal-container">
-                <div id="popup" className="modal-content">
-                  <div className="close-button" onClick={closePopup}>
-                    x
-                  </div>
-                  <h2 className="classname">
-                    {selectedBoxes.join(", ")}번 테이블
-                  </h2>
-
-                  <div className="content-area">
-                    <span className="content">
-                      <br />
-                      퇴장처리하시겠습니까?
-                    </span>
-                  </div>
-                  <button className="plus-button" onClick={closePopup}>
-                    퇴장처리
-                  </button>
-                </div>
-              </div>
-            )}
-            {popupType === "mix" && (
-              <div id="layer_bg" className="modal-container">
-                <div id="popup" className="modal-content">
-                  <div className="close-button" onClick={closePopup}>
-                    x
-                  </div>
-                  <h2 className="classname">
-                    {selectedBoxes.join(", ")}번 테이블
-                  </h2>
-
-                  <div className="content-area">
-                    <span className="content">
-                      <div>몇 번 테이블로 </div>
-                      <div>합석처리하시겠습니까?</div>
-                    </span>
-                  </div>
-                  <div>
-                    <select
-                      className="select"
-                      value={selectedOption}
-                      onChange={handleChange}
-                    >
-                      {[...Array(30)].map((_, index) => (
-                        <option key={index + 1} value={String(index + 1)}>
-                          {index + 1}번
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <button className="plus-button" onClick={closePopup}>
-                    합석처리
-                  </button>
-                </div>
-              </div>
-            )}
+            ))}
           </div>
         </div>
-      )}
+      {isOpenTableInfoModal && <TableInfoModal open={isOpenTableInfoModal} onClose={() => onCloseModal("tableInfo")}></TableInfoModal>}
       <div className="admin-footer">
         <div className="footer-button">
           <button
             className="time-plus"
-            onClick={() => {
-              handlePopupClick("time");
-            }}
-          >
+            onClick={() => onClickButton("time")}>
             시간 추가
           </button>
+          {isOpenTimeModal && (
+            <TimeModal selectedBoxes={selectedBoxes} open={isOpenTimeModal} onClose={() => onCloseModal("time")}></TimeModal>
+          )}
           <button
             className="heart-plus"
-            onClick={() => {
-              handlePopupClick("heart");
-            }}
+            onClick={() => onClickButton("heart")}
           >
             하트 충전
           </button>
+          {isOpenHeartModal && (
+            <HeartModal selectedBoxes={selectedBoxes} open={isOpenHeartModal} onClose={() => onCloseModal("heart")}></HeartModal>
+          )}
           <button
             className="table-exit"
-            onClick={() => {
-              handlePopupClick("exit");
-            }}
+            onClick={() => onClickButton("exit")}
           >
             퇴장 처리
           </button>
+          {isOpenExitModal && (
+            <ExitTableModal selectedBoxes={selectedBoxes} open={isOpenExitModal} onClose={() => onCloseModal("exit")}></ExitTableModal>
+          )}
           <button
             className="table-mix"
-            onClick={() => {
-              handlePopupClick("mix");
-            }}
+            onClick={() => onClickButton("joinTable")}
           >
             합석 처리
           </button>
+          {isOpenJoinTableModal && (
+            <JoinTableModal selectedBoxes={selectedBoxes} open={isOpenJoinTableModal} onClose={() => onCloseModal("joinTable")}></JoinTableModal>
+          )}
           <button class="table_choice" onClick={handleAllClick}>
             테이블 선택
           </button>
