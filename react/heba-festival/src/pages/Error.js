@@ -6,9 +6,10 @@ import secureLocalStorage from "react-secure-storage";
 
 
 export const Error = () => {
-  secureLocalStorage.removeItem("token");    // remove token and table_no if error occurs
-  secureLocalStorage.removeItem("table_no"); // but don't erase start_time to check his/her entrance time(use it to auth user currently)
+  //secureLocalStorage.removeItem("token");    // remove token and table_no if error occurs
   
+  //secureLocalStorage.removeItem("table_no"); // but don't erase start_time to check his/her entrance time(use it to auth user currently)
+  secureLocalStorage.clear();
   return (
     <div className="errorOverlay">
       <div className="errorWrap">

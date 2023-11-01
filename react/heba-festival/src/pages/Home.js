@@ -8,7 +8,7 @@ import Dashed from "assets/images/dashed.svg";
 import HomeImg from "assets/images/home.svg";
 import AlarmImg from "assets/images/alarm.svg";
 import SendHeartImg from "assets/images/SendHeart.svg";
-import TimeImg from "assets/images/Time.svg";
+import TimeImg from "assets/images/time.svg";
 import CallServerImg from "assets/images/server.svg";
 import HeartChargeImg from "assets/images/chargeHeart.svg";
 import OrderImg from "assets/images/order.svg";

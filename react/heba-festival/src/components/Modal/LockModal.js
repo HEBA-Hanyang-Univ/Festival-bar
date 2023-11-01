@@ -1,4 +1,5 @@
-import React, {useState, useRef} from "react";
+import React, {useState, useRef, useEffect} from "react";
+import secureLocalStorage from "react-secure-storage";
 import "styles/Modal.scss";
 import LockImg from "assets/images/Lock.svg";
 import ModalContainer from "./ModalContainer";
@@ -7,19 +8,33 @@ function LockModal({ onClose }) {
   const modalRef = useRef(null)
   // 코드가 일치하는지 확인 TODO: 코드 일치하는지 확인하기
   const [code, setCode] = useState('');
-  const correctCode = '1234'  // 테스트용
+  
+  useEffect(() => {
+    if (code.length === 6) {
+      fetch('http://150.230.252.177:5000/get-table', {
+        mode: 'cors',
+	method: 'POST',
+	body: JSON.stringify({
+	  token: secureLocalStorage.getItem('token'),
+	  code: code,
+	}),
+	headers: {"Content-Type": "application/json",},
+      })
+      .then((response) => response.json())
+      .then((response) => {
+        if (response.result === 'fail') {
+	  alert('코드가 일치하지 않습니다!');
+	  setCode('');
+	} else {
+	  secureLocalStorage.setItem('code', code);
+	  handleClose();
+	}
+      });
+    }
+  }, [code]);
 
   const handleChange = (event) => {
     setCode(event.target.value);
-    if (event.target.value.length === 4) {
-      if (event.target.value === correctCode) {
-        alert('코드가 일치합니다!');
-        handleClose();  // 코드 일치 시 모달 해제
-      } else {
-        alert('코드가 일치하지 않습니다.');
-        setCode('');
-      }
-    }
   };
 
   const handleClose = () => {
@@ -38,7 +53,7 @@ function LockModal({ onClose }) {
             <img src={LockImg} alt="lock img"></img>
           </div>
           <div className="enterCode">
-            <input className="enterCodeField" type="password" value={code} onChange={handleChange} maxLength="4"></input>
+            <input className="enterCodeField" value={code} onChange={handleChange} maxLength="6"></input>
           </div>
         </div>
       </div>

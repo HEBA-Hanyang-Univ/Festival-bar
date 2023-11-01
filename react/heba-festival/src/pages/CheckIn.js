@@ -19,6 +19,7 @@ export const CheckIn = () => {
   const [introduce, setIntroduce] = useState("");
   const [friendCode, setfriendCode] = useState("");
   const [agree, setAgree] = useState(false);
+  const [link, setLink] = useState('/error');
   const token = secureLocalStorage.getItem('token');
   const navigate = useNavigate();
   
@@ -76,17 +77,15 @@ export const CheckIn = () => {
       headers: {
         "Content-Type": "application/json",
       },
-    })
-
-      .then((response) => response.json())
-      .then((result) => {
-        console.log("서버 응답: ", result);
-
-        if (result.result && result.result.error) {
-          console.error("서버 에러: ", result.reult.error)
-        }
-      })
-
+    }).then((response) => response.json())
+      .then((response) => {
+        if (response.result === 'fail') {
+          navigate('/error');
+        } else {
+          secureLocalStorage.setItem('code', response.result);
+          navigate('/landing');
+	}
+    });
   }
 
   return (
@@ -188,8 +187,9 @@ export const CheckIn = () => {
           </div>
         </div>
         <button className="submitBtn" type="submit" value={"Submit"} onClick={handleSubmit}>
-          {selectedGender && quantity > 0 ? (
-            <Link to={"/landing"} className="submitBtnChecked"><span >제출하기</span></Link>
+	  {/*서버와의 통신 후 navigate()로 이동하므로 버튼에 Link가 필요없어 div로 임시 변경함*/}
+	  {selectedGender && quantity > 0 ? (
+            <div className="submitBtnChecked"><span>제출하기</span></div>
           ) : (
             <span>제출하기</span>
           )}

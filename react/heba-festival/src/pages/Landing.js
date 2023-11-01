@@ -17,6 +17,8 @@ export const Landing = () => {
   };
 
   const token = secureLocalStorage.getItem('token');
+  // assume it's valid token if token is exist in secureLocalStorage
+  // TODO: need to be change later
   if (token == null) {
     navigate('/error');
   }
@@ -27,17 +29,22 @@ export const Landing = () => {
         mode:'cors',
 	method:'POST',
 	headers:{'Content-Type':'application/json',},
-	body:JSON.stringify({'token':token,}),
+	body:JSON.stringify({
+	  'token': token,
+	  'code': secureLocalStorage.getItem('code'),
+	}),
       })
       .then((res) => res.json())
       .then((response) => {
         if (response.result === 'fail') {
-          navigate('/error');
+          setIsModalOpen(true);
         } else {
-	  if (response.result.active === true) {
-	    setLink('/home');
-	  } else {
+	  setIsModalOpen(false);
+	  if (response.result === 'inactive') {
 	    setLink('/checkin');
+	  } else if (response.result.active === true) {
+	    window.alert('입장 코드는 "' + secureLocalStorage.getItem('code') + '" 입니다! 일행들에게 알려주세요');
+	    setLink('/home');
 	  }
 	}
       });
