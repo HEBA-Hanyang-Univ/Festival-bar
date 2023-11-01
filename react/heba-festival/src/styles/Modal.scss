@@ -235,3 +235,124 @@
     }
   }
 }
+
+
+.tableInfoBtn {
+  display: flex;
+  justify-content: space-around;
+}
+
+// Admin
+.adminModalWrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 45rem;
+  border: 3px solid #87deff;
+  border-radius: 1.4375rem;
+  background-color: #fff;
+  height: fit-content;
+
+  .adminModalTitle {
+    margin-top: 5rem;
+    color: #000;
+    font-size: 2.6rem;
+    font-weight: 700;
+  }
+  
+  .adminModalContent {
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+
+    span {
+      font-size: 1.8rem;
+      font-weight: 400;
+    }
+    
+    .joinSpan {
+      font-weight: 600;
+    }
+
+    input {
+      margin-top: 3rem;
+      width: 9rem;
+      height: 3rem;
+      text-align: center;
+
+      font-size: 2rem;
+    }
+
+    .joinTableNum {
+      border: 1px solid;
+    }
+  }
+
+  .adminModalBtn {
+    margin-bottom: 3rem;
+
+    button {
+      width: 15rem;
+      height: 4rem;
+      border-radius: 5.9rem;
+      background-color: #87deff;
+      border: none;
+
+      span {
+        text-align: center;
+        color: #fff;
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+    }
+  }
+}
+
+.timeSet {
+  button {
+    background-color: #fff;
+    width: 3rem;
+    height: 3rem;
+    border: 1px solid #000;
+    font-weight: 500;
+    font-size: 1.6rem;
+  }
+
+  input {
+    width: 11rem;
+    border: none;
+    text-align: center;
+    font-size: 1.6rem;
+    font-weight: 700;
+  }
+}
+
+.adminBtnBox {
+  margin: 2rem auto;
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+
+  button {
+    width: 12rem;
+    height: 4rem;
+    border-radius: 6rem;
+  }
+
+  .btnFilled {
+    border: none;
+    background-color: #87deff;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #fff;
+  }
+}
+
+.tableInfoBox {
+  margin: 3rem auto;
+
+  .tableInfo {
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 180%;
+  }
+}
