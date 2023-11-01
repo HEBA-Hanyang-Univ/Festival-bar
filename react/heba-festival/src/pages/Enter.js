@@ -20,6 +20,7 @@ export const Enter = () => {
       if (response.result === 'ok') {
 	// token is valid, but need additional auth
         secureLocalStorage.setItem("token", token);
+	secureLocalStorage.setItem("table_no", response.table_no);
         return true;
       }
     } catch (error) {

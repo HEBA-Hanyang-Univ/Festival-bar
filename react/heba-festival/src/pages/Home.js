@@ -1,5 +1,7 @@
-import React,{ Component, useState } from "react";
-import { Link } from "react-router-dom";
+import React,{ Component, useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import secureLocalStorage from "react-secure-storage";
 import ServerModal from "components/Modal/ServerModal";
 import "styles/common.scss";
 import "styles/Home.scss";
@@ -63,6 +65,72 @@ const Home = () => {
   const [isOpenMyPageModal, setIsOpenMyPageModal] = useState(false);
   const [filter, setFilter] = useState('all'); // 기본 필터는 전체
 
+  let myTableInfo = null;
+  let likes = 0;
+  let remainedTime = 0;
+
+  let timerIntervalId = null;
+
+  const setMyTableInfo = (tableData) => {
+    myTableInfo = tableData;
+    if (myTableInfo == null) return;
+
+    if (timerIntervalId) clearInterval(timerIntervalId);
+
+    remainedTime = (new Date(myTableInfo.end_time).getTime() - new Date()) / 1000;
+    likes = myTableInfo.likes;
+
+    timerIntervalId = setInterval(() => {
+      remainedTime = remainedTime - 1;
+    }, 1000);
+
+    if (remainedTime === 0) {
+      clearInterval(timerIntervalId);
+    }
+  }
+
+  useEffect(() => {
+    return () => clearInterval(timerIntervalId);
+  },[])
+  
+
+  const navigate = useNavigate();
+
+  function transformTableArray(datas) {
+    // 이게 여기가 아니면 동작을 안해서 일단 임시로 여기 넣어둠...
+    // 이거 위치 수정하다 2시간 넘게 썼으니 수정 시 유의.. 
+    setMyTableInfo(datas.find((elem) => elem.table_no === secureLocalStorage.getItem('table_no')));
+    const transformTableData = (data) => <Table tableNumber = {data.table_no} gender = {data.gender} headCount = {data.nums} huntingSuccess = {data.join}/>
+    return datas.map((data) => transformTableData(data));
+  }
+
+  const token = secureLocalStorage.getItem('token');
+  const code = secureLocalStorage.getItem('code');
+  const queryclient = useQueryClient();
+  const { data, isLoading, error, isFetching } = useQuery({
+    queryKey: ['get-all'],
+    queryFn: async () => {
+      return (
+        await fetch('http://150.230.252.177:5000/get-all', {
+	  mode: 'cors',
+	  method: 'POST',
+	  headers: {'Content-Type': 'application/json',},
+	  body: JSON.stringify({
+	    'token': token,
+	    'code': code,
+	  }),
+	})
+        .then((response) => response.json())
+      )
+    },
+    select: (data) => data.result && data.result !== 'fail' && transformTableArray(data.result),
+    refetchInterval: 3000, // data refetch for every 3 sec.
+    refetchIntervalInBackground: true,
+    initialData: () => {
+      return Array.from({ length: 40 }, (_, i) => <Table key={i + 1} tableNumber={i + 1} gender="" headCount={"0"}/>);
+    },
+  });
+
   const onClickButton = (modalType) => {
     if (modalType === "server") {
       setIsOpenServerModal(true);
@@ -83,10 +151,17 @@ const Home = () => {
     }
   };
 
-  // Creating Tables
-  const tables = Array.from({ length: 40 }, (_, i) => <Table key={i + 1} tableNumber={i + 1} gender="" headCount={"0"}/>)
-  
-return (
+  if (isLoading) {
+    console.log("loading...");
+    return <div> loading... </div>;
+  }
+  if (error) {
+    console.log(error);
+    navigate('/error');
+  }
+
+
+  return (
     <div>
       <div id="wrapper">
         <header>
@@ -124,19 +199,17 @@ return (
               <div className="leftoverHeart">
                 <img src={SendHeartImg} alt="sendHeart img"></img>
                 <span className="heartMultiple">X</span>
-                {/* TODO: 자신의 테이블에서 보낼 수 있는 하트 개수 표시하기 */}
-                <span>4</span>
+                <span>{likes}</span>
               </div>
               <div className="leftoverTime">
                 <img src={TimeImg} alt="time img"></img>
-                {/* TODO: 서버에서 입장과 동시에 90분 타이머 가동 */}
-                <span>90:00</span>
+                <span>{String((remainedTime/60).toFixed()).padStart(2, '0')}:{String((remainedTime%60).toFixed()).padStart(2,'0')}</span>
               </div>
             </div>
           </div>
         </header>
         <main id="container">
-          {React.Children.toArray(tables).filter(table => filter === 'all' || table.props.gender === filter)}
+	   {React.Children.toArray(data).filter(table => filter === 'all' || table.props.gender === filter)}
         </main>
         <footer>
           <button className="callServer" onClick={() => onClickButton("server")}>
