@@ -3,11 +3,23 @@ import "styles/Modal.scss";
 import useOutSideClick from "./useOutSideClick";
 import ModalContainer from "./ModalContainer";
 import { Link } from "react-router-dom";
+import secureLocalStorage from "react-secure-storage";
 
 function HeartChargeModal({ onClose }) {
   const modalRef = useRef(null)
-  const handleClose = () => {
-    onClose ?.();
+  const handleClose = async() => {
+    await fetch('http://150.230.252.177:5000/call', {
+      mode: 'cors',
+      method: 'POST',
+      headers: {'Content-Type': 'application/json',},
+      body: JSON.stringify({
+        token: secureLocalStorage.getItem('token'),
+	code: secureLocalStorage.getItem('code'),
+	call: "exchange",
+      }),
+    })
+    .then((res) => res.json())
+    .then((res) => { onClose ?.(); })
   };
 
   useOutSideClick(modalRef, handleClose);
@@ -37,13 +49,12 @@ function HeartChargeModal({ onClose }) {
               <br></br>
               칩을 구매해 주세요.
             </span>
-            {/* TODO: 식파마 페잊, 직원 호출 로직 */}
             <div className="heartChargeBtnBox">
               <button className="whiteBtn" onClick={handleClose}>
                 <span>직원호출</span>
               </button>
               <button>
-                <Link to={"/landing"} style={{textDecoration: 'none'}}>
+                <Link to={"https://order.sicpama.com/?token="+secureLocalStorage.getItem('token')} style={{textDecoration: 'none'}}>
                   <span>주문하기</span>
                 </Link>
               </button>

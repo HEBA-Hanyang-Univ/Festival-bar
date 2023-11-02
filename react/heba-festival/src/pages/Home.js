@@ -19,46 +19,6 @@ import HeartChargeModal from "components/Modal/HeartChargeModal";
 import MyPageModal from "components/Modal/MyPageModal";
 import HuntingSuccessModal from "components/Modal/HuntingSucessModal"; 
 
-// class Home extends Component {
-
-
-
-//   constructor(props) {
-//     super(props);
-//     this.state = {
-//       // 하단바 모달
-//       isOpenServerModal: false,
-//       isOpenHeartChargeModal: false,
-//       isOpenMyPageModal: false,
-
-//       // 하트 보냄
-//     };
-//   }
-
-//   onClickButton = (modalType) => {
-//     if (modalType === "server") {
-//       this.setState({ isOpenServerModal: true });
-//     } else if (modalType === "heartCharge") {
-//       this.setState({ isOpenHeartChargeModal: true });
-//     } else if (modalType === "myPage") {
-//       this.setState({ isOpenMyPageModal: true });
-//     }
-//   };
-
-//   onCloseModal = (modalType) => {
-//     if (modalType === "server") {
-//       this.setState({ isOpenServerModal: false });
-//     } else if (modalType === "heartCharge") {
-//       this.setState({ isOpenHeartChargeModal: false });
-//     } else if (modalType === "myPage") {
-//       this.setState({ isOpenMyPageModal:false });
-//     }
-//   };
-
-//   // Creating tables
-
-//   render() {
-
 const Home = () => {
   const [isOpenServerModal, setIsOpenServerModal] = useState(false);
   const [isOpenHeartChargeModal, setIsOpenHeartChargeModal] = useState(false);
@@ -84,8 +44,9 @@ const Home = () => {
       remainedTime = remainedTime - 1;
     }, 1000);
 
-    if (remainedTime === 0) {
+    if (remainedTime <= 0) {
       clearInterval(timerIntervalId);
+      remainedTime = 0;
     }
   }
 
@@ -121,10 +82,10 @@ const Home = () => {
 	  }),
 	})
         .then((response) => response.json())
-      )
-    },
+	.then((response) => response.result && response.result === 'fail' && navigate('/error'))
+      )},
     select: (data) => data.result && data.result !== 'fail' && transformTableArray(data.result),
-    refetchInterval: 3000, // data refetch for every 3 sec.
+    refetchInterval: 1000, // data refetch for every 1 sec.
     refetchIntervalInBackground: true,
     initialData: () => {
       return Array.from({ length: 40 }, (_, i) => <Table key={i + 1} tableNumber={i + 1} gender="" headCount={"0"}/>);
@@ -203,7 +164,7 @@ const Home = () => {
               </div>
               <div className="leftoverTime">
                 <img src={TimeImg} alt="time img"></img>
-                <span>{String((remainedTime/60).toFixed()).padStart(2, '0')}:{String((remainedTime%60).toFixed()).padStart(2,'0')}</span>
+                <span>{String(Math.floor(remainedTime/60)).padStart(2, '0')}:{String(Math.floor(remainedTime%60)).padStart(2,'0')}</span>
               </div>
             </div>
           </div>
@@ -233,8 +194,7 @@ const Home = () => {
             <HeartChargeModal open={isOpenHeartChargeModal} onClose={() => onCloseModal("heartCharge")}></HeartChargeModal>
           )} 
           <button className="order">
-            {/* TODO: 식파마 페이지로 이동 */}
-            <Link to={"/landing"} className="orderLink">
+            <Link to={"https://order.sicpama.com/?token="+token} className="orderLink">
               <div className="btnBox" style={{display: 'flex', width: '100%'}}>
                 <img src={OrderImg} style={{width:'3rem', height:'2.2rem', marginBottom: '0.2rem'}} alt="footer order img"></img>
                 <span>주문하기</span>

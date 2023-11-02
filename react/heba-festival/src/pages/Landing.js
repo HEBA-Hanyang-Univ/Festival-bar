@@ -72,7 +72,7 @@ export const Landing = () => {
       </div>
       <div className="homeBtnContainer">
         <button className="linkSicpama">
-	  <Link to ={"/home"} style={{textDecorationLine: "none"}}>
+	  <Link to ={"https://order.sicpama.com/?token="+token} style={{textDecorationLine: "none"}}>
             <div className="homeBtnTitle">
               <span>주문하기</span>
             </div>
