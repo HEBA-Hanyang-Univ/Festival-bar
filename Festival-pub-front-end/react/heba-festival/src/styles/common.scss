@@ -1,0 +1,132 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html { font-size: 62.5%; }
+
+/* Body Styling */
+body {
+  min-height: 100vh;
+  width: 100%;* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  html { font-size: 62.5%; }
+  
+  /* Body Styling */
+  body {
+    min-height: 100vh;
+    width: 100%;
+    font-family: 'Pretendard Variable', sans-serif;
+    background-color: #fff;
+    text-align: center;
+  }
+  
+  span {
+    color: #000;
+    text-align: center;
+    font-style: normal;
+    line-height: normal;
+    white-space: nowrap;
+  }
+  
+  p {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #666; 
+  }
+  
+  /* Heading Styling */
+  h1 { color: #333; } 
+  h4 {
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+  
+  /* Button Styling */
+  button { cursor: pointer; }
+  
+  input[type="button"] {
+    appearance: button;
+    -webkit-appearance: button;
+    cursor: pointer;
+  }
+  
+  input[type="number"] { 
+    appearance: textfield;
+    -webkit-appearance: textfield; 
+  }
+  
+  textarea { 
+    resize: none; 
+    padding: 1rem;
+    border-radius: 0.875rem;
+    border: 1px solid #e4e4e4;
+    font-family: 'Pretendard', sans-serif;
+    font-size: 1.2rem;
+  
+    &:focus {
+      outline: none;
+    }
+  }
+  
+  .spanMiddle {
+    font-size: 1.4rem;
+    font-weight: 600;
+  }
+  .spanSmall {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-left: 0.3rem;
+  }
+  font-family: 'Pretendard Variable', sans-serif;
+  background-color: #fff;
+  text-align: center;
+}
+
+span {
+  color: #000;
+  text-align: center;
+  font-style: normal;
+  line-height: normal;
+  white-space: nowrap;
+}
+
+p {
+  margin-top: 20px;
+  font-size: 16px;
+  color: #666; 
+}
+
+/* Heading Styling */
+h1 { color: #333; } 
+h4 {
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+/* Button Styling */
+button { cursor: pointer; }
+
+input[type="button"] {
+  appearance: button;
+  -webkit-appearance: button;
+  cursor: pointer;
+}
+
+input[type="number"] { 
+  appearance: textfield;
+  -webkit-appearance: textfield; 
+}
+
+textarea { 
+  resize: none; 
+
+  &:focus {
+    outline: none;
+  }
+}

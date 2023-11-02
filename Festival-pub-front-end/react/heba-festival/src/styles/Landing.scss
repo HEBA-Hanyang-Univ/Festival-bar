@@ -1,0 +1,62 @@
+.homeWrap {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0 auto;
+  
+  .homeImg {
+    margin-top: 12rem;
+
+    img {
+      width: 18rem;
+      height: 13rem;
+    }
+  }
+
+  .homeTitle {
+    display: flex;
+    margin: 0 auto;
+    margin-top: 2rem;
+
+    img {
+      width: 15rem;
+      height: 9rem;
+    }
+  }
+
+  .homeSubtitle {
+    margin: 0 auto;
+    padding-top: 1.3rem;
+
+    span {
+      font-size: 1.2rem;
+      font-weight: 300;
+    }
+  }
+
+  .homeBtnContainer {
+    display: flex;
+    flex-direction: column;
+    margin: 4.28rem auto;
+
+    button {
+      margin-bottom: 2rem;
+      width: 17rem;
+      height: 5rem;
+
+      border: none;
+      background-color: #87deff ;
+      border-radius: 5rem;
+
+      .homeBtnTitle {
+
+        span {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: #fff;
+          letter-spacing: -0.08rem;
+        }
+      }
+    }
+  }
+}

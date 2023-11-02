@@ -1,0 +1,211 @@
+#checkInWrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+}
+.checkInTitle {
+  margin-top: 5.51rem;
+  margin-bottom: 1.4rem;
+
+  span {
+    font-size:  2.4rem;
+    font-weight: 600;
+    letter-spacing: 0.1rem;
+  }
+}
+
+.checkInButtonBox {
+  margin: 0 auto;
+  padding-top: 1.19rem;
+  padding-bottom: 0.38rem;
+  width: 74%;
+  height: 18.375rem;
+
+  .selectBox {
+    width: 100%;
+    height: 8.5625rem;
+
+    .selectBoxTitle {
+      text-align: left;
+      padding-bottom: 0.26rem;
+      
+      span {
+        margin: -0.25rem;
+        font-size: 1.4rem;
+        font-weight: 600;
+        line-height: 80%;
+        padding-left: 0.44rem;
+      }
+    }
+  }
+  
+  .genderSelect {
+    .genderBtn {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 0.9rem;
+      width: 100%;
+      height: 5.3125rem;
+
+      button {
+        display: flex;
+        flex-direction: column;        
+        border: none;
+        width: 30%;
+        height: 6rem;
+        background-color: #fff;
+
+        img {
+          justify-content: center;
+        }
+
+        span {
+          margin-left: 1rem;
+        }
+      }
+    }
+  }
+}
+
+.inputGroup {
+  margin-top: 1rem;
+  transition: all 300ms ease;
+
+  .btnMinus, .btnPlus {
+    border: 1px solid #000;
+    background-color: #fff;
+    border-radius: 0.3125rem;
+
+    margin: 0;
+    width: 2rem;
+    height: 2rem;
+
+    text-align: center;
+    font-weight: 700;
+    font-size: 1rem ;
+    padding: 0;
+
+    input {
+      &::-webkit-inner-spin-button,
+      ::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+      }
+    }
+  }
+
+  .quantityField {
+    margin: 0 0 0.5rem;
+    width: 10.7rem;
+    height: 2.5rem;
+    border: none;
+    text-align: center; 
+
+    color: #000;
+    font-family: 'Pretendard', sans-serif;
+    font-size: 1.575rem;
+    font-weight: 500;
+  }
+}
+
+.selfIntroduceContent {
+  margin: 0 5rem;
+
+  .selfIntroduceTitle {
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    text-align: start;
+  }
+}
+
+.friendCode {
+  margin: 1rem 5rem;
+
+  .friendCodeTitle {
+    text-align: start;
+    margin-bottom: 0.5rem;
+  }
+}
+
+.filmAgree {
+  margin-left: 5rem;
+  margin-right: 4rem;
+
+  .filmAgreeTitle {
+    text-align: start;
+    margin-bottom: 0.5rem;
+  } 
+
+  .filmAgreeContent {
+    margin-top: 0.35rem;
+    padding: 0.8rem 1.11rem 0.56rem;
+    height: 8.5rem;
+    overflow: scroll;
+    text-align: start;
+    border: 1px solid #e4e4e4;
+    border-radius: 0.9rem;
+    font-size: 1rem;
+    font-weight: 300;
+    line-height: 160%;
+  }
+
+  .agreeCheckBox {
+    margin: 0 auto;
+    margin-top: 1.2rem !important  ;
+    
+    input[type='checkbox'] {
+      border-radius: 0.3125rem;
+      border: 1px solid #C5C6CC;
+    } 
+
+    label {
+      position: relative;
+      top: -0.35rem;
+      margin-left: 0.4rem;
+
+      font-size: 1.3rem;
+      font-weight: 400;
+      line-height: 0.875rem;
+      letter-spacing: 0.017rem;
+    }
+  }
+}
+
+.submitBtn {
+  display: flex;
+  margin: 0 auto;
+  margin-top: 2rem;
+  padding-top: 1.3rem;
+  width: 13.825rem;
+  height: 3.8rem;
+
+  justify-content: center;
+  border-radius: 5rem;
+  border: none;
+  background-color: #87DEFF;  
+
+  span {
+    color: #fff;
+    text-align: center;
+    font-family: 'Pretendard', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.25rem;
+  }
+
+}
+
+input[type="checkbox"] {
+  border-radius: 0.3125rem;
+  border: 1px solid #e4e4e4;
+} 
+
+.headSelect {
+  margin-top: 3rem;
+}
+
+.submitBtnChecked {
+  text-decoration: none;
+  font-size: 1.15rem;
+  margin-top: -0.03rem;
+}
