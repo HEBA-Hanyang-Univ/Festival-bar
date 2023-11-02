@@ -29,6 +29,8 @@ def check_token():
 
     if type(table_no) == int or table_no == 'admin':
         output['result'] = "ok"
+        output['table_no'] = table_no
+        output['active'] = controller.get_table(table_no).get('active')
         return output
     else:
         output['result'] = "fail"
@@ -54,12 +56,14 @@ def set_table():
         note = data.get('note')
         photo = data.get('photo')
         referrer = data.get('referrer')
+        random_code = 0
         while True:
             random_code = random.randint(100000, 999999)
             if random_code not in table_code_list:
                 break
         
-        result = controller.set_table(table_no, nums, gender, photo, note, referrer, random_code)  
+        result = controller.set_table(table_no, nums, gender, photo, note, referrer, random_code)
+        print(f'Table "{table_no}" has activated with code: {random_code}')
         output['result'] = result
         return output
 
@@ -83,6 +87,12 @@ def get_all():
     data = request.get_json()
     token = data.get('token')
     code = data.get('code')
+    if isinstance(code, str) :
+        try :
+            code = int(code)
+        except Exception as e:
+            pass
+
     table_no = controller.get_table_no_by_token(token)
 
     if type(table_no) == int and table_data[table_no-1]['code'] == code:
@@ -92,6 +102,7 @@ def get_all():
         output['result'] = exclude_code
         return output
     else:
+        print(f'get-all request failed with table {table_no}')
         output['result'] = "fail"
         return output
 
@@ -117,20 +128,12 @@ def get_table():
             pass
     table_info = controller.get_table(controller.get_table_no_by_token(token))
 
-    print('token: ', end='')
-    print(token)
-    print('code: ', end='')
-    print(type(code), end=', ')
-    print(code)
-    if table_info :
-        if controller.get_table_no_by_token(admin_token) == 'admin' \
-           or table_info['active'] and table_info['code'] == code :
+    if table_info and controller.get_table_no_by_token(admin_token) == 'admin' \
+           or (table_info['active'] and table_info['code'] == code) :
             output['result'] = table_info
             return output
-        elif table_info['active'] == False :
-            output['result'] = 'inactive'
-            return output
     
+    print('failed to get_table')
     output['result'] = "fail"
     return output
 
@@ -145,8 +148,13 @@ def update_info():
     token = data.get('token')
     code = data.get('code')
     table_no = controller.get_table_no_by_token(token)
+    try :
+        code = int(code)
+    except Exception as e:
+        pass
 
     if type(table_no) == int and table_data[table_no-1]['code'] == code:
+        print(f'table info update : {table_no}, {code}')
         m_count = data.get('m_count')
         f_count = data.get('f_count')
         note = data.get('note')
@@ -166,16 +174,21 @@ def update_info():
 def send_like():
     output = dict()
     data = request.get_json()
-
     token = data.get('token')
     code = data.get('code')
     my_table = controller.get_table_no_by_token(token)
+    try :
+        code = int(code)
+    except Exception as e :
+        pass
 
     if type(my_table) == int and table_data[my_table-1]['code'] == code:
         received_table = data.get('received_table')
+        print(f'{my_table} table send a like to {received_table}')
         output['result'] = controller.send_like(my_table, received_table)
         return output
     else:
+        print(f'{my_table} table failed to send a like to {received_table}')
         output['result'] = "fail"
         return output
 
@@ -192,14 +205,24 @@ def reject():
 
     token = data.get('token')
     code = data.get('code')
+    try :
+        code = int(code)
+    except Exception as e :
+        pass
 
     table_no = controller.get_table_no_by_token(token)
 
     if type(table_no) == int and table_data[table_no-1]['code'] == code:
         reject_table = data.get('reject')
+        try :
+            reject_table = int(reject_table)
+        except Exception as e:
+            pass
+        print(f'{table_no} table reject a like from {reject_table}')
         output['result'] = controller.reject(table_no, reject_table)
         return output
     else:
+        print(f'{table_no} table failed to reject a like from {reject_table}')
         output['result'] = "fail"
         return output
 
@@ -217,12 +240,18 @@ def call():
     token = data.get('token')
     join = data.get('join')
     code = data.get('code')
+    try :
+        code = int(code)
+    except Exception as e:
+        pass
 
     table_no = controller.get_table_no_by_token(token)
 
     if type(table_no) == int and table_data[table_no-1]['code'] == code:
+        print(f'{table_no} table called server')
         output['result'] = controller.call(table_no, join)
         return output
     else:
+        print(f'{table_no} table failed to call server')
         output['result'] = "fail"
         return output

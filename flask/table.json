@@ -9,25 +9,27 @@
         "sent": [],
         "received": [],
         "rejected": [],
-        "record": [],
         "photo": false,
         "note": "",
-        "referrer": ""
+        "referrer": "",
+        "code": 0
     },
     {
         "table_no": 2,
-        "active": false,
-        "nums": 0,
-        "gender": "",
+        "active": true,
+        "nums": 3,
+        "gender": "mixed",
         "join": false,
         "likes": 3,
         "sent": [],
         "received": [],
         "rejected": [],
-        "record": [],
-        "photo": false,
+        "photo": true,
         "note": "",
-        "referrer": ""
+        "referrer": "",
+        "code": 880118,
+        "start_time": "2023-11-02 22:19:23",
+        "end_time": "2023-11-02 23:49:23"
     },
     {
         "table_no": 3,
@@ -39,55 +41,79 @@
         "sent": [],
         "received": [],
         "rejected": [],
-        "record": [],
         "photo": false,
         "note": "",
-        "referrer": ""
+        "referrer": "",
+        "code": 0
     },
     {
         "table_no": 4,
-        "active": false,
-        "nums": 0,
-        "gender": "",
+        "active": true,
+        "nums": 4,
+        "gender": "female",
         "join": false,
-        "likes": 3,
-        "sent": [],
-        "received": [],
+        "likes": 2,
+        "sent": [
+            2
+        ],
+        "received": [
+            5,
+            6
+        ],
         "rejected": [],
-        "record": [],
-        "photo": false,
+        "photo": true,
         "note": "",
-        "referrer": ""
+        "referrer": "",
+        "code": 741660,
+        "start_time": "2023-11-02 22:11:07",
+        "end_time": "2023-11-02 23:41:07"
     },
     {
         "table_no": 5,
-        "active": false,
-        "nums": 0,
-        "gender": "",
-        "join": false,
-        "likes": 3,
-        "sent": [],
-        "received": [],
+        "active": true,
+        "nums": 4,
+        "gender": "group",
+        "join": true,
+        "likes": 0,
+        "sent": [
+            6,
+            2,
+            4
+        ],
+        "received": [
+            6,
+            2
+        ],
         "rejected": [],
-        "record": [],
-        "photo": false,
+        "photo": true,
         "note": "",
-        "referrer": ""
+        "referrer": "",
+        "code": 462130,
+        "start_time": "2023-11-02 22:02:59",
+        "end_time": "2023-11-02 23:37:07"
     },
     {
         "table_no": 6,
-        "active": false,
-        "nums": 0,
-        "gender": "",
+        "active": true,
+        "nums": 3,
+        "gender": "male",
         "join": false,
-        "likes": 3,
-        "sent": [],
-        "received": [],
+        "likes": 0,
+        "sent": [
+            5,
+            2,
+            4
+        ],
+        "received": [
+            5
+        ],
         "rejected": [],
-        "record": [],
-        "photo": false,
-        "note": "",
-        "referrer": ""
+        "photo": true,
+        "note": "잘부탁드립니다♡",
+        "referrer": "",
+        "code": 954738,
+        "start_time": "2023-11-02 22:04:04",
+        "end_time": "2023-11-02 23:34:04"
     },
     {
         "table_no": 7,
@@ -99,10 +125,10 @@
         "sent": [],
         "received": [],
         "rejected": [],
-        "record": [],
         "photo": false,
         "note": "",
-        "referrer": ""
+        "referrer": "",
+        "code": 0
     },
     {
         "table_no": 8,
@@ -114,10 +140,10 @@
         "sent": [],
         "received": [],
         "rejected": [],
-        "record": [],
         "photo": false,
         "note": "",
-        "referrer": ""
+        "referrer": "",
+        "code": 0
     },
     {
         "table_no": 9,
@@ -129,10 +155,10 @@
         "sent": [],
         "received": [],
         "rejected": [],
-        "record": [],
         "photo": false,
         "note": "",
-        "referrer": ""
+        "referrer": "",
+        "code": 0
     },
     {
         "table_no": 10,
@@ -144,10 +170,10 @@
         "sent": [],
         "received": [],
         "rejected": [],
-        "record": [],
         "photo": false,
         "note": "",
-        "referrer": ""
+        "referrer": "",
+        "code": 0
     },
     {
         "table_no": 11,
@@ -159,10 +185,10 @@
         "sent": [],
         "received": [],
         "rejected": [],
-        "record": [],
         "photo": false,
         "note": "",
-        "referrer": ""
+        "referrer": "",
+        "code": 0
     },
     {
         "table_no": 12,
@@ -174,10 +200,10 @@
         "sent": [],
         "received": [],
         "rejected": [],
-        "record": [],
         "photo": false,
         "note": "",
-        "referrer": ""
+        "referrer": "",
+        "code": 0
     },
     {
         "table_no": 13,
@@ -189,10 +215,10 @@
         "sent": [],
         "received": [],
         "rejected": [],
-        "record": [],
         "photo": false,
         "note": "",
-        "referrer": ""
+        "referrer": "",
+        "code": 0
     },
     {
         "table_no": 14,
@@ -204,10 +230,10 @@
         "sent": [],
         "received": [],
         "rejected": [],
-        "record": [],
         "photo": false,
         "note": "",
-        "referrer": ""
+        "referrer": "",
+        "code": 0
     },
     {
         "table_no": 15,
@@ -219,10 +245,10 @@
         "sent": [],
         "received": [],
         "rejected": [],
-        "record": [],
         "photo": false,
         "note": "",
-        "referrer": ""
+        "referrer": "",
+        "code": 0
     },
     {
         "table_no": 16,
@@ -234,10 +260,10 @@
         "sent": [],
         "received": [],
         "rejected": [],
-        "record": [],
         "photo": false,
         "note": "",
-        "referrer": ""
+        "referrer": "",
+        "code": 0
     },
     {
         "table_no": 17,
@@ -249,10 +275,10 @@
         "sent": [],
         "received": [],
         "rejected": [],
-        "record": [],
         "photo": false,
         "note": "",
-        "referrer": ""
+        "referrer": "",
+        "code": 0
     },
     {
         "table_no": 18,
@@ -264,10 +290,10 @@
         "sent": [],
         "received": [],
         "rejected": [],
-        "record": [],
         "photo": false,
         "note": "",
-        "referrer": ""
+        "referrer": "",
+        "code": 0
     },
     {
         "table_no": 19,
@@ -279,10 +305,10 @@
         "sent": [],
         "received": [],
         "rejected": [],
-        "record": [],
         "photo": false,
         "note": "",
-        "referrer": ""
+        "referrer": "",
+        "code": 0
     },
     {
         "table_no": 20,
@@ -294,10 +320,10 @@
         "sent": [],
         "received": [],
         "rejected": [],
-        "record": [],
         "photo": false,
         "note": "",
-        "referrer": ""
+        "referrer": "",
+        "code": 0
     },
     {
         "table_no": 21,
@@ -309,10 +335,10 @@
         "sent": [],
         "received": [],
         "rejected": [],
-        "record": [],
         "photo": false,
         "note": "",
-        "referrer": ""
+        "referrer": "",
+        "code": 0
     },
     {
         "table_no": 22,
@@ -324,10 +350,10 @@
         "sent": [],
         "received": [],
         "rejected": [],
-        "record": [],
         "photo": false,
         "note": "",
-        "referrer": ""
+        "referrer": "",
+        "code": 0
     },
     {
         "table_no": 23,
@@ -339,10 +365,10 @@
         "sent": [],
         "received": [],
         "rejected": [],
-        "record": [],
         "photo": false,
         "note": "",
-        "referrer": ""
+        "referrer": "",
+        "code": 0
     },
     {
         "table_no": 24,
@@ -354,10 +380,10 @@
         "sent": [],
         "received": [],
         "rejected": [],
-        "record": [],
         "photo": false,
         "note": "",
-        "referrer": ""
+        "referrer": "",
+        "code": 0
     },
     {
         "table_no": 25,
@@ -369,10 +395,10 @@
         "sent": [],
         "received": [],
         "rejected": [],
-        "record": [],
         "photo": false,
         "note": "",
-        "referrer": ""
+        "referrer": "",
+        "code": 0
     },
     {
         "table_no": 26,
@@ -384,10 +410,10 @@
         "sent": [],
         "received": [],
         "rejected": [],
-        "record": [],
         "photo": false,
         "note": "",
-        "referrer": ""
+        "referrer": "",
+        "code": 0
     },
     {
         "table_no": 27,
@@ -399,10 +425,10 @@
         "sent": [],
         "received": [],
         "rejected": [],
-        "record": [],
         "photo": false,
         "note": "",
-        "referrer": ""
+        "referrer": "",
+        "code": 0
     },
     {
         "table_no": 28,
@@ -414,10 +440,10 @@
         "sent": [],
         "received": [],
         "rejected": [],
-        "record": [],
         "photo": false,
         "note": "",
-        "referrer": ""
+        "referrer": "",
+        "code": 0
     },
     {
         "table_no": 29,
@@ -429,10 +455,10 @@
         "sent": [],
         "received": [],
         "rejected": [],
-        "record": [],
         "photo": false,
         "note": "",
-        "referrer": ""
+        "referrer": "",
+        "code": 0
     },
     {
         "table_no": 30,
@@ -444,10 +470,10 @@
         "sent": [],
         "received": [],
         "rejected": [],
-        "record": [],
         "photo": false,
         "note": "",
-        "referrer": ""
+        "referrer": "",
+        "code": 0
     },
     {
         "table_no": 31,
@@ -459,10 +485,10 @@
         "sent": [],
         "received": [],
         "rejected": [],
-        "record": [],
         "photo": false,
         "note": "",
-        "referrer": ""
+        "referrer": "",
+        "code": 0
     },
     {
         "table_no": 32,
@@ -474,10 +500,10 @@
         "sent": [],
         "received": [],
         "rejected": [],
-        "record": [],
         "photo": false,
         "note": "",
-        "referrer": ""
+        "referrer": "",
+        "code": 0
     },
     {
         "table_no": 33,
@@ -489,25 +515,27 @@
         "sent": [],
         "received": [],
         "rejected": [],
-        "record": [],
         "photo": false,
         "note": "",
-        "referrer": ""
+        "referrer": "",
+        "code": 0
     },
     {
         "table_no": 34,
-        "active": false,
-        "nums": 0,
-        "gender": "",
+        "active": true,
+        "nums": 1,
+        "gender": "female",
         "join": false,
         "likes": 3,
         "sent": [],
         "received": [],
         "rejected": [],
-        "record": [],
-        "photo": false,
-        "note": "",
-        "referrer": ""
+        "photo": true,
+        "note": "개발자 염탐 테이블",
+        "referrer": "",
+        "code": 945804,
+        "start_time": "2023-11-02 21:43:09",
+        "end_time": "2023-11-02 23:13:09"
     },
     {
         "table_no": 35,
@@ -519,84 +547,9 @@
         "sent": [],
         "received": [],
         "rejected": [],
-        "record": [],
         "photo": false,
         "note": "",
-        "referrer": ""
-    },
-    {
-        "table_no": 36,
-        "active": false,
-        "nums": 0,
-        "gender": "",
-        "join": false,
-        "likes": 3,
-        "sent": [],
-        "received": [],
-        "rejected": [],
-        "record": [],
-        "photo": false,
-        "note": "",
-        "referrer": ""
-    },
-    {
-        "table_no": 37,
-        "active": false,
-        "nums": 0,
-        "gender": "",
-        "join": false,
-        "likes": 3,
-        "sent": [],
-        "received": [],
-        "rejected": [],
-        "record": [],
-        "photo": false,
-        "note": "",
-        "referrer": ""
-    },
-    {
-        "table_no": 38,
-        "active": false,
-        "nums": 0,
-        "gender": "",
-        "join": false,
-        "likes": 3,
-        "sent": [],
-        "received": [],
-        "rejected": [],
-        "record": [],
-        "photo": false,
-        "note": "",
-        "referrer": ""
-    },
-    {
-        "table_no": 39,
-        "active": false,
-        "nums": 0,
-        "gender": "",
-        "join": false,
-        "likes": 3,
-        "sent": [],
-        "received": [],
-        "rejected": [],
-        "record": [],
-        "photo": false,
-        "note": "",
-        "referrer": ""
-    },
-    {
-        "table_no": 40,
-        "active": false,
-        "nums": 0,
-        "gender": "",
-        "join": false,
-        "likes": 3,
-        "sent": [],
-        "received": [],
-        "rejected": [],
-        "record": [],
-        "photo": false,
-        "note": "",
-        "referrer": ""
+        "referrer": "",
+        "code": 0
     }
 ]

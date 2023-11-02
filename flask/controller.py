@@ -26,13 +26,9 @@ def write_json_file(file_name, data, file_name2, data2, file_name3, data3):
     with open(file_name3, "w") as f:
         json.dump(data3, f, ensure_ascii=False, indent=4)
 
-global qr_data
 qr_data = read_json_file('table_token.json')
-global table_data
 table_data = read_json_file('table.json')
-global admin
 admin = read_json_file('admin.json')
-global table_code_list
 table_code_list = read_json_file('table_code.json')
 
 def write_table_data():
@@ -74,9 +70,8 @@ def test_reset_table(table_no):
         }
 
 def reset_all_tables():
-    global table_data
-    table_data = []
-    for i in range(1, 35):
+    table_data.clear()
+    for i in range(1, 36):
         b = reset(i)
         table_data.append(b)
 
@@ -102,8 +97,8 @@ def set_table(table_no, nums, gender, photo, note, referrer, random_code):
             current_time = datetime.now()
             korea_tz = pytz.timezone('Asia/Seoul')
             korea_time = current_time.astimezone(korea_tz)
-            table_data[index]['start_time'] = korea_time.strftime('%H:%M')
-            table_data[index]['end_time'] = (korea_time + timedelta(hours=1.5)).strftime('%H:%M')
+            table_data[index]['start_time'] = korea_time.strftime('%Y-%m-%d %H:%M:%S')
+            table_data[index]['end_time'] = (korea_time + timedelta(hours=1.5)).strftime('%Y-%m-%d %H:%M:%S')
             table_data[index]['code'] = random_code
             table_code_list.insert(0,random_code)
             return table_data[index]['code']
@@ -146,6 +141,11 @@ def update_info(table_no, male_count, female_count, note):
 ### get table number by token 
 def get_table_no_by_token(token):
     table_no = qr_data.get(token)
+    try :
+        table_no = int(table_no)
+    except Exception as e :
+        pass
+
     return table_no
 
 def get_table(table_no):
@@ -272,5 +272,5 @@ def reset_table(table_no):
 ##########################################################
 ########################## test ##########################
 ##########################################################
-reset_all_tables()
+# reset_all_tables()
 # test_reset_table()

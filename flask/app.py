@@ -13,6 +13,8 @@ def create_app():
     atexit.register(save_datas)
     print('start server')
     #sio.run(app, host='0.0.0.0')
+    controller.reset_all_tables()
+    print('reset all tables')
     return app
 
 if __name__ == '__main__':
