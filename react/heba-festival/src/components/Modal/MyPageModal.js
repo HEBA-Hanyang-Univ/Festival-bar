@@ -56,7 +56,7 @@ function MyPageModal({ onClose }) {
       method:'POST',
       headers:{'Content-Type':'application/json',},
       body:JSON.stringify({
-        token: secureLocalStorage.getItem('code'),
+        token: secureLocalStorage.getItem('token'),
         code: secureLocalStorage.getItem('code'),
 	m_count: quantityMan,
 	f_count: quantityWoman,

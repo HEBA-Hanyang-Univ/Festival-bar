@@ -236,11 +236,84 @@
   }
 }
 
-
 .tableInfoBtn {
   display: flex;
   justify-content: space-around;
 }
+
+.modalBtnBox {
+  margin-top: -0.3rem;
+
+  .btnBlank {
+    border: 1px solid #87deff;
+    background-color: #fff;
+    border-radius: 1.2rem;
+    width: 7rem;
+    height: 2rem;
+
+    span {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #87deff;
+    }
+  }
+
+  .btnFilled {
+    border: none;
+    background-color: #87deff;
+    border-radius: 1.2rem;
+    margin-right: 1.8rem;
+    width: 7rem;
+    height: 2rem;
+
+    span {
+      font-size: 1rem;
+      font-weight: 7z00;
+      color: #fff;
+    }
+  }
+}
+
+.SendHeartTop {
+  display: flex;
+  margin: 0 auto;
+
+  .SendHeartImgBox {
+    img {
+      margin-top: 1rem;
+      margin-right: 0.3rem;
+      width: 5rem;
+      height: 3.5rem;
+    }
+  }
+  
+  .SendHeartSpan {
+    span { 
+      font-size: 4.3rem;
+      font-weight: 700;
+    }
+  }
+}
+
+.sendHeartMiddle {
+  margin: 0 auto;
+  margin-bottom: -0.5 rem;
+
+  span {
+    font-size: 1rem;
+    font-weight: 400;
+  }
+}
+
+.btnFilled {
+  border: none;
+  background-color: #87deff;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #fff;
+  margin-right: 2rem;
+}
+
 
 // Admin
 .adminModalWrap {
@@ -336,14 +409,6 @@
     width: 12rem;
     height: 4rem;
     border-radius: 6rem;
-  }
-
-  .btnFilled {
-    border: none;
-    background-color: #87deff;
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #fff;
   }
 }
 

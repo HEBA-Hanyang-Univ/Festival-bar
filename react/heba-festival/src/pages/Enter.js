@@ -6,6 +6,7 @@ export const Enter = () => {
   const { token } = useParams();
   const navigate = useNavigate();
   
+  let isActive = true;
   const fetchData = async() => {
     try {
       let response = await fetch("http://150.230.252.177:5000/check-token", {
@@ -21,7 +22,8 @@ export const Enter = () => {
 	// token is valid, but need additional auth
         secureLocalStorage.setItem("token", token);
 	secureLocalStorage.setItem("table_no", response.table_no);
-        return true;
+        isActive = response.active;
+	return true;
       }
     } catch (error) {
       window.alert(error);
@@ -32,7 +34,11 @@ export const Enter = () => {
   useEffect(() => {
     fetchData().then((ret) => {
       if (ret === true) {
-        navigate('/landing');
+        if (isActive) {
+	  navigate('/landing');
+	} else {
+	  navigate('/checkin');
+	}
       } else {
         navigate('/error');
       }

@@ -17,6 +17,9 @@ import OrderImg from "assets/images/order.svg";
 import MyPageImg from "assets/images/myPage.svg";
 import HeartChargeModal from "components/Modal/HeartChargeModal";
 import MyPageModal from "components/Modal/MyPageModal";
+// TODO: 하트를 받을 시 해당 모달 팝업
+import ReceivedHeartModal from "components/Modal/ReceivedHeartModal";
+// TODO: 헌팅 성공 시 해당 모달 팝업
 import HuntingSuccessModal from "components/Modal/HuntingSucessModal"; 
 
 const Home = () => {
@@ -32,8 +35,9 @@ const Home = () => {
   let timerIntervalId = null;
 
   const setMyTableInfo = (tableData) => {
+    if (tableData == null) return
+
     myTableInfo = tableData;
-    if (myTableInfo == null) return;
 
     if (timerIntervalId) clearInterval(timerIntervalId);
 
@@ -57,11 +61,22 @@ const Home = () => {
 
   const navigate = useNavigate();
 
+  function getHuntingState(data) {
+    if (myTableInfo.received.includes(data.table_no)) {
+      return "received";
+    } else if (myTableInfo.sent.includes(data.table_no)) {
+      return "sent";
+    } else if (myTableInfo.rejected.includes(data.table_no) || data.rejected.includes(myTableInfo.table_no)) {
+      return "broken";
+    }
+    return "";
+  }
+
   function transformTableArray(datas) {
     // 이게 여기가 아니면 동작을 안해서 일단 임시로 여기 넣어둠...
     // 이거 위치 수정하다 2시간 넘게 썼으니 수정 시 유의.. 
     setMyTableInfo(datas.find((elem) => elem.table_no === secureLocalStorage.getItem('table_no')));
-    const transformTableData = (data) => <Table tableNumber = {data.table_no} gender = {data.gender} headCount = {data.nums} huntingSuccess = {data.join}/>
+    const transformTableData = (data) => <Table tableNumber={data.table_no} gender={data.gender} headCount={data.nums} tableIntro={data.note} huntingSuccess={data.join} huntingStatus={getHuntingState(data)}  remainedLikes={myTableInfo.likes}/>
     return datas.map((data) => transformTableData(data));
   }
 
@@ -71,24 +86,31 @@ const Home = () => {
   const { data, isLoading, error, isFetching } = useQuery({
     queryKey: ['get-all'],
     queryFn: async () => {
-      return (
-        await fetch('http://150.230.252.177:5000/get-all', {
-	  mode: 'cors',
-	  method: 'POST',
-	  headers: {'Content-Type': 'application/json',},
-	  body: JSON.stringify({
-	    'token': token,
-	    'code': code,
-	  }),
-	})
-        .then((response) => response.json())
-	.then((response) => response.result && response.result === 'fail' && navigate('/error'))
-      )},
-    select: (data) => data.result && data.result !== 'fail' && transformTableArray(data.result),
+      const response = await fetch('http://150.230.252.177:5000/get-all', {
+        mode: 'cors',
+	method: 'POST',
+	headers: {'Content-Type': 'application/json',},
+	body: JSON.stringify({
+	  'token': token,
+	  'code': code,
+	}),
+      })
+      .then((res) => res.json())
+      console.log(response);
+      return response;
+    },
+    select: (data) => {
+      if (data.result && data.result !== 'fail') {
+        return transformTableArray(data.result);
+      } else {
+	navigate('/error');
+	return [];
+      }
+    },
     refetchInterval: 1000, // data refetch for every 1 sec.
     refetchIntervalInBackground: true,
     initialData: () => {
-      return Array.from({ length: 40 }, (_, i) => <Table key={i + 1} tableNumber={i + 1} gender="" headCount={"0"}/>);
+      return Array.from({ length: 35 }, (_, i) => <Table tableNumber={i + 1} gender="" headCount={"0"}/>);
     },
   });
 
@@ -117,6 +139,7 @@ const Home = () => {
     return <div> loading... </div>;
   }
   if (error) {
+    console.log(data);
     console.log(error);
     navigate('/error');
   }
