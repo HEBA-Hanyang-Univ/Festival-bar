@@ -6,7 +6,6 @@ import ModalContainer from "./ModalContainer";
 
 function LockModal({ onClose }) {
   const modalRef = useRef(null)
-  // 코드가 일치하는지 확인 TODO: 코드 일치하는지 확인하기
   const [code, setCode] = useState('');
   
   useEffect(() => {
@@ -46,8 +45,7 @@ function LockModal({ onClose }) {
       <div className="overlay">
         <div className="modalWrap" ref={modalRef}>
           <div className="modalTitle">
-            {/* TODO: 해당 테이블 번호 토큰값에 따라 받아오기 */}
-            <span>n번 테이블</span>
+            <span>{secureLocalStorage.getItem('table_no')}번 테이블</span>
           </div>
           <div className="lockModalImg">
             <img src={LockImg} alt="lock img"></img>

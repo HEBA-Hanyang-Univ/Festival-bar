@@ -2,12 +2,29 @@ import React, {useEffect, useRef} from "react";
 import "styles/Modal.scss";
 import useOutSideClick from "./useOutSideClick";
 import ModalContainer from "./ModalContainer";
+import secureLocalStorage from "react-secure-storage";
 
 function ServerModal({ onClose }) {
   const modalRef = useRef(null)
   const handleClose = () => {
-    onClose ?.();
+    onClose ?.()
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    fetch('http://150.230.252.177:5000/call', {
+      mode: 'cors',
+      method: 'POST',
+      headers: {'Content-Type':'application/json',},
+      body: JSON.stringify({
+        token: secureLocalStorage.getItem('token'),
+        code: secureLocalStorage.getItem('code'),
+        type: 'call',
+      }),
+    })
+    .then((res) => res.json())
+    .then((res) => { handleClose(); })
+  }
 
   useOutSideClick(modalRef, handleClose);
   useEffect(() => {
@@ -28,8 +45,7 @@ function ServerModal({ onClose }) {
           </div>
           <div className="modalContent serverContent">
             <span>직원을 호출하시겠습니까?</span>
-            {/* TODO: 직원 호출 알람 */}
-            <button onClick={handleClose}>
+            <button type="submit" onClick={handleSubmit}>
               <span>직원호출</span>
             </button>
           </div>

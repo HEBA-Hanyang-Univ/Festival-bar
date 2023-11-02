@@ -1,5 +1,7 @@
-import React,{ Component, useState } from "react";
-import { Link } from "react-router-dom";
+import React,{ Component, useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import secureLocalStorage from "react-secure-storage";
 import ServerModal from "components/Modal/ServerModal";
 import "styles/common.scss";
 import "styles/Home.scss";
@@ -15,53 +17,102 @@ import OrderImg from "assets/images/order.svg";
 import MyPageImg from "assets/images/myPage.svg";
 import HeartChargeModal from "components/Modal/HeartChargeModal";
 import MyPageModal from "components/Modal/MyPageModal";
+// TODO: 하트를 받을 시 해당 모달 팝업
+import ReceivedHeartModal from "components/Modal/ReceivedHeartModal";
+// TODO: 헌팅 성공 시 해당 모달 팝업
 import HuntingSuccessModal from "components/Modal/HuntingSucessModal"; 
-
-// class Home extends Component {
-
-
-
-//   constructor(props) {
-//     super(props);
-//     this.state = {
-//       // 하단바 모달
-//       isOpenServerModal: false,
-//       isOpenHeartChargeModal: false,
-//       isOpenMyPageModal: false,
-
-//       // 하트 보냄
-//     };
-//   }
-
-//   onClickButton = (modalType) => {
-//     if (modalType === "server") {
-//       this.setState({ isOpenServerModal: true });
-//     } else if (modalType === "heartCharge") {
-//       this.setState({ isOpenHeartChargeModal: true });
-//     } else if (modalType === "myPage") {
-//       this.setState({ isOpenMyPageModal: true });
-//     }
-//   };
-
-//   onCloseModal = (modalType) => {
-//     if (modalType === "server") {
-//       this.setState({ isOpenServerModal: false });
-//     } else if (modalType === "heartCharge") {
-//       this.setState({ isOpenHeartChargeModal: false });
-//     } else if (modalType === "myPage") {
-//       this.setState({ isOpenMyPageModal:false });
-//     }
-//   };
-
-//   // Creating tables
-
-//   render() {
 
 const Home = () => {
   const [isOpenServerModal, setIsOpenServerModal] = useState(false);
   const [isOpenHeartChargeModal, setIsOpenHeartChargeModal] = useState(false);
   const [isOpenMyPageModal, setIsOpenMyPageModal] = useState(false);
   const [filter, setFilter] = useState('all'); // 기본 필터는 전체
+
+  let myTableInfo = null;
+  let likes = 0;
+  let remainedTime = 0;
+
+  let timerIntervalId = null;
+
+  const setMyTableInfo = (tableData) => {
+    if (tableData == null) return
+
+    myTableInfo = tableData;
+
+    if (timerIntervalId) clearInterval(timerIntervalId);
+
+    remainedTime = (new Date(myTableInfo.end_time).getTime() - new Date()) / 1000;
+    likes = myTableInfo.likes;
+
+    timerIntervalId = setInterval(() => {
+      remainedTime = remainedTime - 1;
+    }, 1000);
+
+    if (remainedTime <= 0) {
+      clearInterval(timerIntervalId);
+      remainedTime = 0;
+    }
+  }
+
+  useEffect(() => {
+    return () => clearInterval(timerIntervalId);
+  },[])
+  
+
+  const navigate = useNavigate();
+
+  function getHuntingState(data) {
+    if (myTableInfo.received.includes(data.table_no)) {
+      return "received";
+    } else if (myTableInfo.sent.includes(data.table_no)) {
+      return "sent";
+    } else if (myTableInfo.rejected.includes(data.table_no) || data.rejected.includes(myTableInfo.table_no)) {
+      return "broken";
+    }
+    return "";
+  }
+
+  function transformTableArray(datas) {
+    // 이게 여기가 아니면 동작을 안해서 일단 임시로 여기 넣어둠...
+    // 이거 위치 수정하다 2시간 넘게 썼으니 수정 시 유의.. 
+    setMyTableInfo(datas.find((elem) => elem.table_no === secureLocalStorage.getItem('table_no')));
+    const transformTableData = (data) => <Table tableNumber={data.table_no} gender={data.gender} headCount={data.nums} tableIntro={data.note} huntingSuccess={data.join} huntingStatus={getHuntingState(data)}  remainedLikes={myTableInfo.likes}/>
+    return datas.map((data) => transformTableData(data));
+  }
+
+  const token = secureLocalStorage.getItem('token');
+  const code = secureLocalStorage.getItem('code');
+  const queryclient = useQueryClient();
+  const { data, isLoading, error, isFetching } = useQuery({
+    queryKey: ['get-all'],
+    queryFn: async () => {
+      const response = await fetch('http://150.230.252.177:5000/get-all', {
+        mode: 'cors',
+	method: 'POST',
+	headers: {'Content-Type': 'application/json',},
+	body: JSON.stringify({
+	  'token': token,
+	  'code': code,
+	}),
+      })
+      .then((res) => res.json())
+      console.log(response);
+      return response;
+    },
+    select: (data) => {
+      if (data.result && data.result !== 'fail') {
+        return transformTableArray(data.result);
+      } else {
+	navigate('/error');
+	return [];
+      }
+    },
+    refetchInterval: 1000, // data refetch for every 1 sec.
+    refetchIntervalInBackground: true,
+    initialData: () => {
+      return Array.from({ length: 35 }, (_, i) => <Table tableNumber={i + 1} gender="" headCount={"0"}/>);
+    },
+  });
 
   const onClickButton = (modalType) => {
     if (modalType === "server") {
@@ -83,10 +134,18 @@ const Home = () => {
     }
   };
 
-  // Creating Tables
-  const tables = Array.from({ length: 40 }, (_, i) => <Table key={i + 1} tableNumber={i + 1} gender="" headCount={"0"}/>)
-  
-return (
+  if (isLoading) {
+    console.log("loading...");
+    return <div> loading... </div>;
+  }
+  if (error) {
+    console.log(data);
+    console.log(error);
+    navigate('/error');
+  }
+
+
+  return (
     <div>
       <div id="wrapper">
         <header>
@@ -124,19 +183,17 @@ return (
               <div className="leftoverHeart">
                 <img src={SendHeartImg} alt="sendHeart img"></img>
                 <span className="heartMultiple">X</span>
-                {/* TODO: 자신의 테이블에서 보낼 수 있는 하트 개수 표시하기 */}
-                <span>4</span>
+                <span>{likes}</span>
               </div>
               <div className="leftoverTime">
                 <img src={TimeImg} alt="time img"></img>
-                {/* TODO: 서버에서 입장과 동시에 90분 타이머 가동 */}
-                <span>90:00</span>
+                <span>{String(Math.floor(remainedTime/60)).padStart(2, '0')}:{String(Math.floor(remainedTime%60)).padStart(2,'0')}</span>
               </div>
             </div>
           </div>
         </header>
         <main id="container">
-          {React.Children.toArray(tables).filter(table => filter === 'all' || table.props.gender === filter)}
+	   {React.Children.toArray(data).filter(table => filter === 'all' || table.props.gender === filter)}
         </main>
         <footer>
           <button className="callServer" onClick={() => onClickButton("server")}>
@@ -160,8 +217,7 @@ return (
             <HeartChargeModal open={isOpenHeartChargeModal} onClose={() => onCloseModal("heartCharge")}></HeartChargeModal>
           )} 
           <button className="order">
-            {/* TODO: 식파마 페이지로 이동 */}
-            <Link to={"/landing"} className="orderLink">
+            <Link to={"https://order.sicpama.com/?token="+token} className="orderLink">
               <div className="btnBox" style={{display: 'flex', width: '100%'}}>
                 <img src={OrderImg} style={{width:'3rem', height:'2.2rem', marginBottom: '0.2rem'}} alt="footer order img"></img>
                 <span>주문하기</span>

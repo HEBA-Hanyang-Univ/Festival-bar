@@ -9,8 +9,8 @@ import LockModal from "components/Modal/LockModal";
 
 export const Landing = () => {
   const navigate = useNavigate();
-  const [link, setLink] = useState("/error");
   const [isModalOpen, setIsModalOpen] = useState(true);
+  const [dest, setDest] = useState('/landing');
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -39,13 +39,9 @@ export const Landing = () => {
         if (response.result === 'fail') {
           setIsModalOpen(true);
         } else {
+	  window.alert('입장 코드는 "' + secureLocalStorage.getItem('code') + '" 입니다! 일행들에게 알려주세요');
+	  setDest('/home');
 	  setIsModalOpen(false);
-	  if (response.result === 'inactive') {
-	    setLink('/checkin');
-	  } else if (response.result.active === true) {
-	    window.alert('입장 코드는 "' + secureLocalStorage.getItem('code') + '" 입니다! 일행들에게 알려주세요');
-	    setLink('/home');
-	  }
 	}
       });
     } catch (error) {
@@ -72,14 +68,14 @@ export const Landing = () => {
       </div>
       <div className="homeBtnContainer">
         <button className="linkSicpama">
-	  <Link to ={"/home"} style={{textDecorationLine: "none"}}>
+	  <Link to ={"https://order.sicpama.com/?token="+token} style={{textDecorationLine: "none"}}>
             <div className="homeBtnTitle">
               <span>주문하기</span>
             </div>
           </Link>
         </button>
         <button className="linkHEBA">
-          <Link to={link} style={{textDecorationLine:"none"}}>
+	  <Link to={ isModalOpen ? '/error' : dest } style={{textDecorationLine:"none"}}>
             <div className="homeBtnTitle">
               <span>헌팅하기</span>
             </div>

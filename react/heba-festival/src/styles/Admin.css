@@ -142,8 +142,8 @@
   text-align: center;
   align-items: center;
   width: 70%;
-  margin-top: 15vh;
-  margin-left: 2%;
+  margin-top: 13vh;
+  margin-left: 1%;
 }
 
 .info_table1 {
@@ -209,16 +209,17 @@
 .info_title {
   position: absolute;
   color: white;
-  margin-left: 30%;
+  margin-left: 23%;
   font-size: 2rem;
   font-weight: 900;
   text-align: center;
-  margin-top: 2%;
+  margin-top: 1%;
+  padding: 10px 20px;
 }
 
 .table-list {
   position: absolute;
-  margin-left: 10%;
+  margin-left: 9%;
   float: left;
   display: flex;
   text-align: center;
@@ -240,7 +241,7 @@
 .tablecou {
   font-size: 5rem;
   color: #ffc555;
-  margin-left: 18%;
+  margin-left: 16%;
 }
 .tablemix {
   font-size: 5rem;
@@ -250,7 +251,7 @@
 .tableemp {
   font-size: 5rem;
   color: #c8c8c8;
-  margin-left: 16%;
+  margin-left: 15%;
 }
 
 .box-lists {
@@ -263,12 +264,14 @@
   display: flex;
   height: 12vh;
   margin-bottom: 1%;
+  flex-wrap: wrap;
+  justify-content: space-around;
 }
 
 .box {
   position: absolute;
-  width: 15rem;
-  height: 115px;
+  width: 15.2rem;
+  height: 122px;
   border: 1px solid black;
   padding: 0.5rem;
   border-radius: 10%;
@@ -280,11 +283,13 @@
   top: 0;
   margin-left: -40%;
   font-size: 2rem;
+  font-weight: 800;
+  color: #fff;
 }
 
 .admin-footer {
   position: absolute;
-  margin-top: 93vh;
+  margin-top: 92vh;
 }
 
 .footer-button {

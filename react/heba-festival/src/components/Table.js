@@ -2,17 +2,19 @@
   import "styles/Table.scss";
   import SendHeartModal from "components/Modal/SendHeartModal";
   import Icon from "assets/images/icon.svg";
-  import HeartRecieved from "assets/images/ReceivedHeart.svg";
-  import HeartSended from "assets/images/SendHeart.svg";
+  import HeartReceived from "assets/images/ReceivedHeart.svg";
+  import HeartSent from "assets/images/SendHeart.svg";
   import CoupleMatched from "assets/images/Matched.svg";
   import HeartBroken from "assets/images/BrokenHeart.svg";
+  import secureLocalStorage from "react-secure-storage";
 
-  const Table = ({tableNumber, gender, huntingSuccess, status, headCount}) => {
+  const Table = ({tableNumber, gender, headCount, tableIntro, huntingSuccess, huntingStatus, remainedLikes}) => {
       let backgroundColor = "#C8C8C8";
       let genderText = "";
       let statusImg = null;
 
       const [isOpenSendHeartModal, setIsOpenSendHeartModal] = useState(false);
+      let isSendAvailable = true;
 
       if (gender === "male") {
         backgroundColor = "#80C2FF"; // 성별 남성
@@ -24,9 +26,29 @@
         backgroundColor = "#DD7DFF"; // 합석 테이블
         genderText = "";
         statusImg = CoupleMatched;
-      } else if (gender === "mixed") {
+	isSendAvailable = false;
+      } else if (gender === "group") {
         backgroundColor = "#FFC555"; // 성별 혼성 또는 기본값
         genderText = "혼성테이블";
+	isSendAvailable = false;
+      }
+      
+      if (huntingStatus === "received") {
+        statusImg = HeartReceived;
+      } else if (huntingStatus === "sent") {
+        statusImg = HeartSent;
+	isSendAvailable = false;
+      } else if (huntingStatus === "broken") {
+	statusImg = HeartBroken;
+	isSendAvailable = false;
+      }
+
+      if (tableNumber === secureLocalStorage.getItem('table_no')) {
+        isSendAvailable = false;
+      }
+
+      if (headCount === 0) {
+        isSendAvailable = false;
       }
 
       // switch
@@ -37,7 +59,7 @@
       };
 
       const onClickButton = (modalType) => {
-        if (modalType === "sendHeart") {
+        if (modalType === "sendHeart" && isSendAvailable) {
           setIsOpenSendHeartModal(true);
         }
       };
@@ -52,7 +74,6 @@
         <div className="tableWrap">
           <button className="table" style={tableStyle} onClick={() => onClickButton("sendHeart")}>
             <div className="tableTitle">
-              {/* TODO: 테이블 정보값에 따라서 테이블 번호, 여성,남성,혼성테이블 구분 */}
               <span>{tableNumber}번 테이블</span>
               <span className="tableGenderInfo">{genderText}</span>
             </div>
@@ -68,7 +89,7 @@
             </div>
           </button>
           {isOpenSendHeartModal && (
-          <SendHeartModal open={isOpenSendHeartModal} onClose={()=> onCloseModal("sendHeart")}></SendHeartModal>
+          <SendHeartModal open={isOpenSendHeartModal} onClose={()=>onCloseModal("sendHeart")} tableNumber={tableNumber} tableGender={gender} headCount={headCount} tableIntro={tableIntro} isSendAvailable={isSendAvailable} remainedLikes={remainedLikes}></SendHeartModal>
           )}
         </div>
       );

@@ -3,7 +3,6 @@ import "styles/Modal.scss";
 import useOutSideClick from "./useOutSideClick";
 import ModalContainer from "./ModalContainer";
 import CloseBtn from "assets/images/close.svg";
-import { Link } from "react-router-dom";
 
 function HeartChargeModal({ onClose }) {
   const modalRef = useRef(null)
