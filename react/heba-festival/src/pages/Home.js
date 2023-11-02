@@ -17,6 +17,9 @@ import OrderImg from "assets/images/order.svg";
 import MyPageImg from "assets/images/myPage.svg";
 import HeartChargeModal from "components/Modal/HeartChargeModal";
 import MyPageModal from "components/Modal/MyPageModal";
+// TODO: 하트를 받을 시 해당 모달 팝업
+import ReceivedHeartModal from "components/Modal/ReceivedHeartModal";
+// TODO: 헌팅 성공 시 해당 모달 팝업
 import HuntingSuccessModal from "components/Modal/HuntingSucessModal"; 
 
 const Home = () => {
@@ -170,6 +173,7 @@ const Home = () => {
           </div>
         </header>
         <main id="container">
+          <Table></Table>
 	   {React.Children.toArray(data).filter(table => filter === 'all' || table.props.gender === filter)}
         </main>
         <footer>

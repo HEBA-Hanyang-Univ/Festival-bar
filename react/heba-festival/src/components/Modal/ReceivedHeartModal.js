@@ -38,7 +38,7 @@ function SendHeartModal({ onClose, tableNumber, tableGender }) {
     <ModalContainer>
       <div className="overlay">
         <div className="modalWrap" style={{height: '16rem'}} ref={modalRef}>
-          {/* TODO: 해당 테이블 번호 받아오기 */}
+          {/* TODO: 하트를 보낸 테이블 번호 받아오기 */}
           <div className="modalTitle">
             <span>{tableNumber}번 테이블</span>
           </div>
@@ -48,23 +48,23 @@ function SendHeartModal({ onClose, tableNumber, tableGender }) {
                 <img src={tableGenderImg} alt="table gender img"></img>
               </div>
               <div className="SendHeartSpan">
-                {/* TODO: 해당 테이블 인원 수  */}
+                {/* TODO: 하트를 보낸 테이블 인원 수  */}
                 <span>x3</span>
               </div>
             </div>
             <div className="sendHeartMiddle"> 
               <div className="SendHeartIntroduce">
-                {/* TODO: 해당 테이블 소개 */}
+                {/* TODO: 하트를 보낸 테이블 소개 */}
                 <span>우리랑 술 먹을 사람~</span>
               </div>
             </div>
-            {/* TODO: 해당 테이블에 하트 보내기 */}
+            {/* TODO: 하트 수락/거절 */}
             <div className="modalBtnBox">
               <button className="btnFilled">
-                <span>하트 보내기</span>
+                <span>YES</span>
               </button>
               <button className="btnBlank" onClick={handleClose}>
-                <span>취소</span>
+                <span>NO</span>
               </button>
             </div>
           </div>
