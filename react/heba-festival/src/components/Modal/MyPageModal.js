@@ -48,7 +48,7 @@ function MyPageModal({ onClose }) {
     };
   }, []);
 
-  const updateData = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     fetch('http://150.230.252.177:5000/update-info', {
@@ -63,8 +63,8 @@ function MyPageModal({ onClose }) {
 	note: modifyIntroduce,
       }),
     })
-
-    handleClose();
+    .then((res) => res.json())
+    .then((res) => { handleClose(); })
   }
 
   return (
@@ -79,7 +79,6 @@ function MyPageModal({ onClose }) {
 	  <div className="myPageTitle">
             <span>마이페이지</span>
           </div>
-          {/* TODO: 마이페이지 수정 로직 */}
           <form>
             <div className="myPageContent">
               <div className="modifyCount">
@@ -119,7 +118,7 @@ function MyPageModal({ onClose }) {
                 </div>
               </div>
             </div>
-            <button className="myPageBtn" type="submit" onClick={updateData}>
+            <button className="myPageBtn" type="submit" onClick={handleSubmit}>
               <span>수정하기</span>
             </button>
           </form>

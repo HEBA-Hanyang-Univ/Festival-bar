@@ -7,20 +7,26 @@ import secureLocalStorage from "react-secure-storage";
 
 function HeartChargeModal({ onClose }) {
   const modalRef = useRef(null)
-  const handleClose = async() => {
-    await fetch('http://150.230.252.177:5000/call', {
+  const handleClose = () => {
+    onClose ?.();
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    fetch('http://150.230.252.177:5000/call', {
       mode: 'cors',
       method: 'POST',
       headers: {'Content-Type': 'application/json',},
       body: JSON.stringify({
         token: secureLocalStorage.getItem('token'),
-	code: secureLocalStorage.getItem('code'),
-	call: "exchange",
+        code: secureLocalStorage.getItem('code'),
+        type: "charge_heart",
       }),
     })
     .then((res) => res.json())
-    .then((res) => { onClose ?.(); })
-  };
+    .then((res) => { handleClose(); })
+  }
 
   useOutSideClick(modalRef, handleClose);
   useEffect(() => {
@@ -50,7 +56,7 @@ function HeartChargeModal({ onClose }) {
               칩을 구매해 주세요.
             </span>
             <div className="heartChargeBtnBox">
-              <button className="whiteBtn" onClick={handleClose}>
+              <button className="whiteBtn" type="submit" onClick={handleSubmit}>
                 <span>직원호출</span>
               </button>
               <button>

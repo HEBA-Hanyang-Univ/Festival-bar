@@ -10,6 +10,24 @@ function SendHeartModal({ onClose, tableNumber }) {
     onClose ?.();
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    fetch('http://150.230.252.177:5000/send-like', {
+      mode:'cors',
+      method:'POST',
+      headers:{'Content-Type':'application/json',},
+      body:JSON.stringify({
+        token: secureLocalStorage.getItem('code'),
+        code: secureLocalStorage.getItem('code'),
+        received_table: tableNumber,
+      }),
+    })
+    .then((res) => res.json())
+    .then((res) => { handleClose(); })
+  }
+
+
   useOutSideClick(modalRef, handleClose);
   useEffect(() => {
     const $body = document.querySelector("body");
@@ -32,7 +50,7 @@ function SendHeartModal({ onClose, tableNumber }) {
               <img></img>
             </div>
             {/* TODO: 해당 테이블에 하트 보내기 */}
-            <button>
+            <button type="submit" onClick={handleSubmit}>
               <span>하트 보내기</span>
             </button>
             <button onClick={handleClose}>취소</button>

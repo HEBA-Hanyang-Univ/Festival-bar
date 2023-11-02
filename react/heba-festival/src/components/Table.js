@@ -37,7 +37,7 @@
       };
 
       const onClickButton = (modalType) => {
-        if (modalType === "sendHeart") {
+        if (modalType === "sendHeart" && !(huntingSuccess || gender === "mixed")) {
           setIsOpenSendHeartModal(true);
         }
       };
@@ -68,7 +68,7 @@
             </div>
           </button>
           {isOpenSendHeartModal && (
-          <SendHeartModal open={isOpenSendHeartModal} onClose={()=> onCloseModal("sendHeart")}></SendHeartModal>
+          <SendHeartModal open={isOpenSendHeartModal} onClose={()=> onCloseModal("sendHeart") tableNumber={tableNumber} tableGender= {gender}}></SendHeartModal>
           )}
         </div>
       );
