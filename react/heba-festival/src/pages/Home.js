@@ -9,12 +9,14 @@ import Table from "components/Table";
 import Dashed from "assets/images/dashed.svg";
 import HomeImg from "assets/images/home.svg";
 import AlarmImg from "assets/images/alarm.svg";
+import RedAlarmImg from "assets/images/RedAlarm.svg";
 import SendHeartImg from "assets/images/SendHeart.svg";
 import TimeImg from "assets/images/time.svg";
 import CallServerImg from "assets/images/server.svg";
 import HeartChargeImg from "assets/images/chargeHeart.svg";
 import OrderImg from "assets/images/order.svg";
 import MyPageImg from "assets/images/myPage.svg";
+import KeyImg from "assets/images/Key.svg";
 import HeartChargeModal from "components/Modal/HeartChargeModal";
 import MyPageModal from "components/Modal/MyPageModal";
 // TODO: 하트를 받을 시 해당 모달 팝업
@@ -22,11 +24,17 @@ import ReceivedHeartModal from "components/Modal/ReceivedHeartModal";
 // TODO: 헌팅 성공 시 해당 모달 팝업
 import HuntingSuccessModal from "components/Modal/HuntingSucessModal"; 
 
+import AlarmModal from "components/Modal/Alarm/AlarmModal";
+
 const Home = () => {
   const [isOpenServerModal, setIsOpenServerModal] = useState(false);
   const [isOpenHeartChargeModal, setIsOpenHeartChargeModal] = useState(false);
   const [isOpenMyPageModal, setIsOpenMyPageModal] = useState(false);
+  const [isOpenAlarmModal, setIsOpenAlarmModal] = useState(false);
   const [filter, setFilter] = useState('all'); // 기본 필터는 전체
+
+  // TODO: 알람 상태 확인을 위한 임시 코드, 알람이 있으면 빨간색 알람 이미지로 전환
+  const [alarms, setAlarms] = useState([]);
 
   let myTableInfo = null;
   let likes = 0;
@@ -121,6 +129,8 @@ const Home = () => {
       setIsOpenHeartChargeModal(true);
     } else if (modalType === "myPage") {
       setIsOpenMyPageModal(true);
+    } else if (modalType === "alarm") {
+      setIsOpenAlarmModal(true);
     }
   };
 
@@ -131,6 +141,8 @@ const Home = () => {
       setIsOpenHeartChargeModal(false);
     } else if (modalType === "myPage") {
       setIsOpenMyPageModal(false);
+    } else if (modalType === "alarm") {
+      setIsOpenAlarmModal(false);
     }
   };
 
@@ -154,7 +166,13 @@ const Home = () => {
               <img className="landing" src={HomeImg} alt="homepage img"></img>
             </Link>   
             <span>바른주점</span>
-            <img className="alarmImg" src={AlarmImg} alt="alarm img"></img>
+            {/* TODO: 알람 상황별로  display */}
+            <button className="alarmBtn" onClick={() => onClickButton("alarm")}>
+              <img className="alarmImg" src={alarms.length > 0 ? RedAlarmImg : AlarmImg} alt="alarm img"></img>
+            </button>
+            {isOpenAlarmModal && (
+            <AlarmModal open={isOpenAlarmModal} onClose={() => onCloseModal("alarm")}></AlarmModal>
+          )} 
           </nav>
           <div id="subNav">
             <div id="subNavFilter">
@@ -173,13 +191,13 @@ const Home = () => {
                   <span>남자</span>
                 </button>
               </div>
-              <div className="filterBtn">
-                <button className="mixedFilter" onClick={() => setFilter('mixed')}>
-                  <span>혼성</span>
-                </button>
-              </div>
             </div>
             <div id="statusWindow">
+              <div className="showEnterCode">
+                <img src={KeyImg} alt="key img"></img>
+                {/* TODO: 보안코드 */}
+                <span>NNNN</span>
+              </div>
               <div className="leftoverHeart">
                 <img src={SendHeartImg} alt="sendHeart img"></img>
                 <span className="heartMultiple">X</span>

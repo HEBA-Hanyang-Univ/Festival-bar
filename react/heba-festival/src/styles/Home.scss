@@ -23,6 +23,17 @@ nav {
     margin: 0;
   }
 
+  .alarmBtn {
+    border: none;
+    background-color: #fff;
+    
+    img {
+      margin: 0;
+      width: 2rem;
+      height: 2rem;
+    }
+  }
+
   .landing {
     width: 2rem;
     height: 2rem;
@@ -43,9 +54,9 @@ nav {
   #subNavFilter {
     float: left;
     display: grid;
-    width: 60%;
+    width: 50%;
     height: 100%;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
 
     .filterBtn {
       display: flex;
@@ -71,11 +82,28 @@ nav {
 
   #statusWindow {
     float: right;
-    width: 28%;
+    width: 42%;
     height: 100%;
     margin-right: 2rem;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+
+    .showEnterCode {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+
+      img {
+        width: 1.8rem;
+        height: 2rem;
+      }
+
+      span {
+        margin-left: 0.5rem;
+        margin-right: 0.5rem;
+      }
+    }
 
     .leftoverHeart {
       display: flex;
