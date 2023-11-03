@@ -166,7 +166,8 @@ const Home = () => {
               <img className="landing" src={HomeImg} alt="homepage img"></img>
             </Link>   
             <span>바른주점</span>
-            <button className="alarmBtn" onClick={() => onCloseModal("alarm")}>
+            {/* TODO: 알람 상황별로  display */}
+            <button className="alarmBtn" onClick={() => onClickButton("alarm")}>
               <img className="alarmImg" src={alarms.length > 0 ? RedAlarmImg : AlarmImg} alt="alarm img"></img>
             </button>
             {isOpenAlarmModal && (
