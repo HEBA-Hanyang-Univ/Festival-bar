@@ -9,6 +9,7 @@ import Table from "components/Table";
 import Dashed from "assets/images/dashed.svg";
 import HomeImg from "assets/images/home.svg";
 import AlarmImg from "assets/images/alarm.svg";
+import RedAlarmImg from "assets/images/RedAlarm.svg";
 import SendHeartImg from "assets/images/SendHeart.svg";
 import TimeImg from "assets/images/time.svg";
 import CallServerImg from "assets/images/server.svg";
@@ -22,11 +23,17 @@ import ReceivedHeartModal from "components/Modal/ReceivedHeartModal";
 // TODO: 헌팅 성공 시 해당 모달 팝업
 import HuntingSuccessModal from "components/Modal/HuntingSucessModal"; 
 
+import AlarmModal from "components/Modal/Alarm/AlarmModal";
+
 const Home = () => {
   const [isOpenServerModal, setIsOpenServerModal] = useState(false);
   const [isOpenHeartChargeModal, setIsOpenHeartChargeModal] = useState(false);
   const [isOpenMyPageModal, setIsOpenMyPageModal] = useState(false);
+  const [isOpenAlarmModal, setIsOpenAlarmModal] = useState(false);
   const [filter, setFilter] = useState('all'); // 기본 필터는 전체
+
+  // TODO: 알람 상태 확인을 위한 임시 코드, 알람이 있으면 빨간색 알람 이미지로 전환
+  const [alarms, setAlarms] = useState([]);
 
   let myTableInfo = null;
   let likes = 0;
@@ -121,6 +128,8 @@ const Home = () => {
       setIsOpenHeartChargeModal(true);
     } else if (modalType === "myPage") {
       setIsOpenMyPageModal(true);
+    } else if (modalType === "alarm") {
+      setIsOpenAlarmModal(true);
     }
   };
 
@@ -131,6 +140,8 @@ const Home = () => {
       setIsOpenHeartChargeModal(false);
     } else if (modalType === "myPage") {
       setIsOpenMyPageModal(false);
+    } else if (modalType === "alarm") {
+      setIsOpenAlarmModal(false);
     }
   };
 
@@ -154,7 +165,12 @@ const Home = () => {
               <img className="landing" src={HomeImg} alt="homepage img"></img>
             </Link>   
             <span>바른주점</span>
-            <img className="alarmImg" src={AlarmImg} alt="alarm img"></img>
+            <button className="alarmBtn" onClick={() => onCloseModal("alarm")}>
+              <img className="alarmImg" src={alarms.length > 0 ? RedAlarmImg : AlarmImg} alt="alarm img"></img>
+            </button>
+            {isOpenAlarmModal && (
+            <AlarmModal open={isOpenAlarmModal} onClose={() => onCloseModal("alarm")}></AlarmModal>
+          )} 
           </nav>
           <div id="subNav">
             <div id="subNavFilter">
