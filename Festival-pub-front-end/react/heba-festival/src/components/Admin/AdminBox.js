@@ -128,6 +128,7 @@ const AdminBox = ({
             marginTop: "2.1rem",
             marginLeft: "-5rem",
             marginRadius: "10px",
+            border: "2px solid red",
           }}
           alt="Time Out"
         />
@@ -144,6 +145,7 @@ const AdminBox = ({
               marginTop: "2.2rem",
               marginLeft: "-5rem",
               marginRadius: "10px",
+              border: "2px solid red",
             }}
             alt="Door"
           />
