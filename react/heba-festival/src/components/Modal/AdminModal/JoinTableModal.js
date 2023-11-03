@@ -30,7 +30,7 @@ function JoinTableModal({ onClose, selectedBoxes, zIndex }) {
       <div className="overlay">
         <div className="adminModalWrap" ref={modalRef}>
           <div className="adminModalTitle">
-            <span>{selectedBoxesArray.join(", ")}번 테이블</span>
+            <span className="selectnum">{selectedBoxesArray.join(", ")}번 테이블</span>
           </div>
           <div className="adminModalContent">
             <span className="joinSpan">몇 번 테이블로 합석처리<br></br>하시겠습니까?<br></br></span>

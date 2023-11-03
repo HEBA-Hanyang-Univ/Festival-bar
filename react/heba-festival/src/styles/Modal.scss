@@ -65,15 +65,19 @@
   }
 }
 
-.serverContent { padding-top: 2rem; }
-.heartContent { padding-top: 0.5rem; }
+.serverContent {
+  padding-top: 2rem;
+}
+.heartContent {
+  padding-top: 0.5rem;
+}
 
 .heartChargeBtnBox {
   margin-top: -1rem;
 }
 
 .whiteBtn {
-  margin-right: 0.5rem !important; 
+  margin-right: 0.5rem !important;
   border: 1px solid #87deff !important;
   background-color: #fff !important;
 
@@ -137,9 +141,9 @@
 
       img {
         width: 6.5rem;
-        height: 5.5rem  ;
+        height: 5.5rem;
       }
-      
+
       span {
         margin-top: 0.5rem;
         color: #000;
@@ -163,7 +167,7 @@
 
 .modifyIntroduce {
   margin-top: 1.6rem;
-  
+
   .modifyIntroduceTitle {
     display: flex;
     flex-direction: column;
@@ -220,7 +224,7 @@
 
   .enterCodeField {
     outline: none;
-    border: 3px solid #FFC555;
+    border: 3px solid #ffc555;
     border-radius: 0.94rem;
     width: 10rem;
     height: 3.2rem;
@@ -286,9 +290,9 @@
       height: 3.5rem;
     }
   }
-  
+
   .SendHeartSpan {
-    span { 
+    span {
       font-size: 4.3rem;
       font-weight: 700;
     }
@@ -314,7 +318,6 @@
   margin-right: 2rem;
 }
 
-
 // Admin
 .adminModalWrap {
   position: absolute;
@@ -333,7 +336,15 @@
     font-size: 2.6rem;
     font-weight: 700;
   }
-  
+
+  .selectnum {
+    margin-left: 1%;
+    margin-right: 1%;
+    max-width: 5rem;
+    text-overflow: ellipsis;
+    white-space: pre-wrap; /* 줄 바꿈을 허용하는 속성 */
+  }
+
   .adminModalContent {
     margin-top: 3rem;
     margin-bottom: 3rem;
@@ -342,9 +353,13 @@
       font-size: 1.8rem;
       font-weight: 400;
     }
-    
+
     .joinSpan {
       font-weight: 600;
+    }
+    .subtext {
+      margin-left: -8%;
+      margin-right: 5%;
     }
 
     input {
