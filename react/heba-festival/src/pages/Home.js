@@ -16,6 +16,7 @@ import CallServerImg from "assets/images/server.svg";
 import HeartChargeImg from "assets/images/chargeHeart.svg";
 import OrderImg from "assets/images/order.svg";
 import MyPageImg from "assets/images/myPage.svg";
+import KeyImg from "assets/images/Key.svg";
 import HeartChargeModal from "components/Modal/HeartChargeModal";
 import MyPageModal from "components/Modal/MyPageModal";
 // TODO: 하트를 받을 시 해당 모달 팝업
@@ -189,13 +190,13 @@ const Home = () => {
                   <span>남자</span>
                 </button>
               </div>
-              <div className="filterBtn">
-                <button className="mixedFilter" onClick={() => setFilter('mixed')}>
-                  <span>혼성</span>
-                </button>
-              </div>
             </div>
             <div id="statusWindow">
+              <div className="showEnterCode">
+                <img src={KeyImg} alt="key img"></img>
+                {/* TODO: 보안코드 */}
+                <span>NNNN</span>
+              </div>
               <div className="leftoverHeart">
                 <img src={SendHeartImg} alt="sendHeart img"></img>
                 <span className="heartMultiple">X</span>

@@ -51,7 +51,7 @@ function LockModal({ onClose }) {
             <img src={LockImg} alt="lock img"></img>
           </div>
           <div className="enterCode">
-            <input className="enterCodeField" value={code} onChange={handleChange} maxLength="6"></input>
+            <input className="enterCodeField" value={code} onChange={handleChange} maxLength="4"></input>
           </div>
         </div>
       </div>

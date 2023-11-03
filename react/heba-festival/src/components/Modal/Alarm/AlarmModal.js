@@ -5,9 +5,9 @@ import ModalContainer from "../ModalContainer";
 
 import LeftTimeAlarm from "./LeftTimeAlarm";
 import ExitTimeAlarm from "./ExitTimeAlarm";
-import RejectedHeartAlarm from "./RejectHeartAlarm";
 import MatchedAlarm from "./MatchedAlarm";
-import ReceivedHeartAlarm from "./ReceivedHeartAlarm";
+import ReceivedHeartAlarm from "./ReceivedHeart";
+import RejectedHeartAlarm from "./RejectedHeart";
 
 const AlarmModal = ({onClose}) => {
   const modalRef = useRef(null);
