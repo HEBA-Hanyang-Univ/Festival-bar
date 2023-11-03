@@ -1,163 +1,19 @@
 import React, { useState, useEffect } from "react";
 import "styles/Admin.css";
-import CurrentDateTime from "components/CurrentDateTime";
-import Man from "assets/images/Man.svg";
-import Woman from "assets/images/Woman.svg";
-import Couple from "assets/images/Couple.svg";
-import Matched from "assets/images/Matched.svg";
 import Title from "assets/images/Title.svg";
 import Tiger from "assets/images/Tiger.svg";
 import Call from "assets/images/Call.svg";
-import TimeOut from "assets/images/Timeout.svg";
-import Door from "assets/images/Door.svg";
 
+import AdminBox from "components/Admin/AdminBox.js";
+import AlarmBorder from "components/Admin/AlarmBorder.js";
 import TableInfoModal from "components/Modal/AdminModal/TableInfoModal";
 import TimeModal from "components/Modal/AdminModal/TimeModal";
 import HeartModal from "components/Modal/AdminModal/HeartModal";
 import ExitTableModal from "components/Modal/AdminModal/ExitTableModal";
 import JoinTableModal from "components/Modal/AdminModal/JoinTableModal";
 
-export let Box = ({
-  number,
-  value,
-  isSelected,
-  person,
-  time,
-  onBoxClick,
-  onButtonClick,
-  exitRequested,
-}) => {
-  const initialBoxOptions = {
-    man: { color: "#80C2FF", image: Man, alt: "Man" },
-    woman: { color: "#FF8FD2", image: Woman, alt: "Woman" },
-    mix: { color: "#FFC555", image: Couple, alt: "Couple" },
-    join: { color: "#DD7DFF", image: Couple, alt: "Couple" },
-    empty: { color: "#C8C8C8", image: null, alt: "" },
-  };
-
-  let [boxOptions, setBoxOptions] = useState(initialBoxOptions);
-  let [selectedBox, setSelectedBox] = useState(null);
-  let [selectedBoxes, setSelectedBoxes] = useState([]);
-
-  const { color, image } = boxOptions[value] || boxOptions.empty;
-
-  const boxStyle = {
-    backgroundColor: color,
-    position: "relative",
-  };
-
-  const boxNumberStyle = {
-    color: time === "00:00" && !exitRequested ? "red" : "white", // 조건에 따라 빨간색 또는 검은색
-  };
-
-  const imgStyle = {
-    position: "absolute",
-    marginTop: "20px",
-    marginLeft: "-40px",
-    width: "60px",
-    height: "60px",
-  };
-
-  const personnumberStyle = {
-    position: "absolute",
-    marginTop: "28px",
-    marginLeft: "30px",
-    fontSize: "4rem",
-    fontWeight: "800",
-  };
-  const buttonStyle = {
-    backgroundColor: isSelected
-      ? "black"
-      : time === "00:00" && !exitRequested
-      ? "white"
-      : color,
-    border: "none",
-    border: "none",
-    borderRadius: "50%",
-    padding: "10px",
-    cursor: "pointer",
-    position: "absolute",
-    top: "10px",
-    left: "120px",
-  };
-
-  // TODO: 10보다 시간이 작은 경우에 따라 빨간색으로 색상 변화 -> 이렇게 해도 될까요?
-  const timeStyle = {
-    position: "absolute",
-    marginTop: "75px",
-    marginLeft: "-32px",
-    fontSize: "2.5rem",
-    fontWeight: "800",
-    color:
-      time <= "10:00"
-        ? "red"
-        : time === "00:00" && !exitRequested
-        ? "red"
-        : "black",
-  };
-
-  const handleButtonClick = (event, boxNumber) => {
-    event.stopPropagation();
-    onButtonClick(event, number);
-  };
-
-  return (
-    <div
-      className="box"
-      style={{
-        ...boxStyle,
-        ...(time === "00:00" || exitRequested
-          ? { backgroundColor: "#fff" }
-          : {}),
-      }}
-      onClick={() => onBoxClick(number)}
-    >
-      <span style={boxNumberStyle} className="box-number">
-        {number}번
-      </span>
-      {image && <img src={image} style={imgStyle} />}
-      <button style={buttonStyle} onClick={handleButtonClick}></button>
-      {person !== 0 && person !== "0" && (
-        <span style={personnumberStyle}>{person} </span>
-      )}
-      <span style={timeStyle}>{time} </span>
-      {time === "00:00" && !exitRequested && (
-        <img
-          src={TimeOut}
-          style={{
-            ...imgStyle,
-            backgroundColor: "white",
-            width: "12rem",
-            height: "9rem",
-            marginTop: "2.2rem",
-            marginLeft: "-5rem",
-            marginRadius: "10px",
-          }}
-          alt="Time Out"
-        />
-      )}
-      {exitRequested && (
-        <div style={{ position: "relative" }}>
-          <img
-            src={Door}
-            style={{
-              ...imgStyle,
-              backgroundColor: "white",
-              width: "12rem",
-              height: "9rem",
-              marginTop: "2.2rem",
-              marginLeft: "-5rem",
-              marginRadius: "10px",
-            }}
-            alt="Door"
-          />
-        </div>
-      )}
-    </div>
-  );
-};
-
 function Admin() {
+  // TODO: useState 제거하고 let으로 변경하기
   const [isOpenTableInfoModal, setIsOpenTableInfoModal] = useState(false);
   const [isOpenTimeModal, setIsOpenTimeModal] = useState(false);
   const [isOpenHeartModal, setIsOpenHeartModal] = useState(false);
@@ -200,6 +56,7 @@ function Admin() {
     return { number, value, person, time };
   });
 
+  //박스 생성
   const boxesPerRow = 6;
   const totalRows = Math.ceil(boxData.length / boxesPerRow);
 
@@ -210,6 +67,7 @@ function Admin() {
     return rowBoxes;
   });
 
+  // 박스 클릭시 나오는 모달창
   const onClickButton = (modalType) => {
     if (modalType === "tableInfo") {
       setIsOpenTableInfoModal(true);
@@ -249,8 +107,6 @@ function Admin() {
     setIsOpenTableInfoModal(true);
   };
 
-  // TODO: 버튼 선택시 value 관련 연결
-
   const [isButtonSelected, setIsButtonSelected] = useState(false);
   const toggleModal = () => {
     setIsOpenTableInfoModal(!isOpenTableInfoModal);
@@ -266,62 +122,46 @@ function Admin() {
     }
   };
 
-  const handleAllClick = () => {
-    setIsButtonSelected((prevIsButtonSelected) => !prevIsButtonSelected);
-  };
+  // TODO: 버튼 선택시 실행되는 부분 (주석으로 처리했습니다), 회색으로 전환할 경우에 사용할지 몰라 코드를 남겨두겠습니다
 
-  useEffect(() => {
-    if (isButtonSelected) {
-      const allBoxNumbers = Array.from({ length: 30 }, (_, index) => index + 1);
-      setSelectedBoxes(allBoxNumbers);
-    } else {
-      const allBoxNumbers = Array.from({ length: 30 }, (_, index) => index + 1);
-      setSelectedBoxes([]);
-    }
-  }, [isButtonSelected]);
+  // const handleAllClick = () => {
+  //   setIsButtonSelected((prevIsButtonSelected) => !prevIsButtonSelected);
+  // };
 
-  /*  TODO: 알람데이터 연결 */
+  // useEffect(() => {
+  //   if (isButtonSelected) {
+  //     const allBoxNumbers = Array.from({ length: 30 }, (_, index) => index + 1);
+  //     setSelectedBoxes(allBoxNumbers);
+  //   } else {
+  //     const allBoxNumbers = Array.from({ length: 30 }, (_, index) => index + 1);
+  //     setSelectedBoxes([]);
+  //   }
+  // }, [isButtonSelected]);
+
+  /*  TODO: 알람데이터 연결 + 알람 타입 넣어주기 */
   let [alarmData, setAlarmData] = useState([
     {
-      alarmtype: "[합석처리]",
       alarm: "1번, 2번 테이블의 합석처리를 진행해주세요.",
       time: "19:20",
     },
     {
-      alarmtype: "[하트충전]",
       alarm: "4번 테이블의 하트 N개를 충전해주세요.",
       time: "19:20",
     },
     {
-      alarmtype: "[직원 호출] ",
       alarm: "9번 테이블에서 직원을 호출했습니다.",
       time: "19:20",
     },
     {
-      alarmtype: "[테이블 비우기] ",
       alarm: "5번 테이블을 비워주세요.",
       time: "19:20",
     },
     {
-      alarmtype: "[테이블 비우기]",
       alarm: "4번, 16번 시간이 초과되었습니다.",
       time: "19:20",
     },
   ]);
-  // TODO: 피그마에서 합석처리, 하트충전, 직원호출, 테이블 비우기에 따라 색상 변화 -> 적용이 안되고 있음
-  const getColor = (alarmtype) => {
-    if (alarmtype.includes("합석처리")) {
-      return "#DD7DFF";
-    } else if (alarmtype.includes("하트충전")) {
-      return "#FF8FD2";
-    } else if (alarmtype.includes("직원 호출")) {
-      return "#FFC555";
-    } else if (alarmtype.includes("테이블 비우기")) {
-      return "#C8C8C8";
-    }
-    // 기본값으로 원하는 다른 색상을 지정할 수도 있습니다.
-    return "#000";
-  };
+
   const onDelete = (index) => {
     // 삭제 로직을 구현합니다.
     // 예를 들어, alarmData 배열에서 index에 해당하는 항목을 제거할 수 있습니다.
@@ -331,6 +171,7 @@ function Admin() {
     setAlarmData(updatedAlarmData);
   };
 
+  // 현재 시간 출력
   const CurrentDateTime = () => {
     let [currentDateTime, setCurrentDateTime] = useState(new Date());
 
@@ -360,43 +201,58 @@ function Admin() {
   return (
     <div className="admin_body">
       <div class="v-line"></div>
-      <div class="h-line1"></div>
-      <div class="h-line2"></div>
-      <div class="h-line3"></div>
-      <div class="h-line4"></div>
-      <div class="h-line5"></div>
-      <div class="h-line6"></div>
+
       <header>
         <div class="admin_header">
           <div class="main-title">
             <img className="title-tiger" src={Tiger} alt="Tiger"></img>
-            <img src={Title} alt="Title"></img>
+            <img className="title-logo" src={Title} alt="Title"></img>
           </div>
           <div className="digital-clock">
             <CurrentDateTime />
           </div>
         </div>
+
         <div class="title-alarm">
           <p class="title-notice">
             <strong>NOTICE</strong>
           </p>
           <img class="title-bell" src={Call} alt="Call Image" />
         </div>
+        <div className="alarmborderbox !important">
+          <AlarmBorder />
+        </div>
         {/* TODO: 알람 데이터 연결 */}
         <div className="alarm-container">
           {alarmData.map((item, index) => {
-            const color = getColor(item.alarmtype);
             return (
-              <div key={index} className="alarm-item" style={{ color: color }}>
+              <div key={index} className="alarm-item">
                 <button className="alarmdel" onClick={() => onDelete(index)}>
-                  x
+                  <span className="alarmbtn">x</span>
                 </button>
                 <br />
-                <p>
-                  {item.alarmtype}
-                  &nbsp;
-                  {item.alarm}
-                </p>
+                {/* 알람데이터 type에 따라 color 지정 */}
+                <span
+                  style={{
+                    color:
+                      alarmData.type === "join"
+                        ? "#DD7DFF"
+                        : alarmData.type === "heart"
+                        ? "#FF8FD2"
+                        : alarmData.type === "call"
+                        ? "#FFC555"
+                        : "#C8C8C8",
+                  }}
+                >
+                  {alarmData.type === "join"
+                    ? "[합석처리]"
+                    : alarmData.type === "heart"
+                    ? "[하트충전]"
+                    : alarmData.type === "call"
+                    ? "[직원 호출]"
+                    : "[테이블 비우기]"}
+                </span>
+                <span className="alarm-message">{item.alarm}</span>
                 <p>{item.time}</p>
               </div>
             );
@@ -436,7 +292,7 @@ function Admin() {
       </div>
 
       <div class="box-lists">
-        <div class="table-container">
+        <div className="box-container">
           {Array.from({ length: boxesPerRow }, (_, columnIndex) => (
             <div className="table-column" key={columnIndex}>
               {Array.from({ length: totalRows }, (_, rowIndex) => {
@@ -444,7 +300,7 @@ function Admin() {
                 const box = boxData[boxIndex];
                 if (box) {
                   return (
-                    <Box
+                    <AdminBox
                       key={box.number}
                       number={box.number}
                       value={box.value}
@@ -519,9 +375,9 @@ function Admin() {
               onClose={() => onCloseModal("joinTable")}
             ></JoinTableModal>
           )}
-          <button class="table_choice" onClick={handleAllClick}>
-            테이블 선택
-          </button>
+          {/* TODO: 테이블 선택을 눌렀을 때 적용할 코드 적용 */}
+          {/* <button class="table_choice" onClick={handleAllClick}> */}
+          <button class="table_choice">테이블 선택</button>
         </div>
       </div>
     </div>

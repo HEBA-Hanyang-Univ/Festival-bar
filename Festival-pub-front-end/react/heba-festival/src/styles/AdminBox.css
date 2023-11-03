@@ -1,0 +1,18 @@
+.box {
+  position: absolute;
+  width: 20rem;
+  height: 14rem;
+  border: 1px solid black;
+  padding: 0.5rem;
+  border-radius: 10%;
+  margin: 1rem;
+}
+
+.box-number {
+  position: absolute;
+  top: 0;
+  margin-left: -45%;
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #fff;
+}
