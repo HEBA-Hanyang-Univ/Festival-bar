@@ -1,0 +1,23 @@
+.checkbox-label input[type="checkbox"] {
+  display: none; /* 원본 체크박스를 숨김 */
+}
+
+.checkbox-label {
+  position: absolute;
+  display: inline-block;
+  top: 0.5rem;
+  left: 0.5rem;
+  width: 1rem; /* 너비 */
+  height: 1rem; /* 높이 */
+  border-radius: 50%; /* 동그란 모양을 위한 라운드 처리 */
+  cursor: pointer;
+  background-color: transparent; /* 체크박스의 배경색 */
+  border: 1px solid black; /* 체크박스의 테두리 색상 */
+  zoom: 1.5;
+}
+
+/* 체크된 상태의 스타일 */
+.change input,
+.change progress {
+  accent-color: black;
+}

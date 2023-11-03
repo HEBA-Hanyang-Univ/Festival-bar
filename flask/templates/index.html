@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>테이블 정보</title>
+</head>
+<body>
+    <h1>테이블 정보</h1>
+    <p>테이블 번호: {{ table_info['table_no'] }}</p>
+
+    <button><a href="/order/{{ token }}">주문하기</a></button>
+    <form action="/hunting" method="post">
+        <input type="hidden" name="token" value="{{ token }}">
+        <button type="submit">헌팅하기</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,423 @@
+.overlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+}
+
+.modalWrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 24rem;
+  border: 3px solid #87deff;
+  border-radius: 1.4375rem;
+  background-color: #fff;
+  height: fit-content;
+}
+
+.modalTitle {
+  height: 3rem;
+  text-align: left;
+  margin-top: 1.3rem;
+  margin-left: 2rem;
+
+  span {
+    color: #000;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  height: 10rem;
+  margin: 0 auto;
+
+  span {
+    color: #000;
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+
+  button {
+    margin: 2.3rem auto 0;
+    height: 1.9rem;
+    align-items: center;
+    width: 8rem;
+    border: none;
+    border-radius: 0.625rem;
+    background-color: #87deff;
+
+    span {
+      color: #fff;
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+  }
+}
+
+.serverContent { padding-top: 2rem; }
+.heartContent { padding-top: 0.5rem; }
+
+.heartChargeBtnBox {
+  margin-top: -1rem;
+}
+
+.whiteBtn {
+  margin-right: 0.5rem !important; 
+  border: 1px solid #87deff !important;
+  background-color: #fff !important;
+
+  span {
+    color: #2d63a4 !important;
+  }
+}
+
+.closeBtnBox {
+  margin-top: 1.5rem;
+  display: flex;
+  float: right;
+  width: 2rem;
+  height: 2rem;
+
+  .closeBtn {
+    position: fixed;
+    right: 2rem;
+    border: none;
+    background-color: transparent;
+
+    img {
+      width: 1.3rem;
+      height: 1.3rem;
+    }
+  }
+}
+
+.myPageWrap {
+  display: flex;
+  flex-direction: column;
+  width: 85% !important;
+}
+
+.myPageTitle {
+  margin: 0 auto;
+
+  span {
+    color: #000;
+    font-size: 2rem;
+    font-weight: 600;
+    letter-spacing: 0.1rem;
+  }
+}
+
+.myPageContent {
+  height: 30rem;
+  display: flex;
+  flex-direction: column;
+
+  .modifyCount {
+    margin-top: 2.8rem;
+    margin-left: 4rem;
+    margin-right: 2rem;
+    display: flex;
+
+    .genderImgBox {
+      display: flex;
+      flex-direction: column;
+      margin-right: 3.58rem;
+
+      img {
+        width: 6.5rem;
+        height: 5.5rem  ;
+      }
+      
+      span {
+        margin-top: 0.5rem;
+        color: #000;
+        text-align: center;
+        font-size: 1.3rem;
+        font-weight: 600;
+        letter-spacing: 0.0625rem;
+      }
+    }
+    .modifyCountBox {
+      span {
+        color: #000;
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: 500;
+        letter-spacing: 0.065rem;
+      }
+    }
+  }
+}
+
+.modifyIntroduce {
+  margin-top: 1.6rem;
+  
+  .modifyIntroduceTitle {
+    display: flex;
+    flex-direction: column;
+
+    span {
+      color: #000;
+      font-size: 1.5rem;
+      font-weight: 400;
+      letter-spacing: 0.065rem;
+    }
+
+    textarea {
+      margin: 0 auto;
+      margin-top: 1rem;
+      width: 28rem;
+
+      border-radius: 0.875rem;
+      border: 1.5px solid #bababa;
+    }
+  }
+}
+
+.myPageBtn {
+  margin: 1rem auto 3rem;
+  border: none;
+  border-radius: 5.9375rem;
+  background-color: #87deff;
+  width: 15rem;
+  height: 4rem;
+
+  span {
+    color: #fff;
+    font-size: 1.3rem;
+    font-weight: 700;
+  }
+}
+
+.huntingModal {
+  margin-top: 1rem;
+}
+
+.lockModalImg {
+  margin-top: -0.7rem;
+  margin-bottom: 0.3rem;
+
+  img {
+    width: 4rem;
+    height: 6rem;
+  }
+}
+
+.enterCode {
+  margin-bottom: 1.2rem;
+
+  .enterCodeField {
+    outline: none;
+    border: 3px solid #FFC555;
+    border-radius: 0.94rem;
+    width: 10rem;
+    height: 3.2rem;
+    text-align: center;
+    padding-left: 0.6rem;
+
+    font-size: 3rem;
+    letter-spacing: 0.7rem;
+
+    &:focus {
+      caret-color: transparent;
+    }
+  }
+}
+
+.tableInfoBtn {
+  display: flex;
+  justify-content: space-around;
+}
+
+.modalBtnBox {
+  margin-top: -0.3rem;
+
+  .btnBlank {
+    border: 1px solid #87deff;
+    background-color: #fff;
+    border-radius: 1.2rem;
+    width: 7rem;
+    height: 2rem;
+
+    span {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #87deff;
+    }
+  }
+
+  .btnFilled {
+    border: none;
+    background-color: #87deff;
+    border-radius: 1.2rem;
+    margin-right: 1.8rem;
+    width: 7rem;
+    height: 2rem;
+
+    span {
+      font-size: 1rem;
+      font-weight: 7z00;
+      color: #fff;
+    }
+  }
+}
+
+.SendHeartTop {
+  display: flex;
+  margin: 0 auto;
+
+  .SendHeartImgBox {
+    img {
+      margin-top: 1rem;
+      margin-right: 0.3rem;
+      width: 5rem;
+      height: 3.5rem;
+    }
+  }
+  
+  .SendHeartSpan {
+    span { 
+      font-size: 4.3rem;
+      font-weight: 700;
+    }
+  }
+}
+
+.sendHeartMiddle {
+  margin: 0 auto;
+  margin-bottom: -0.5 rem;
+
+  span {
+    font-size: 1rem;
+    font-weight: 400;
+  }
+}
+
+.btnFilled {
+  border: none;
+  background-color: #87deff;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #fff;
+  margin-right: 2rem;
+}
+
+
+// Admin
+.adminModalWrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 45rem;
+  border: 3px solid #87deff;
+  border-radius: 1.4375rem;
+  background-color: #fff;
+  height: fit-content;
+
+  .adminModalTitle {
+    margin-top: 5rem;
+    color: #000;
+    font-size: 2.6rem;
+    font-weight: 700;
+  }
+  
+  .adminModalContent {
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+
+    span {
+      font-size: 1.8rem;
+      font-weight: 400;
+    }
+    
+    .joinSpan {
+      font-weight: 600;
+    }
+
+    input {
+      margin-top: 3rem;
+      width: 9rem;
+      height: 3rem;
+      text-align: center;
+
+      font-size: 2rem;
+    }
+
+    .joinTableNum {
+      border: 1px solid;
+    }
+  }
+
+  .adminModalBtn {
+    margin-bottom: 3rem;
+
+    button {
+      width: 15rem;
+      height: 4rem;
+      border-radius: 5.9rem;
+      background-color: #87deff;
+      border: none;
+
+      span {
+        text-align: center;
+        color: #fff;
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+    }
+  }
+}
+
+.timeSet {
+  button {
+    background-color: #fff;
+    width: 3rem;
+    height: 3rem;
+    border: 1px solid #000;
+    font-weight: 500;
+    font-size: 1.6rem;
+  }
+
+  input {
+    width: 11rem;
+    border: none;
+    text-align: center;
+    font-size: 1.6rem;
+    font-weight: 700;
+  }
+}
+
+.adminBtnBox {
+  margin: 2rem auto;
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+
+  button {
+    width: 12rem;
+    height: 4rem;
+    border-radius: 6rem;
+  }
+}
+
+.tableInfoBox {
+  margin: 3rem auto;
+
+  .tableInfo {
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 180%;
+  }
+}
