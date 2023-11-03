@@ -191,6 +191,7 @@ def reject(my_table, reject_table):
 
     if reject_table in table_data[my_table-1]['received']:
         table_data[reject_table-1]['rejected'].insert(0, my_table)
+        table_data[my_table-1]['rejected'].insert(0, reject_table)
         # table_data[reject_table-1]['record'].insert(0,[f'{my_table}번 테이블에서 하트를 거절했습니다.', datetime.now().strftime('%H:%M')])
         
         return "ok"
@@ -245,9 +246,9 @@ def join_table(from_where, to_where):
                     table_data[to_where-1]['join'] = True
                     table_data[to_where-1]['end_time'] = table_data[to_where-1]['end_time'] if table_data[to_where-1]['end_time'] > table_data[from_where-1]['end_time'] else table_data[from_where-1]['end_time']
                     table_data[to_where-1]['note'] = ""
-                    current_time = datetime.now()
-                    korea_tz = pytz.timezone('Asia/Seoul')
-                    korea_time = current_time.astimezone(korea_tz)
+                    # current_time = datetime.now()
+                    # korea_tz = pytz.timezone('Asia/Seoul')
+                    # korea_time = current_time.astimezone(korea_tz)
                     # table_data[to_where-1]['record'].insert(0, [f'{from_where}번 테이블과 성공적으로 매칭 되었습니다!',korea_time.strftime('%H:%M')])
 
                     table_data[from_where-1] = reset(from_where)
@@ -264,9 +265,20 @@ def join_table(from_where, to_where):
 
 ### 테이블 비우기
 def reset_table(table_no):
+    if table_data[table_no-1]['sent'] != []:
+        for sent_no in table_data[table_no-1]['sent']:
+            table_data[sent_no-1]['received'].remove(table_no)
+    if table_data[table_no-1]['rejected'] != []:
+        for reject_no in table_data[table_no-1]['rejected']:
+            table_data[reject_no-1]['rejected'].remove(table_no)
+    if table_data[table_no-1]['received'] != []:
+        for received_no in table_data[table_no-1]['received']:
+            table_data[received_no-1]['sent'].remove(table_no)    
+
     table_data[table_no-1] = reset(table_no)
 
     return "ok"
+
 
 
 ##########################################################
