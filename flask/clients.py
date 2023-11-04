@@ -165,9 +165,9 @@ def send_like():
     token = data.get('token')
     code = data.get('code')
     my_table = controller.get_table_no_by_token(token)
+    received_table = data.get('received_table')
 
     if type(my_table) == int and table_data[my_table-1]['code'] == code:
-        received_table = data.get('received_table')
         print(f'{my_table} table send a like to {received_table}')
         output['result'] = controller.send_like(my_table, received_table)
         return output
