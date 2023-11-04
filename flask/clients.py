@@ -57,10 +57,7 @@ def set_table():
         photo = data.get('photo')
         referrer = data.get('referrer')
         random_code = 0
-        while True:
-            random_code = random.randint(100000, 999999)
-            if random_code not in table_code_list:
-                break
+        random_code = str(random.randint(0000, 9999)).zfill(4)
         
         result = controller.set_table(table_no, nums, gender, photo, note, referrer, random_code)
         print(f'Table "{table_no}" has activated with code: {random_code}')
@@ -87,11 +84,6 @@ def get_all():
     data = request.get_json()
     token = data.get('token')
     code = data.get('code')
-    if isinstance(code, str) :
-        try :
-            code = int(code)
-        except Exception as e:
-            pass
 
     table_no = controller.get_table_no_by_token(token)
 
@@ -121,11 +113,7 @@ def get_table():
     token = data.get('token')
     admin_token = data.get('admin_token')
     code = data.get('code')
-    if isinstance(code, str) :
-        try : 
-            code = int(code)
-        except Exception as e:
-            pass
+    
     table_info = controller.get_table(controller.get_table_no_by_token(token))
 
     if table_info and controller.get_table_no_by_token(admin_token) == 'admin' \
@@ -148,10 +136,6 @@ def update_info():
     token = data.get('token')
     code = data.get('code')
     table_no = controller.get_table_no_by_token(token)
-    try :
-        code = int(code)
-    except Exception as e:
-        pass
 
     if type(table_no) == int and table_data[table_no-1]['code'] == code:
         print(f'table info update : {table_no}, {code}')
@@ -177,10 +161,6 @@ def send_like():
     token = data.get('token')
     code = data.get('code')
     my_table = controller.get_table_no_by_token(token)
-    try :
-        code = int(code)
-    except Exception as e :
-        pass
 
     if type(my_table) == int and table_data[my_table-1]['code'] == code:
         received_table = data.get('received_table')
@@ -205,10 +185,6 @@ def reject():
 
     token = data.get('token')
     code = data.get('code')
-    try :
-        code = int(code)
-    except Exception as e :
-        pass
 
     table_no = controller.get_table_no_by_token(token)
 
@@ -240,10 +216,6 @@ def call():
     token = data.get('token')
     join = data.get('join')
     code = data.get('code')
-    try :
-        code = int(code)
-    except Exception as e:
-        pass
 
     table_no = controller.get_table_no_by_token(token)
 
