@@ -41,6 +41,7 @@ function Admin() {
     const processIndividualData = (data) => {
       const remainedTime = (new Date(data.end_time).getTime() - currentTime) / 1000;
 
+      // count for each tables
       if (data.join) {
 	tableNums.joined += 1;
       } else if (data.gender === "male" || data.gender === "female" || data.gender === "mixed") {
@@ -49,6 +50,7 @@ function Admin() {
 	tableNums.empty += 1;
       }
 
+      // translate data to AdminTable (there's no onClick callback now)
       return (
 	<AdminTable tableNumber={ data.table_no } gender={ data.gender } headCount={ data.nums } 
 	huntingSuccess={ data.join } remainedTime={ remainedTime } managerCall={false} onClickTable={ ()=> {} } />
@@ -61,33 +63,6 @@ function Admin() {
   // !!! DO NOT MODIFY !!!
   const { token } = useParams();
   const navigate = useNavigate();
-  // Fetch Once for verify token
-  const verifyToken = async() => {
-    try {
-      const response = await fetch('http://150.230.252.177:5000/check-token', {
-        mode: 'cors',
-        method: 'POST',
-        body: JSON.stringify({
-          'token': token,
-	}),
-        headers: {'Content-Type': 'application/json', },
-      })
-      .then((res) => res.json())
-      .then((res) => {
-        if (data.result && data.result === 'ok' && data.table_no === 'admin') {
-          alert('admin verified');
-        } else {
-          navigate('/error');
-        }
-      });
-    } catch (error) {
-      navigate('/error');
-    }
-  }
-  
-  useEffect(() => {
-    verifyToken();
-  }, []);
 
   // Refetch query
   const queryclient = useQueryClient();
@@ -99,7 +74,7 @@ function Admin() {
         method : 'POST',
         headers : {'Content-Type': 'application/json',},
         body : JSON.stringify({
-          'admin_token': token,
+          'token': token,
         }),
       })
       .then((res) => res.json())
@@ -110,16 +85,19 @@ function Admin() {
       if (data.result && data.result !== 'fail') {
         return postProcessData(data.result);
       } else {
-        alert('data fetching failed!');
-	return[];
+	navigate('/error');
+	return [];
       }
     },
     refetchInterval : 1000, // data refetch for every 1 sec.
     refetchIntervalInBackground : true,
     initialData : () => {
-      return Array.from({ length: 30 }, (_, i) => <AdminTable tableNumber={ i+1 } gender="" 
-                        headCount={0} friendCode="" managerCall={false} huntingSuccess={false} 
-	                remainedTime={5400} />);
+      // this seems to be not working as intended...
+      return (
+        Array.from({ length: 30 }, (_, i) => {
+	  return({ table_no: i+1, gender: "", active: false, nums: 0, join: false, referrer: "", });
+        })
+      );
     },
   });
   
@@ -220,6 +198,7 @@ function Admin() {
     },
   ]);
 
+  // TODO: this function's name is ambiguous... should change it to onDeleteAlarm
   const onDelete = (index) => {
     // 삭제 로직을 구현합니다.
     // 예를 들어, alarmData 배열에서 index에 해당하는 항목을 제거할 수 있습니다.
@@ -322,25 +301,25 @@ function Admin() {
         <div class="table-man">{ tableNums.male }</div>
         <div class="table-woman">{ tableNums.female }</div>
         <div class="table-mixed">{ tableNums.mixed }</div>
-        <div class="table-join">{ tableNums.joind }</div>
+        <div class="table-join">{ tableNums.joined }</div>
         <div class="table-empty">{ tableNums.empty }</div>
       </div>
 
       <div class="admin_nav">
         <div class="info_table1">
-          <p class="info_title">남자 T</p>
+          <p class="info_title">남자&nbsp;T</p>
         </div>
 
         <div class="info_table2">
-          <p class="info_title">여자 T</p>
+          <p class="info_title">여자&nbsp;T</p>
         </div>
 
         <div class="info_table3">
-          <p class="info_title">혼성 T</p>
+          <p class="info_title">혼성&nbsp;T</p>
         </div>
 
         <div class="info_table4 q">
-          <p class="info_title">합석 T</p>
+          <p class="info_title">합석&nbsp;T</p>
         </div>
 
         <div class="info_table5">
@@ -350,6 +329,7 @@ function Admin() {
 
       {/* TODO: add AdminTable container style */}
       <div class="table-container">
+	{/* is it able to use <select> tag for multi-selct mode? */}
 	{/* isMultipleSelectMode && <select multiple={true} value={} onChange={}> */}
           { React.Children.toArray(data) }
 	{/* isMultipleSelectMode && </select> */}
