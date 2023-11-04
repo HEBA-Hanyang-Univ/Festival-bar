@@ -250,7 +250,8 @@ def join_table(from_where, to_where):
 
                     table_data[to_where-1]['record'].insert(0, {"type" : "matched", "from" : from_where, "time": set_time().strftime('%Y-%m-%d %H:%M:%S')})
 
-                    table_data[from_where-1] = reset(from_where)
+                    # table_data[from_where-1] = reset(from_where)
+                    reset_table(from_where)
 
                     return "ok"
                 else:
