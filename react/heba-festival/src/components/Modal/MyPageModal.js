@@ -50,7 +50,10 @@ function MyPageModal({ onClose }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    
+    if (quantityMan === 0 && quantityWoman === 0) {
+      return;
+    }
     fetch('http://150.230.252.177:5000/update-info', {
       mode:'cors',
       method:'POST',

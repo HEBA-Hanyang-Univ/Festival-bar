@@ -1,5 +1,6 @@
 import React, {useState, useRef, useEffect} from "react";
 import secureLocalStorage from "react-secure-storage";
+import {useNavigate} from "react-router-dom";
 import "styles/Modal.scss";
 import LockImg from "assets/images/Lock.svg";
 import ModalContainer from "./ModalContainer";
@@ -7,9 +8,15 @@ import ModalContainer from "./ModalContainer";
 function LockModal({ onClose }) {
   const modalRef = useRef(null)
   const [code, setCode] = useState('');
-  
+  const navigate = useNavigate();
+  const tableNumber = secureLocalStorage.getItem('table_no');
+   
+  if (tableNumber == null) {
+    navigate('/error');
+  }
+
   useEffect(() => {
-    if (code.length === 6) {
+    if (code.length === 4) {
       fetch('http://150.230.252.177:5000/get-table', {
         mode: 'cors',
 	method: 'POST',
@@ -45,7 +52,7 @@ function LockModal({ onClose }) {
       <div className="overlay">
         <div className="modalWrap" ref={modalRef}>
           <div className="modalTitle">
-            <span>{secureLocalStorage.getItem('table_no')}번 테이블</span>
+            <span>{tableNumber}번 테이블</span>
           </div>
           <div className="lockModalImg">
             <img src={LockImg} alt="lock img"></img>

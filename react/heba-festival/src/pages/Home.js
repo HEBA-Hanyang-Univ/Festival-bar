@@ -195,8 +195,7 @@ const Home = () => {
             <div id="statusWindow">
               <div className="showEnterCode">
                 <img src={KeyImg} alt="key img"></img>
-                {/* TODO: 보안코드 */}
-                <span>NNNN</span>
+                <span>{code}</span>
               </div>
               <div className="leftoverHeart">
                 <img src={SendHeartImg} alt="sendHeart img"></img>

@@ -27,7 +27,7 @@
         genderText = "";
         statusImg = CoupleMatched;
 	isSendAvailable = false;
-      } else if (gender === "group") {
+      } else if (gender === "mixed") {
         backgroundColor = "#FFC555"; // 성별 혼성 또는 기본값
         genderText = "혼성테이블";
 	isSendAvailable = false;

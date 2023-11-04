@@ -10,16 +10,16 @@ import LockModal from "components/Modal/LockModal";
 export const Landing = () => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(true);
-  const [dest, setDest] = useState('/landing');
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    fetchData();
   };
 
   const token = secureLocalStorage.getItem('token');
   // assume it's valid token if token is exist in secureLocalStorage
   // TODO: need to be change later
-  if (token == null) {
+  if (token == null || secureLocalStorage.getItem('table_no') == null) {
     navigate('/error');
   }
 
@@ -38,9 +38,7 @@ export const Landing = () => {
       .then((response) => {
         if (response.result === 'fail') {
           setIsModalOpen(true);
-        } else {
-	  window.alert('입장 코드는 "' + secureLocalStorage.getItem('code') + '" 입니다! 일행들에게 알려주세요');
-	  setDest('/home');
+        } else { 
 	  setIsModalOpen(false);
 	}
       });
@@ -51,11 +49,10 @@ export const Landing = () => {
 
   useEffect(() => {
     fetchData();
-  },[]);
+  }, []);
 
   return (
     <div className="homeWrap">
-      {/* 랜딩페이지 들어가자마자 열리도록? */}
       {isModalOpen && <LockModal onClose={handleCloseModal} />}
       <div className="homeImg">
         <img src={TigerImg} alt="tiger img"></img>
@@ -75,7 +72,7 @@ export const Landing = () => {
           </Link>
         </button>
         <button className="linkHEBA">
-	  <Link to={ isModalOpen ? '/error' : dest } style={{textDecorationLine:"none"}}>
+	  <Link to={ isModalOpen ? '/error' : '/home' } style={{textDecorationLine:"none"}}>
             <div className="homeBtnTitle">
               <span>헌팅하기</span>
             </div>
