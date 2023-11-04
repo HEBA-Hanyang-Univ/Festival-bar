@@ -131,7 +131,7 @@ def update_info(table_no, male_count, female_count, note):
             table_data[index]['nums'] = female_count
 
         if male_count and female_count:
-            table_data[index]['gender'] = 'group'
+            table_data[index]['gender'] = 'mixed'
             table_data[index]['nums'] = male_count + female_count
 
         return "ok"
@@ -238,11 +238,11 @@ def join_table(from_where, to_where):
     try:
         if from_where != to_where:
             if table_data[from_where-1]['active'] and table_data[to_where-1]['active']:
-                if table_data[from_where-1]['gender'] != 'group' and table_data[to_where-1]['gender'] != 'group':
+                if table_data[from_where-1]['gender'] != 'mixed' and table_data[to_where-1]['gender'] != 'mixed':
 
                     # 합석으로 인한 정보 변경
                     table_data[to_where-1]['nums'] += table_data[from_where-1]['nums']
-                    table_data[to_where-1]['gender'] = "group"
+                    table_data[to_where-1]['gender'] = "mixed"
                     table_data[to_where-1]['join'] = True
                     table_data[to_where-1]['end_time'] = table_data[to_where-1]['end_time'] if table_data[to_where-1]['end_time'] > table_data[from_where-1]['end_time'] else table_data[from_where-1]['end_time']
                     table_data[to_where-1]['note'] = ""
