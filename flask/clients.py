@@ -78,6 +78,7 @@ def set_table():
 ### 전체 테이블 조회
 ### 플라스크를 통한 호출이 아닌 직접 호출 시 매개변수 체크 필수
 # curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/get-all -d '{"token":"0b79fdd4-8cf8-4a5f-8506-904d1207e9fb", "code":470066}'
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/get-all -d '{"token":"{admin token}"}'
 @app.route('/get-all', methods=['POST'])
 def get_all():
     output = dict()
@@ -92,6 +93,9 @@ def get_all():
         for data in exclude_code:
             del data['code']
         output['result'] = exclude_code
+        return output
+    elif table_no == 'admin':
+        output['result'] = table_data
         return output
     else:
         print(f'get-all request failed with table {table_no}')
@@ -161,9 +165,9 @@ def send_like():
     token = data.get('token')
     code = data.get('code')
     my_table = controller.get_table_no_by_token(token)
+    received_table = data.get('received_table')
 
     if type(my_table) == int and table_data[my_table-1]['code'] == code:
-        received_table = data.get('received_table')
         print(f'{my_table} table send a like to {received_table}')
         output['result'] = controller.send_like(my_table, received_table)
         return output
