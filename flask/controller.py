@@ -141,17 +141,20 @@ def update_info(table_no, male_count, female_count, note):
 ### get table number by token 
 def get_table_no_by_token(token):
     table_no = qr_data.get(token)
+    if table_no == 'admin' :
+        return table_no
+
     try :
         table_no = int(table_no)
     except Exception as e :
-        pass
+        print(e)
 
     return table_no
 
 def get_table(table_no):
-    if table_no == None:
-        return None
-    return table_data[table_no-1]
+    if isinstance(table_no, int):
+        return table_data[table_no-1]
+    return {}
 
 ### send 
 def send_like(my_table, received_table):
