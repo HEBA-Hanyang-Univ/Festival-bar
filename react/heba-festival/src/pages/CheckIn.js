@@ -100,42 +100,48 @@ export const CheckIn = () => {
               <span>성별을 선택하세요</span>
             </div>
             <div className="genderBtn">
-              <button
-                className={`customRadioBtn maleBtn ${selectedGender === "male" ? "selected" : ""}`}
-                data-name="male"
-                onClick={() => handleGenderSelect("male")}
-              >
-                {selectedGender === "male" ? (
-                  <img src={ManSelected} style={{width: '5.5rem', height: '4.5rem', marginBottom: '0.6rem'}} alt="male selected img" />
-                ) :
-                  <img src={Man} style={{width: '5.5rem', height: '4.5rem', marginBottom: '0.6rem'}} alt="male img" />
-                }
-                <span>남자</span>
-              </button>
-              <button
-                className={`customRadioBtn femaleBtn ${selectedGender === "female" ? "selected" : ""}`}
-                data-name="female"
-                onClick={() => handleGenderSelect("female")}
-              >
-                {selectedGender === "female" ? (
-                  <img src={WomanSelected} style={{width: '6.5rem', height: '4.5rem', marginBottom: '0.6rem'}} alt="woman selected img" />
-                ) :
-                  <img src={Woman} style={{width: '6.5rem', height: '4.5rem', marginBottom: '0.6rem'}} alt="female img" />
-                }
-                <span style={{marginLeft: '2rem'}}>여자</span>
-              </button>            
-              <button
-                className={`customRadioBtn mixedBtn ${selectedGender === "mixed" ? "selected" : ""}`}
-                data-name="mixed"
-                onClick={() => handleGenderSelect("mixed")}
-              >
-                {selectedGender === "mixed" ? (
-                  <img src={CoupleSelected} style={{width: '9rem', height: '5.3rem', marginTop: '0.6rem', marginBottom: '0.23rem'}} alt="mixed selected img" />
-                ) :
-                  <img src={Couple} style={{width: '9rem', height: '5.3rem', marginTop: '0.6rem', marginBottom: '0.4rem'}} alt="mixed img" />
-                }                
-                <span style={{marginLeft: '3rem'}}>혼성</span>
-              </button>
+              <div className="genderBtnBox">
+                <button
+                  className={`customRadioBtn maleBtn ${selectedGender === "male" ? "selected" : ""}`}
+                  data-name="male"
+                  onClick={() => handleGenderSelect("male")}
+                >
+                  {selectedGender === "male" ? (
+                    <img src={ManSelected} style={{width: '7.5rem', height: '7.5rem', marginBottom: '0.6rem'}} alt="male selected img" />
+                  ) :
+                    <img src={Man} style={{width: '5.5rem', height: '4.5rem', marginBottom: '0.6rem', marginTop:'0.5rem', marginLeft: '1rem'}} alt="male img" />
+                  }
+                </button> 
+                <span style={{marginLeft: '-2.4rem'}}>남자</span>
+              </div>
+              <div className="genderBtnBox">
+                <button
+                  className={`customRadioBtn femaleBtn ${selectedGender === "female" ? "selected" : ""}`}
+                  data-name="female"
+                  onClick={() => handleGenderSelect("female")}
+                >
+                  {selectedGender === "female" ? (
+                    <img src={WomanSelected} style={{width: '7.5rem', height: '6.5rem', marginTop: '-0.1rem',marginRight: '1rem',marginBottom: '0.6rem'}} alt="woman selected img" />
+                  ) :
+                    <img src={Woman} style={{width: '6.5rem', height: '4.5rem',marginTop: '0.5rem' , marginBottom: '0.6rem'}} alt="female img" />
+                  }
+                </button> 
+                <span style={{marginLeft: '-3rem'}}>여자</span>
+              </div>
+              <div className="genderBtnBox">
+                <button
+                  className={`customRadioBtn mixedBtn ${selectedGender === "mixed" ? "selected" : ""}`}
+                  data-name="mixed"
+                  onClick={() => handleGenderSelect("mixed")}
+                >
+                  {selectedGender === "mixed" ? (
+                    <img src={CoupleSelected} style={{width: '10rem', height: '12.9rem', marginTop: '-0.3rem', marginBottom: '0.23rem'}} alt="mixed selected img" />
+                  ) :
+                    <img src={Couple} style={{width: '10rem', height: '5.3rem', marginTop: '0.2rem',marginBottom: '0.4rem'}} alt="mixed img" />
+                  }                
+                </button>
+                <span style={{marginLeft:'-1rem'}}>혼성</span>
+              </div>
             </div>
           </div>
           <div className="selectBox headSelect">
