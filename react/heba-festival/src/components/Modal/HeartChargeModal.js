@@ -41,12 +41,12 @@ function HeartChargeModal({ onClose }) {
   return (
     <ModalContainer>
       <div className="overlay">
-        <div className="modalWrap" ref={modalRef}>
+        <div className="modalWrap" ref={modalRef} style={{height: '20rem'}}>
           <div className="modalTitle">
-            <span>하트 충전하기</span>
+            <span style={{fontWeight: '900', fontSize: '1.5rem'}}>하트 충전하기</span>
           </div>
           <div className="modalContent heartContent">
-            <span style={{fontSize: '1rem'}}>
+            <span style={{fontSize: '1.3rem', lineHeight: '150%'}}>
               하트는 칩 4개로 구매 가능합니다.
               <br></br>
               칩이 있으시면 '직원 호출'을
@@ -56,10 +56,10 @@ function HeartChargeModal({ onClose }) {
               칩을 구매해 주세요.
             </span>
             <div className="heartChargeBtnBox">
-              <button className="whiteBtn" type="submit" onClick={handleSubmit}>
+              <button className="whiteBtn heartChargeBtn" type="submit" onClick={handleSubmit}>
                 <span>직원호출</span>
               </button>
-              <button>
+              <button className="heartChargeBtn">
                 <Link to={"https://order.sicpama.com/?token="+secureLocalStorage.getItem('token')} style={{textDecoration: 'none'}}>
                   <span>주문하기</span>
                 </Link>

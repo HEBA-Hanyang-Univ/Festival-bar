@@ -39,9 +39,9 @@ function ServerModal({ onClose }) {
   return (
     <ModalContainer>
       <div className="overlay">
-        <div className="modalWrap" ref={modalRef}>
-          <div className="modalTitle">
-            <span>직원 호출</span>
+        <div className="modalWrap" ref={modalRef} style={{width: '25rem'}}>
+          <div className="modalTitle serverModalTitle">
+            <span style={{fontWeight: '800'}}>직원 호출</span>
           </div>
           <div className="modalContent serverContent">
             <span>직원을 호출하시겠습니까?</span>
