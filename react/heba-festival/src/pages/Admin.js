@@ -240,7 +240,6 @@ function Admin() {
     const formattedHours = hours < 10 ? `0${hours}` : hours;
     const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
     const period = hours >= 12 ? "PM" : "AM";
-
     const formattedTime = `${formattedHours}:${formattedMinutes} ${period}`;
 
     return (
@@ -347,12 +346,16 @@ function Admin() {
       </div>
 
       {/* TODO: add AdminTable container style */}
-      <div class="table-container">{React.Children.toArray(data)}</div>
+      <div class="table-container">
+        <div className="table-container-grid">
+          {React.Children.toArray(data)}
+        </div>
+      </div>
       {isOpenTableInfoModal && (
-        <TableInfoModal
-          open={isOpenTableInfoModal}
-          onClose={() => onCloseModal("tableInfo")}
-        ></TableInfoModal>
+         <TableInfoModal
+         open={isOpenTableInfoModal}
+         onClose={() => onCloseModal("tableInfo")}
+       ></TableInfoModal>
       )}
 
       {/* TODO: 테이블의 시간추가, 하트추가 등 기능 연결 */}
@@ -363,27 +366,27 @@ function Admin() {
           </button>
           {isOpenTimeModal && (
             <TimeModal
-              open={isOpenTimeModal}
-              onClose={() => onCloseModal("time")}
-            ></TimeModal>
+            open={isOpenTimeModal}
+            onClose={() => onCloseModal("time")}
+          ></TimeModal>
           )}
           <button className="heart-plus" onClick={() => onClickButton("heart")}>
             하트 충전
           </button>
           {isOpenHeartModal && (
             <HeartModal
-              open={isOpenHeartModal}
-              onClose={() => onCloseModal("heart")}
-            ></HeartModal>
+            open={isOpenHeartModal}
+            onClose={() => onCloseModal("heart")}
+          ></HeartModal>
           )}
           <button className="table-exit" onClick={() => onClickButton("exit")}>
             퇴장 처리
           </button>
           {isOpenExitModal && (
             <ExitTableModal
-              open={isOpenExitModal}
-              onClose={() => onCloseModal("exit")}
-            ></ExitTableModal>
+            open={isOpenExitModal}
+            onClose={() => onCloseModal("exit")}
+          ></ExitTableModal>
           )}
           <button
             className="table-mix"
@@ -393,9 +396,9 @@ function Admin() {
           </button>
           {isOpenJoinTableModal && (
             <JoinTableModal
-              open={isOpenJoinTableModal}
-              onClose={() => onCloseModal("joinTable")}
-            ></JoinTableModal>
+            open={isOpenJoinTableModal}
+            onClose={() => onCloseModal("joinTable")}
+          ></JoinTableModal>
           )}
           {/* TODO: 테이블 선택을 눌렀을 때 적용할 코드 적용 */}
           <button

@@ -45,8 +45,7 @@ const AdminTable = ({ tableNumber, friendCode, gender, huntingSuccess, headCount
     backgroundColor: renderOption.bgColor,
     border: hasNotice ? "2px solid red" : "none",
     color: renderOption.textColor,
-    width: "8.25rem",
-    height: "5.625rem",
+    borderRadius: "1.3rem",
   };
 
   const imgStyle = {
@@ -83,7 +82,7 @@ const AdminTable = ({ tableNumber, friendCode, gender, huntingSuccess, headCount
   };
 
   return (
-    <div className="tableWrap">
+    <div className="adminTableWrap">
       <button className="adminTable" style={ tableStyle } onClick={ onClickButton }>
         <span className="table-number">{ tableNumber }번</span>
 	{ friendCode !== "" && <span>{ friendCode }</span> }

@@ -56,13 +56,11 @@
   text-align: center;
   margin-top: 1rem;
 }
-
 .header-date {
   font-size: 2.5rem;
   font-weight: 500;
   color: #c8c8c8;
 }
-
 .header-time {
   font-size: 2.8rem;
   font-weight: 600;
@@ -144,7 +142,7 @@
 
 .info_table1 {
   width: 18rem;
-  height: 5rem;
+  height: 6rem;
   border-radius: 30px;
   background: #80c2ff;
   float: left;
@@ -156,7 +154,7 @@
 
 .info_table2 {
   width: 18rem;
-  height: 5rem;
+  height: 6rem;
   border-radius: 30px;
   background: #ff8fd2;
   float: left;
@@ -168,7 +166,7 @@
 
 .info_table3 {
   width: 18rem;
-  height: 5rem;
+  height: 6rem;
   border-radius: 30px;
   background: #ffc555;
   float: left;
@@ -180,7 +178,7 @@
 
 .info_table4 {
   width: 18rem;
-  height: 5rem;
+  height: 6rem;
   border-radius: 30px;
   background: #dd7dff;
   float: left;
@@ -192,7 +190,7 @@
 
 .info_table5 {
   width: 18rem;
-  height: 5rem;
+  height: 6rem;
   border-radius: 30px;
   background: #c8c8c8;
   float: left;
@@ -210,7 +208,7 @@
   font-weight: 900;
   text-align: center;
   margin-top: 1%;
-  padding: 10px 20px;
+  padding: 14px 20px;
 }
 
 .table-list {
@@ -227,54 +225,61 @@
 
 .table-man {
   font-size: 5rem;
+  font-weight: 700;
   color: #80c2ff;
 }
 .table-woman {
+  font-weight: 700;
   font-size: 5rem;
   color: #ff8fd2;
   margin-left: 17%;
 }
 .table-mixed {
+  font-weight: 700;
   font-size: 5rem;
   color: #ffc555;
   margin-left: 17%;
 }
 .table-join {
+  font-weight: 700;
   font-size: 5rem;
   color: #dd7dff;
   margin-left: 17.5%;
 }
 .table-empty {
+  font-weight: 700;
   font-size: 5rem;
   color: #c8c8c8;
   margin-left: 17%;
 }
 
-.box-lists {
-  position: absolute;
-  margin-top: 21vh;
-  margin-left: 3.5%;
+.table-container {
+  margin-top: 5rem;
+  width: 146rem;
+  height: 96rem;
 }
 
-.box-container {
-  display: flex;
-  height: 12vh;
-  margin-bottom: 1%;
-  flex-wrap: wrap;
-  justify-content: space-around;
+.table-container-grid {
+  margin: 7rem 10rem 3rem 7rem;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(5, 13rem);
+  column-gap: 3rem;
+  row-gap: 4rem;
 }
 
 /* 푸터부분 버튼 스타일 */
 
 .admin-footer {
-  position: absolute;
-  margin-top: 84vh;
+  margin-top: 6rem;
+  width: 80%;
+  height: 7rem;
 }
 
 .footer-button {
   display: flex;
   float: left;
-  margin-left: 15rem;
+  margin-left: 23rem;
   align-items: center;
   color: #fff;
   font-size: 2.3rem;
@@ -285,18 +290,21 @@
 .time-plus {
   position: absolute;
   float: left;
-  height: 4vh;
+  height: 5.5rem;
   width: 15rem;
   border-radius: 40px;
   background: #87deff;
   border: none;
   color: #fff;
   padding: 10px 20px;
+
+  font-size: 1.5rem;
+  font-weight: 600;
 }
 
 .heart-plus {
   position: absolute;
-  height: 4vh;
+  height: 5.5rem;
   width: 15rem;
   border-radius: 40px;
   background: #87deff;
@@ -304,11 +312,14 @@
   color: #fff;
   margin-left: 32rem;
   padding: 10px 20px;
+
+  font-size: 1.5rem;
+  font-weight: 600;
 }
 
 .table-exit {
   position: absolute;
-  height: 4vh;
+  height: 5.5rem;
   width: 15rem;
   border-radius: 40px;
   background: #87deff;
@@ -316,11 +327,14 @@
   color: #fff;
   margin-left: 63rem;
   padding: 10px 20px;
+
+  font-size: 1.5rem;
+  font-weight: 600;
 }
 
 .table-mix {
   position: absolute;
-  height: 4vh;
+  height: 5.5rem;
   width: 15rem;
   border-radius: 40px;
   background: #87deff;
@@ -328,6 +342,9 @@
   color: #fff;
   margin-left: 94rem;
   padding: 10px 20px;
+
+  font-size: 1.5rem;
+  font-weight: 600;
 }
 
 .time-plus:hover,
@@ -341,14 +358,17 @@
 
 .table_choice {
   position: absolute;
-  height: 4vh;
+  margin-left: 160rem;
+  height: 5.5rem;
   width: 15rem;
   border-radius: 40px;
-  /* background: #fff; */
-  border: none;
-  /* color: #87deff; */
+  background: #fff;
+  border: #87deff;
+  color: #87deff;
   border: 0.15rem solid #2d63a4;
-  margin-left: 150rem;
+
+  font-size: 1.5rem;
+  font-weight: 600;
 }
 
 .table_choice:hover {
