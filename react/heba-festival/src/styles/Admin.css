@@ -54,7 +54,18 @@
   margin-left: 75%;
   font-size: 2rem;
   text-align: center;
-  margin-top: 1.5%;
+  margin-top: 1rem;
+}
+
+.header-date {
+  font-size: 2.5rem;
+  font-weight: 500;
+  color: #c8c8c8;
+}
+
+.header-time {
+  font-size: 2.8rem;
+  font-weight: 600;
 }
 
 .title-alarm {
@@ -214,26 +225,26 @@
   text-align: center;
 }
 
-.tableman {
+.table-man {
   font-size: 5rem;
   color: #80c2ff;
 }
-.tablewom {
+.table-woman {
   font-size: 5rem;
   color: #ff8fd2;
   margin-left: 17%;
 }
-.tablecou {
+.table-mixed {
   font-size: 5rem;
   color: #ffc555;
   margin-left: 17%;
 }
-.tablemix {
+.table-join {
   font-size: 5rem;
   color: #dd7dff;
   margin-left: 17.5%;
 }
-.tableemp {
+.table-empty {
   font-size: 5rem;
   color: #c8c8c8;
   margin-left: 17%;
@@ -333,17 +344,17 @@
   height: 4vh;
   width: 15rem;
   border-radius: 40px;
-  background: #fff;
+  /* background: #fff; */
   border: none;
-  color: #87deff;
+  /* color: #87deff; */
   border: 0.15rem solid #2d63a4;
   margin-left: 150rem;
 }
 
 .table_choice:hover {
-  background: #87deff;
-  color: #fff;
+  /* background: #87deff;
+  color: #fff; */
   border: 0.15rem solid #2d63a4;
   font-weight: 900;
-  transition: 0.2s;
+  transition: 0.1s;
 }
