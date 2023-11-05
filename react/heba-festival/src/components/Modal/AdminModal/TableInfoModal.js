@@ -7,7 +7,7 @@ import HeartModal from "./HeartModal";
 import ExitTableModal from "./ExitTableModal";
 import JoinTableModal from "./JoinTableModal";
 
-function TableInfoModal({ onClose, boxNumber, boxGender, boxTime }) {
+function TableInfoModal({ onClose, tableNumber, nums, startTime, endTime }) {
   const modalRef = useRef(null);
   const [modalType, setModalType] = useState(null);
   const [zIndex, setZIndex] = useState(1000);
@@ -36,16 +36,16 @@ function TableInfoModal({ onClose, boxNumber, boxGender, boxTime }) {
       <div className="overlay">
         <div className="adminModalWrap" style={{width: '60rem'}} ref={modalRef}>
           <div className="adminModalTitle">
-            <span>{boxNumber}번 테이블</span>
+            <span>{ tableNumber }번 테이블</span>
           </div>
           <div className="tableInfoBox">
             <span className="tableInfo">
-              인원 수 : {boxGender ? boxGender + '명' : '정보 없음'}
+              인원 수 : { nums +  '명'}
               <br></br>
-              입장 시간 : {boxTime ? boxTime : '정보 없음'}
+              입장 시간 : { startTime }
               <br></br>
               {/* 퇴장 시간 설정 */}
-              퇴장 시간 : 
+              퇴장 시간 : { endTime  }
             </span>
           </div>
           <div className="adminBtnBox tableInfoBtn">
@@ -54,10 +54,15 @@ function TableInfoModal({ onClose, boxNumber, boxGender, boxTime }) {
             <button className="btnFilled" onClick={() => handleModalOpen('joinTable')}>합석 처리</button>
             <button className="btnFilled" onClick={() => handleModalOpen('exit')}>퇴장 처리</button>
           </div>
-          {modalType === 'time' && <TimeModal onClose={() => setModalType(null)} selectedBoxes={boxNumber} zIndex={zIndex}/>}
-          {modalType === 'heart' && <HeartModal onClose={() => setModalType(null)} selectedBoxes={boxNumber} zIndex={zIndex}/>}
-          {modalType === 'joinTable' && <JoinTableModal onClose={() => setModalType(null)} selectedBoxes={boxNumber} zIndex={zIndex}/>}
-          {modalType === 'exit' && <ExitTableModal onClose={() => setModalType(null)} selectedBoxes={boxNumber} zIndex={zIndex}/>}
+          { modalType === 'time' && <TimeModal onClose={ () => setModalType(null) }
+		                     targetTables={ tableNumber } zIndex={ zIndex }/> }
+          { modalType === 'heart' && <HeartModal onClose={ () => setModalType(null) }
+		                      targetTables={ tableNumber } zIndex={ zIndex }/> }
+	  {/* JoinTableModal's field name targetTable is different from others.  */}
+          { modalType === 'joinTable' && <JoinTableModal onClose={ () => setModalType(null) }
+		                          targetTable={ tableNumber } zIndex={ zIndex }/> }
+          { modalType === 'exit' && <ExitTableModal onClose={ () => setModalType(null) }
+		                     targetTables={ tableNumber } zIndex={ zIndex }/> }
         </div>
       </div>
     </ModalContainer>

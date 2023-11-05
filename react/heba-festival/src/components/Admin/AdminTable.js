@@ -9,8 +9,8 @@ import TimeOut from "assets/images/Timeout.svg";
 import Door from "assets/images/Door.svg";
 
 const AdminTableRenderOptions = {
-  man: { bgColor: "#80C2FF", textColor: "white", image: Man, alt: "Man" },
-  woman: { bgColor: "#FF8FD2", textColor: "white", image: Woman, alt: "Woman" },
+  male: { bgColor: "#80C2FF", textColor: "white", image: Man, alt: "Man" },
+  female: { bgColor: "#FF8FD2", textColor: "white", image: Woman, alt: "Woman" },
   mixed: { bgColor: "#FFC555", textColor: "white", image: Couple, alt: "Mixed" },
   joined: { bgColor: "#DD7DFF", textColor: "white", image: Matched, alt: "Matched" },
   empty: { bgColor: "#C8C8C8", textColor: "white", image: null, alt: "" },

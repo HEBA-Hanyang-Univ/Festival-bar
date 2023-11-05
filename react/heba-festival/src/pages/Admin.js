@@ -12,23 +12,16 @@ import TableInfoModal from "components/Modal/AdminModal/TableInfoModal";
 import TimeModal from "components/Modal/AdminModal/TimeModal";
 import HeartModal from "components/Modal/AdminModal/HeartModal";
 import ExitTableModal from "components/Modal/AdminModal/ExitTableModal";
-import JoinTableModal from "components/Modal/AdminModal/JoinTableModal";
 
 function Admin() {
+
   const [isOpenTableInfoModal, setIsOpenTableInfoModal] = useState(false);
   const [isOpenTimeModal, setIsOpenTimeModal] = useState(false);
   const [isOpenHeartModal, setIsOpenHeartModal] = useState(false);
   const [isOpenExitModal, setIsOpenExitModal] = useState(false);
-  const [isOpenJoinTableModal, setIsOpenJoinTableModal] = useState(false);
 
   // a variable for render nums of each tables
-  let tableNums = {
-    male: 0,
-    female: 0,
-    mixed: 0,
-    joined: 0,
-    empty: 0,
-  };
+  let tableNums = { male: 0, female: 0, mixed: 0, joined: 0, empty: 0, };
 
   // a function for processing data after fetching
   // count each table's number and calculate remained time
@@ -55,15 +48,9 @@ function Admin() {
       // translate data to AdminTable
       // TODO : add managerCall by alarmData
       return (
-        <AdminTable
-          tableNumber={data.table_no}
-          gender={data.gender}
-          headCount={data.nums}
-          huntingSuccess={data.join}
-          remainedTime={remainedTime}
-          managerCall={false}
-          onClickTable={onClickTableElem}
-        />
+        <AdminTable tableNumber={data.table_no} gender={data.gender} headCount={data.nums}
+         huntingSuccess={data.join} remainedTime={remainedTime} managerCall={false}
+         onClickTable={ (e) => { onClickTableElem(e, data); } }/>
       );
     };
     return datas.map((data) => processIndividualData(data));
@@ -114,32 +101,32 @@ function Admin() {
     },
   });
 
-  // 박스 클릭시 나오는 모달창
+  // this function is for buttons below tables.
+  // modal will be opened if multiple select mode is enabled
   const onClickButton = (modalType) => {
-    if (modalType === "tableInfo") {
-      setIsOpenTableInfoModal(true);
-    } else if (modalType === "time") {
+    if (!isMultipleSelectMode || selectedTable.length < 1) {
+      return;
+    }
+
+    if (modalType === "time") {
       setIsOpenTimeModal(true);
     } else if (modalType === "heart") {
       setIsOpenHeartModal(true);
     } else if (modalType === "exit") {
       setIsOpenExitModal(true);
-    } else if (modalType === "joinTable") {
-      setIsOpenJoinTableModal(true);
     }
   };
 
   const onCloseModal = (modalType) => {
     if (modalType === "tableInfo") {
       setIsOpenTableInfoModal(false);
+      setTableElem(null);
     } else if (modalType === "time") {
       setIsOpenTimeModal(false);
     } else if (modalType === "heart") {
       setIsOpenHeartModal(false);
     } else if (modalType === "exit") {
       setIsOpenExitModal(false);
-    } else if (modalType === "joinTable") {
-      setIsOpenJoinTableModal(false);
     }
   };
 
@@ -149,19 +136,27 @@ function Admin() {
   const [isMultipleSelectMode, setIsMultipleSelectMode] = useState(false);
   const [selectedTable, setSelectedTable] = useState([]);
 
-  function onClickTableElem(event) {
+  // data for TableInfoModal
+  const [tableElem, setTableElem] = useState(null);
+
+  function onClickTableElem(event, tableData) {
     event.stopPropagation();
 
+    if (!tableData.active) {
+      return;
+    }
+
     if (isMultipleSelectMode) {
-      if (selectedTable.includes(event.currentTarget)) {
+      if (selectedTable.includes(tableData.table_no)) {
         setSelectedTable(
-          selectedTable.filter((table) => table !== event.currentTarget)
+          selectedTable.filter((table) => table.table_no !== tableData.table_no)
         );
       } else {
-        setSelectedTable([...selectedTable, event.currentTarget]);
+        setSelectedTable([...selectedTable, tableData.table_no]);
       }
     } else {
       setIsOpenTableInfoModal(true);
+      setTableElem(tableData);
     }
   }
 
@@ -351,62 +346,29 @@ function Admin() {
           {React.Children.toArray(data)}
         </div>
       </div>
-      {isOpenTableInfoModal && (
-         <TableInfoModal
-         open={isOpenTableInfoModal}
-         onClose={() => onCloseModal("tableInfo")}
-       ></TableInfoModal>
-      )}
-
-      {/* TODO: 테이블의 시간추가, 하트추가 등 기능 연결 */}
+      { isOpenTableInfoModal && <TableInfoModal onClose={() => onCloseModal("tableInfo")}
+	                        tableNumber={ tableElem.table_no } nums={ tableElem.nums }
+                                startTime={ tableElem.start_time } endTime={ tableElem.end_time }>
+	                       </TableInfoModal> }
       <div className="admin-footer">
         <div className="footer-button">
-          <button className="time-plus" onClick={() => onClickButton("time")}>
+          <button className="time-plus" onClick={ () => onClickButton("time") }>
             시간 추가
           </button>
-          {isOpenTimeModal && (
-            <TimeModal
-            open={isOpenTimeModal}
-            onClose={() => onCloseModal("time")}
-          ></TimeModal>
-          )}
-          <button className="heart-plus" onClick={() => onClickButton("heart")}>
+          { isOpenTimeModal && <TimeModal onClose={ () => onCloseModal("time") }
+		                targetTables={ selectedTable }></TimeModal> }
+          <button className="heart-plus" onClick={ () => onClickButton("heart") }>
             하트 충전
           </button>
-          {isOpenHeartModal && (
-            <HeartModal
-            open={isOpenHeartModal}
-            onClose={() => onCloseModal("heart")}
-          ></HeartModal>
-          )}
-          <button className="table-exit" onClick={() => onClickButton("exit")}>
+          { isOpenHeartModal && <HeartModal onClose={ () => onCloseModal("heart") }
+                                 targetTables={ selectedTable }></HeartModal> }
+          <button className="table-exit" onClick={ () => onClickButton("exit") }>
             퇴장 처리
           </button>
-          {isOpenExitModal && (
-            <ExitTableModal
-            open={isOpenExitModal}
-            onClose={() => onCloseModal("exit")}
-          ></ExitTableModal>
-          )}
-          <button
-            className="table-mix"
-            onClick={() => onClickButton("joinTable")}
-          >
-            합석 처리
-          </button>
-          {isOpenJoinTableModal && (
-            <JoinTableModal
-            open={isOpenJoinTableModal}
-            onClose={() => onCloseModal("joinTable")}
-          ></JoinTableModal>
-          )}
-          {/* TODO: 테이블 선택을 눌렀을 때 적용할 코드 적용 */}
-          <button
-            className="table_choice"
-            style={buttonStyle}
-            onClick={onClickTableSelectButton}
-          >
-            테이블 선택
+          { isOpenExitModal && <ExitTableModal onClose={ () => onCloseModal("exit") }
+                                targetTables={ selectedTable }></ExitTableModal> }
+          <button className="table_choice" style={ buttonStyle } onClick={ onClickTableSelectButton }>
+            { isMultipleSelectMode ? "선택 취소" : "테이블 선택" }
           </button>
         </div>
       </div>
