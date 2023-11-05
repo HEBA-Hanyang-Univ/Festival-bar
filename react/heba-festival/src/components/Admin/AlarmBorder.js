@@ -6,7 +6,7 @@ const alarmboxStyle = {
   right: "0",
   borderTop: "1px solid #d9d9d9",
   borderBottom: "1px solid #d9d9d9",
-  width: "32rem",
+  width: "23rem",
   height: "13vh",
   maginLeft: "80rem",
   marginTop: "7rem",

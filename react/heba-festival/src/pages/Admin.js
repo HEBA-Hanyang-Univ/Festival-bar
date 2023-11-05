@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import "styles/Admin.css";
-import Title from "assets/images/Title.svg";
+import Title from "assets/images/RedLogo.svg";
 import Tiger from "assets/images/Tiger.svg";
 import Call from "assets/images/Call.svg";
+import CloseBtn from "assets/images/close.svg";
 
 import AdminTable from "components/Admin/AdminTable.js";
 import AlarmBorder from "components/Admin/AlarmBorder.js";
@@ -12,6 +13,8 @@ import TableInfoModal from "components/Modal/AdminModal/TableInfoModal";
 import TimeModal from "components/Modal/AdminModal/TimeModal";
 import HeartModal from "components/Modal/AdminModal/HeartModal";
 import ExitTableModal from "components/Modal/AdminModal/ExitTableModal";
+import JoinTableModal from "components/Modal/AdminModal/JoinTableModal";
+import Table from "components/Table";
 
 function Admin() {
 
@@ -19,6 +22,8 @@ function Admin() {
   const [isOpenTimeModal, setIsOpenTimeModal] = useState(false);
   const [isOpenHeartModal, setIsOpenHeartModal] = useState(false);
   const [isOpenExitModal, setIsOpenExitModal] = useState(false);
+  const [isOpenJoinTableModal, setIsOpenJoinTableModal] = useState(false);
+
 
   // a variable for render nums of each tables
   let tableNums = { male: 0, female: 0, mixed: 0, joined: 0, empty: 0, };
@@ -62,7 +67,7 @@ function Admin() {
   const navigate = useNavigate();
 
   // Refetch query
-  const queryclient = useQueryClient();
+  // const queryclient = useQueryClient();
   const { data, isLoading, error, isFetching } = useQuery({
     queryKey: ["get-all"],
     queryFn: async () => {
@@ -247,9 +252,7 @@ function Admin() {
 
   return (
     <div className="admin_body">
-      <div class="v-line"></div>
-
-      <header>
+      <header id="admin_header_top">
         <div class="admin_header">
           <div class="main-title">
             <img className="title-tiger" src={Tiger} alt="Tiger"></img>
@@ -259,15 +262,72 @@ function Admin() {
             <CurrentDateTime />
           </div>
         </div>
-
         <div class="title-alarm">
-          <p class="title-notice">
-            <strong>NOTICE</strong>
-          </p>
-          <img class="title-bell" src={Call} alt="Call Image" />
+          <span class="title-notice">NOTICE</span>
+          <img class="title-bell" src={Call} alt="Call img" />
         </div>
-        <div className="alarmborderbox !important">
-          <AlarmBorder />
+      </header>
+      <main id="admin_main">
+        <div id="table-information">
+          <div class="table-list">
+            <div class="table-man">{tableNums.male}</div>
+            <div class="table-woman">{tableNums.female}</div>
+            <div class="table-mixed">{tableNums.mixed}</div>
+            <div class="table-join">{tableNums.joined}</div>
+            <div class="table-empty">{tableNums.empty}</div>
+          </div>
+          <div class="admin_nav">
+            <div class="info_table1">
+              <span class="info_title">남자&nbsp;T</span>
+            </div>
+            <div class="info_table2">
+              <span class="info_title">여자&nbsp;T</span>
+            </div>
+            <div class="info_table3">
+              <span class="info_title">혼성&nbsp;T</span>
+            </div>
+            <div class="info_table4 q">
+              <span class="info_title">합석&nbsp;T</span>
+            </div>
+            <div class="info_table5">
+              <span class="info_title">빈&nbsp;T</span>
+            </div>
+          </div>
+          <div class="table-container">
+            <div className="table-container-grid">
+              {React.Children.toArray(data)}
+            </div>
+            { isOpenTableInfoModal && 
+              <TableInfoModal onClose={() => onCloseModal("tableInfo")}
+                tableNumber={ tableElem.table_no } nums={ tableElem.nums }
+                startTime={ tableElem.start_time } endTime={ tableElem.end_time }
+                code={ tableElem.code } referrer={ tableElem.referrer }>
+              </TableInfoModal> }
+          </div>
+          <div className="admin-footer">
+            <div className="footer-button">
+              <div className="blue-btn-box">
+                <button className="time-plus" onClick={ () => onClickButton("time") }>
+                  시간 추가
+                </button>
+                { isOpenTimeModal && <TimeModal onClose={ () => onCloseModal("time") }
+                          targetTables={ selectedTable }></TimeModal> }
+                <button className="heart-plus" onClick={ () => onClickButton("heart") }>
+                  하트 충전
+                </button>
+                { isOpenHeartModal && <HeartModal onClose={ () => onCloseModal("heart") }
+                                      targetTables={ selectedTable }></HeartModal> }
+                <button className="table-exit" onClick={ () => onClickButton("exit") }>
+                  퇴장 처리
+                </button>
+                { isOpenExitModal && <ExitTableModal onClose={ () => onCloseModal("exit") }
+                                      targetTables={ selectedTable }></ExitTableModal> }
+              </div>
+              <button className="table_choice" style={ buttonStyle } onClick={ onClickTableSelectButton }>
+                { isMultipleSelectMode ? "선택 취소" : "테이블 선택" }
+              </button>
+            </div>
+          </div>
         </div>
         {/* TODO: 알람 데이터 연결 */}
         <div className="alarm-container">
@@ -278,11 +338,11 @@ function Admin() {
                   className="alarmdel"
                   onClick={() => onDeleteAlarm(index)}
                 >
-                  <span className="alarmbtn">x</span>
+                  <img className="alarmbtn" src={CloseBtn} alt="close btn"></img>
                 </button>
                 <br />
                 {/* 알람데이터 type에 따라 color 지정 */}
-                <span
+                <span className="alarmData-span"
                   style={{
                     color:
                       alarmData.type === "join"
@@ -303,76 +363,12 @@ function Admin() {
                     : "[이용시간][테이블 시간 소진]"}
                 </span>
                 <span className="alarm-message">{item.alarm}</span>
-                <p>{item.time}</p>
+                <p className="alarm-time-p">{item.time}</p>
               </div>
             );
           })}
         </div>
-        <div class="bottom-line"></div>
-      </header>
-      <div class="table-list">
-        <div class="table-man">{tableNums.male}</div>
-        <div class="table-woman">{tableNums.female}</div>
-        <div class="table-mixed">{tableNums.mixed}</div>
-        <div class="table-join">{tableNums.joined}</div>
-        <div class="table-empty">{tableNums.empty}</div>
-      </div>
-
-      <div class="admin_nav">
-        <div class="info_table1">
-          <p class="info_title">남자&nbsp;T</p>
-        </div>
-
-        <div class="info_table2">
-          <p class="info_title">여자&nbsp;T</p>
-        </div>
-
-        <div class="info_table3">
-          <p class="info_title">혼성&nbsp;T</p>
-        </div>
-
-        <div class="info_table4 q">
-          <p class="info_title">합석&nbsp;T</p>
-        </div>
-
-        <div class="info_table5">
-          <p class="info_title">&nbsp;빈 T</p>
-        </div>
-      </div>
-
-      {/* TODO: add AdminTable container style */}
-      <div class="table-container">
-        <div className="table-container-grid">
-          {React.Children.toArray(data)}
-        </div>
-      </div>
-      { isOpenTableInfoModal && <TableInfoModal onClose={() => onCloseModal("tableInfo")}
-	                        tableNumber={ tableElem.table_no } nums={ tableElem.nums }
-                                startTime={ tableElem.start_time } endTime={ tableElem.end_time }
-	                        code={ tableElem.code } referrer={ tableElem.referrer }>
-	                       </TableInfoModal> }
-      <div className="admin-footer">
-        <div className="footer-button">
-          <button className="time-plus" onClick={ () => onClickButton("time") }>
-            시간 추가
-          </button>
-          { isOpenTimeModal && <TimeModal onClose={ () => onCloseModal("time") }
-		                targetTables={ selectedTable }></TimeModal> }
-          <button className="heart-plus" onClick={ () => onClickButton("heart") }>
-            하트 충전
-          </button>
-          { isOpenHeartModal && <HeartModal onClose={ () => onCloseModal("heart") }
-                                 targetTables={ selectedTable }></HeartModal> }
-          <button className="table-exit" onClick={ () => onClickButton("exit") }>
-            퇴장 처리
-          </button>
-          { isOpenExitModal && <ExitTableModal onClose={ () => onCloseModal("exit") }
-                                targetTables={ selectedTable }></ExitTableModal> }
-          <button className="table_choice" style={ buttonStyle } onClick={ onClickTableSelectButton }>
-            { isMultipleSelectMode ? "선택 취소" : "테이블 선택" }
-          </button>
-        </div>
-      </div>
+      </main>
     </div>
   );
 }
