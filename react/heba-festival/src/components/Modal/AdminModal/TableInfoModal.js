@@ -36,7 +36,9 @@ function TableInfoModal({ onClose, tableNumber, nums, startTime, endTime }) {
       <div className="overlay">
         <div className="adminModalWrap" style={{width: '60rem'}} ref={modalRef}>
           <div className="adminModalTitle">
+            <span className="recommend-id">(D1Y3P)</span>
             <span>{ tableNumber }번 테이블</span>
+            <span className="recommend-name">H 이유빈</span>
           </div>
           <div className="tableInfoBox">
             <span className="tableInfo">
