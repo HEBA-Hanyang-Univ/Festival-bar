@@ -38,7 +38,7 @@ const AdminTable = ({ tableNumber, friendCode, gender, huntingSuccess, headCount
 
   const onClickButton = (e) => {
     e.preventDefault();
-    onClickTable?.();
+    onClickTable?.(e);
   };
 
   const tableStyle = {
@@ -85,7 +85,7 @@ const AdminTable = ({ tableNumber, friendCode, gender, huntingSuccess, headCount
   return (
     <div className="tableWrap">
       <button className="adminTable" style={ tableStyle } onClick={ onClickButton }>
-        <span className="box-number">{ tableNumber }번</span>
+        <span className="table-number">{ tableNumber }번</span>
 	{ friendCode !== "" && <span>{ friendCode }</span> }
         { hasNotice && <img src={ ManagerCall } style={ managerCallImgStyle } alt="Manager Call"/> }
         { renderOption.image && <img src={renderOption.image} style={imgStyle} alt={renderOption.alt}/>}

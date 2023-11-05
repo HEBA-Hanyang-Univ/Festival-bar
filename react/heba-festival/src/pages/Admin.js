@@ -21,7 +21,6 @@ function Admin() {
   const [isOpenHeartModal, setIsOpenHeartModal] = useState(false);
   const [isOpenExitModal, setIsOpenExitModal] = useState(false);
   const [isOpenJoinTableModal, setIsOpenJoinTableModal] = useState(false);
-  const [isMultipleSelectMode, setIsMultipleSelectMode] = useState(false);
 
   // a variable for render nums of each tables
   let tableNums = {
@@ -49,11 +48,11 @@ function Admin() {
       } else {
 	tableNums.empty += 1;
       }
-
-      // translate data to AdminTable (there's no onClick callback now)
+      // translate data to AdminTable
+      // TODO : add managerCall by alarmData
       return (
 	<AdminTable tableNumber={ data.table_no } gender={ data.gender } headCount={ data.nums } 
-	huntingSuccess={ data.join } remainedTime={ remainedTime } managerCall={false} onClickTable={ ()=> {} } />
+	huntingSuccess={ data.join } remainedTime={ remainedTime } managerCall={ false } onClickTable={ onClickTableElem } />
       );
     }
     return datas.map((data) => processIndividualData(data));
@@ -78,7 +77,6 @@ function Admin() {
         }),
       })
       .then((res) => res.json())
-      console.log(response);
       return response;
     },
     select : (data) => {
@@ -130,49 +128,37 @@ function Admin() {
     }
   };
 
-  // TODO: 박스가 선택됐을 경우 실행하는 것 관련 연결
-  /*
-    const handleBoxClick = (box) => {
-    setSelectedBox(box.number);
-    const selectedBoxText = `${box.number}번 테이블`;
-    setBoxText(selectedBoxText);
-    setSelectedBoxGender(box.person);
-    setSelectedBoxTime(box.time);
-    setIsOpenTableInfoModal(true);
-  };
-  
+  // handle both multiple and single selection of tables
+  // if multiple mode is inactive, TableInfoModal will be opened
+  // if multiple mode is active, selection mode will be executed
+  const [isMultipleSelectMode, setIsMultipleSelectMode] = useState(false); 
+  const [selectedTable, setSelectedTable] = useState([]);
 
-  const [isButtonSelected, setIsButtonSelected] = useState(false);
-  const toggleModal = () => {
-    setIsOpenTableInfoModal(!isOpenTableInfoModal);
-  };
-
-  const handleButtonClick = (event, boxNumber) => {
+  function onClickTableElem(event) {
     event.stopPropagation();
 
-    if (selectedBoxes.includes(boxNumber)) {
-      setSelectedBoxes(selectedBoxes.filter((number) => number !== boxNumber));
+    if (isMultipleSelectMode) {
+      if (selectedTable.includes(event.currentTarget)) {
+	setSelectedTable(selectedTable.filter(table => table !== event.currentTarget));
+      } else {
+	setSelectedTable([...selectedTable, event.currentTarget]);
+      }
     } else {
-      setSelectedBoxes([...selectedBoxes, boxNumber]);
+      setIsOpenTableInfoModal(true);
     }
   };
-  */
-
-  // TODO: 버튼 선택시 실행되는 부분 (주석으로 처리했습니다), 회색으로 전환할 경우에 사용할지 몰라 코드를 남겨두겠습니다
-
-  // const handleAllClick = () => {
-  //   setIsButtonSelected((prevIsButtonSelected) => !prevIsButtonSelected);
-  // };
-
-  // useEffect(() => {
-  //   if (isButtonSelected) {
-  //     const allBoxNumbers = Array.from({ length: 30 }, (_, index) => index + 1);
-  //     setSelectedBoxes(allBoxNumbers);
-  //   } else {
-  //     const allBoxNumbers = Array.from({ length: 30 }, (_, index) => index + 1);
-  //     setSelectedBoxes([]);
-  //   }
-  // }, [isButtonSelected]);
+  
+  const onClickTableSelectButton = () => {
+    // setState is asnychronous, so check value before set reverse
+    if (isMultipleSelectMode) {
+      setSelectedTable([]);
+    } else {
+      // when multiple select mode is enabled
+      // you can add code here
+    }
+    setIsMultipleSelectMode(!isMultipleSelectMode);
+  }
+  
 
   /*  TODO: 알람데이터 연결 + 알람 타입 넣어주기 */
   let [alarmData, setAlarmData] = useState([
@@ -329,10 +315,7 @@ function Admin() {
 
       {/* TODO: add AdminTable container style */}
       <div class="table-container">
-	{/* is it able to use <select> tag for multi-selct mode? */}
-	{/* isMultipleSelectMode && <select multiple={true} value={} onChange={}> */}
-          { React.Children.toArray(data) }
-	{/* isMultipleSelectMode && </select> */}
+	{ React.Children.toArray(data) }
       </div>
       {isOpenTableInfoModal && (
         <TableInfoModal open={isOpenTableInfoModal}
@@ -366,9 +349,8 @@ function Admin() {
           {isOpenJoinTableModal && (
             <JoinTableModal open={isOpenJoinTableModal} onClose={() => onCloseModal("joinTable")}></JoinTableModal>
           )}
-          {/* TODO: 테이블 선택을 눌렀을 때 적용할 코드 적용 */}
-          {/* <button class="table_choice" onClick={handleAllClick}> */}
-          <button class="table_choice">테이블 선택</button>
+          {/* TODO: 테이블 선택을 눌렀을 때 적용할 코드 적용 */} 
+          <button class="table_choice" onClick={ onClickTableSelectButton }>테이블 선택</button>
         </div>
       </div>
     </div>
