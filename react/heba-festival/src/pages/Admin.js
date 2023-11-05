@@ -164,10 +164,12 @@ function Admin() {
       setIsOpenTableInfoModal(true);
     }
   }
+
   const [buttonStyle, setButtonStyle] = useState({
     backgroundColor: "#87deff",
     color: "#fff",
   });
+
   const onClickTableSelectButton = () => {
     let buttonStyle = {}; // 함수 내부에서 변수 선언
 
@@ -185,6 +187,7 @@ function Admin() {
     }
     setIsMultipleSelectMode(!isMultipleSelectMode);
   };
+
   /*  TODO: 알람데이터 연결 + 알람 타입 넣어주기 */
   let [alarmData, setAlarmData] = useState([
     {
@@ -294,7 +297,7 @@ function Admin() {
                         ? "#FF8FD2"
                         : alarmData.type === "call"
                         ? "#FFC555"
-                        : "#C8C8C8",
+                        : "red",
                   }}
                 >
                   {alarmData.type === "join"
@@ -303,7 +306,7 @@ function Admin() {
                     ? "[하트충전]"
                     : alarmData.type === "call"
                     ? "[직원 호출]"
-                    : "[테이블 비우기]"}
+                    : "[이용시간][테이블 시간 소진]"}
                 </span>
                 <span className="alarm-message">{item.alarm}</span>
                 <p>{item.time}</p>
