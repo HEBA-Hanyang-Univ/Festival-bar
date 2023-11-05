@@ -4,7 +4,7 @@ import Man from "assets/images/Man.svg";
 import Woman from "assets/images/Woman.svg";
 import Couple from "assets/images/Couple.svg";
 import Matched from "assets/images/Matched.svg";
-import ManagerCall from "assets/images/Managercall.svg";
+import ManagerCall from "assets/images/Managercall.png";
 import TimeOut from "assets/images/Timeout.svg";
 import Door from "assets/images/Door.svg";
 
@@ -49,47 +49,47 @@ const AdminTable = ({ tableNumber, friendCode, gender, huntingSuccess, headCount
   };
 
   const imgStyle = {
-    position: "absolute",
-    marginTop: "2.19rem",
-    marginLeft: "-40px",
-    width: "60px",
-    height: "60px",
+    width: "5rem",
+    height: "3.8rem",
+    marginTop: '1.4rem',
+    marginRight: '0.4rem',
   };
 
   const personnumberStyle = {
-    position: "absolute",
-    marginTop: "30px",
-    marginLeft: "30px",
+    marginTop: '0.6rem',
+    marginLeft: "0.3rem",
     fontSize: "4rem",
     fontWeight: "800",
   };
 
   const timeStyle = {
-    position: "absolute",
-    marginTop: "80px",
-    marginLeft: "-32px",
-    fontSize: "2.5rem",
+    fontSize: "1.3rem",
     fontWeight: "800",
     color: (remainedTime <= 600) ? "red" : "black",
   };
 
   const managerCallImgStyle = {
-    width: "30px",
-    height: "30px",
-    position: "absolute",
-    top: "10px",
-    left: "120px",
+    width: "3rem",
+    height: "3rem",
+    marginLeft: "0.8rem",
+    marginTop: '0.8rem'
   };
 
   return (
     <div className="adminTableWrap">
       <button className="adminTable" style={ tableStyle } onClick={ onClickButton }>
-        <span className="table-number">{ tableNumber }번</span>
-	{ friendCode !== "" && <span>{ friendCode }</span> }
-        { hasNotice && <img src={ ManagerCall } style={ managerCallImgStyle } alt="Manager Call"/> }
-        { renderOption.image && <img src={renderOption.image} style={imgStyle} alt={renderOption.alt}/>}
-        { headCount > 0 && <span style={personnumberStyle}>{headCount}</span> }
-        { remainedTime > 0 && <span style={timeStyle}>{String(Math.floor(remainedTime/60)).padStart(2,'0')}:{String(Math.floor(remainedTime%60)).padStart(2,'0')}</span> }
+        <div className="adminTableTop">
+          <span className="table-number">{ tableNumber }번</span>
+          { friendCode !== "" && <span className="friend-code">{ friendCode }</span> }
+          { hasNotice && <img src={ ManagerCall } style={ managerCallImgStyle } alt="Manager Call" /> }
+        </div>
+        <div className="adminTableMiddle">
+          { renderOption.image && <img src={renderOption.image} style={imgStyle} alt={renderOption.alt}/>}
+          { headCount > 0 && <span style={personnumberStyle}>{headCount}</span> }
+        </div>
+        <div className="adminTableBottom">
+          { remainedTime > 0 && <span style={timeStyle}>{String(Math.floor(remainedTime/60)).padStart(2,'0')}:{String(Math.floor(remainedTime%60)).padStart(2,'0')}</span> }
+        </div>
       </button>
     </div>
   );
