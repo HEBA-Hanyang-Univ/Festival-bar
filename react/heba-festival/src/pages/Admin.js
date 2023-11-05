@@ -348,7 +348,8 @@ function Admin() {
       </div>
       { isOpenTableInfoModal && <TableInfoModal onClose={() => onCloseModal("tableInfo")}
 	                        tableNumber={ tableElem.table_no } nums={ tableElem.nums }
-                                startTime={ tableElem.start_time } endTime={ tableElem.end_time }>
+                                startTime={ tableElem.start_time } endTime={ tableElem.end_time }
+	                        code={ tableElem.code } referrer={ tableElem.referrer }>
 	                       </TableInfoModal> }
       <div className="admin-footer">
         <div className="footer-button">

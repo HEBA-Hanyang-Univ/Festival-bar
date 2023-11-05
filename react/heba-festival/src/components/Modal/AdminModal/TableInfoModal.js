@@ -7,7 +7,7 @@ import HeartModal from "./HeartModal";
 import ExitTableModal from "./ExitTableModal";
 import JoinTableModal from "./JoinTableModal";
 
-function TableInfoModal({ onClose, tableNumber, nums, startTime, endTime }) {
+function TableInfoModal({ onClose, tableNumber, nums, startTime, endTime, code, referrer }) {
   const modalRef = useRef(null);
   const [modalType, setModalType] = useState(null);
   const [zIndex, setZIndex] = useState(1000);
@@ -36,9 +36,9 @@ function TableInfoModal({ onClose, tableNumber, nums, startTime, endTime }) {
       <div className="overlay">
         <div className="adminModalWrap" style={{width: '60rem'}} ref={modalRef}>
           <div className="adminModalTitle">
-            <span className="recommend-id">(D1Y3P)</span>
+            <span className="recommend-id">({ code })</span>
             <span>{ tableNumber }번 테이블</span>
-            <span className="recommend-name">H 이유빈</span>
+            <span className="recommend-name">{ referrer }</span>
           </div>
           <div className="tableInfoBox">
             <span className="tableInfo">
