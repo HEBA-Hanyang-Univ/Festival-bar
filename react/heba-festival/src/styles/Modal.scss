@@ -351,10 +351,24 @@
   height: fit-content;
 
   .adminModalTitle {
+    display: flex;
     margin-top: 5rem;
     color: #000;
     font-size: 2.6rem;
     font-weight: 700;
+  }
+
+  .recommend-id {
+    margin-left: 5rem;
+    margin-right: 10rem;
+    color: #0086B9;
+    font-size: 2.5rem;
+  }
+
+  .recommend-name {
+    color: #0086B9;
+    margin-left: 8rem;
+    font-size: 2.5rem;
   }
 
   .selectnum {
