@@ -99,7 +99,15 @@ def set_table(table_no, nums, gender, photo, note, referrer, random_code):
             table_data[index]['gender'] = gender
             table_data[index]['photo'] = photo
             table_data[index]['note'] = note
-            table_data[index]['referrer'] = referrer
+            table_data[index]['referrer'] = ""
+            
+            if referrer:
+                with open('name_list.txt', 'r') as name_file:
+                    name_list = [line.strip() for line in name_file]
+                
+                if referrer.startswith('H') and referrer[1:] in name_list:
+                    table_data[index]['referrer'] = referrer[1:]
+            
             table_data[index]['active'] = True
             korea_time = set_time()
             table_data[index]['start_time'] = korea_time.strftime('%Y-%m-%d %H:%M:%S')
