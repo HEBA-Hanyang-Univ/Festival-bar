@@ -330,7 +330,8 @@
   font-size: 1.5rem;
   font-weight: 600;
 }
-
+/*
+ * button hover disable
 .time-plus:hover,
 .heart-plus:hover,
 .table-exit:hover {
@@ -338,6 +339,7 @@
   box-shadow: 1px 1px 1px black;
   transition: 0.2s;
 }
+*/
 
 .table_choice {
   margin-left: 14rem;

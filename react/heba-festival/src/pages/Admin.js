@@ -14,15 +14,13 @@ import TimeModal from "components/Modal/AdminModal/TimeModal";
 import HeartModal from "components/Modal/AdminModal/HeartModal";
 import ExitTableModal from "components/Modal/AdminModal/ExitTableModal";
 import JoinTableModal from "components/Modal/AdminModal/JoinTableModal";
-import Table from "components/Table";
 
 function Admin() {
 
   const [isOpenTableInfoModal, setIsOpenTableInfoModal] = useState(false);
   const [isOpenTimeModal, setIsOpenTimeModal] = useState(false);
   const [isOpenHeartModal, setIsOpenHeartModal] = useState(false);
-  const [isOpenExitModal, setIsOpenExitModal] = useState(false);
-  const [isOpenJoinTableModal, setIsOpenJoinTableModal] = useState(false);
+  const [isOpenExitModal, setIsOpenExitModal] = useState(false); 
 
 
   // a variable for render nums of each tables
@@ -55,7 +53,7 @@ function Admin() {
       return (
         <AdminTable tableNumber={data.table_no} gender={data.gender} headCount={data.nums}
          huntingSuccess={data.join} remainedTime={remainedTime} managerCall={false}
-         onClickTable={ (e) => { onClickTableElem(e, data); } }/>
+	 friendCode={data.referrer} onClickTable={ (e) => { onClickTableElem(e, data); } }/>
       );
     };
     return datas.map((data) => processIndividualData(data));
@@ -67,7 +65,7 @@ function Admin() {
   const navigate = useNavigate();
 
   // Refetch query
-  // const queryclient = useQueryClient();
+  const queryclient = useQueryClient();
   const { data, isLoading, error, isFetching } = useQuery({
     queryKey: ["get-all"],
     queryFn: async () => {

@@ -75,20 +75,26 @@ const AdminTable = ({ tableNumber, friendCode, gender, huntingSuccess, headCount
     marginTop: '0.8rem'
   };
 
+  let isTimeOut = false
+  if (renderOption === AdminTableRenderOptions.timeout) {
+    isTimeOut = true;
+  }
+
   return (
     <div className="adminTableWrap">
       <button className="adminTable" style={ tableStyle } onClick={ onClickButton }>
         <div className="adminTableTop">
-          <span className="table-number">{ tableNumber }번</span>
+          <span className="table-number" style={{color:renderOption.textColor}}>{ tableNumber }번</span>
           { friendCode !== "" && <span className="friend-code">{ friendCode }</span> }
-          { hasNotice && <img src={ ManagerCall } style={ managerCallImgStyle } alt="Manager Call" /> }
+          { managerCall && <img src={ ManagerCall } style={ managerCallImgStyle } alt="Manager Call" /> }
         </div>
         <div className="adminTableMiddle">
           { renderOption.image && <img src={renderOption.image} style={imgStyle} alt={renderOption.alt}/>}
-          { headCount > 0 && <span style={personnumberStyle}>{headCount}</span> }
+          { !isTimeOut && headCount > 0 &&
+	      <span style={personnumberStyle}>{headCount}</span> }
         </div>
         <div className="adminTableBottom">
-          { remainedTime > 0 && <span style={timeStyle}>{String(Math.floor(remainedTime/60)).padStart(2,'0')}:{String(Math.floor(remainedTime%60)).padStart(2,'0')}</span> }
+          { !isTimeOut && remainedTime > 0 && <span style={timeStyle}>{String(Math.floor(remainedTime/60)).padStart(2,'0')}:{String(Math.floor(remainedTime%60)).padStart(2,'0')}</span> }
         </div>
       </button>
     </div>
