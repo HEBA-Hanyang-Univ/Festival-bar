@@ -202,7 +202,7 @@ def send_like(my_table, received_table):
             table_data[received_table-1]['record'].insert(0, { \
                     "type" : "received", \
                     "from" : int(my_table), \
-                    "time" : current_time \
+                    "time" : current_time, \
                     "index" : len(table_data[received_table-1]['record'])})
         else :
             table_data[my_table-1]['record'].insert(0, { \
