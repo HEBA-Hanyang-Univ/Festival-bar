@@ -3,13 +3,13 @@ import "styles/Modal.scss";
 import useOutSideClick from "../useOutSideClick";
 import ModalContainer from "../ModalContainer";
 
-function ExitTableModal({ onClose, selectedBoxes, zIndex }) {
+function ExitTableModal({ onClose, targetTables, zIndex }) {
   const modalRef = useRef(null);
 
   // selectedBoxes가 배열이 아닌 경우, 배열로 변환
-  let selectedBoxesArray = Array.isArray(selectedBoxes)
-    ? selectedBoxes
-    : [selectedBoxes];
+  let targetTableArray = Array.isArray(targetTables)
+    ? targetTables
+    : [targetTables];
 
   const handleClose = () => {
     onClose?.();
@@ -31,7 +31,7 @@ function ExitTableModal({ onClose, selectedBoxes, zIndex }) {
         <div className="adminModalWrap" ref={modalRef}>
           <div className="adminModalTitle">
             <span className="selectnum">
-              {selectedBoxesArray.join(", ")}번 테이블
+              {targetTableArray.join(", ")}번 테이블
             </span>
           </div>
           <div className="adminModalContent">

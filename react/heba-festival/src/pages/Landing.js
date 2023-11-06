@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "styles/common.scss";
 import "styles/Landing.scss";
-import TigerImg from "assets/images/Tiger.svg";
 import Logo from "assets/images/Logo.svg";
 import secureLocalStorage from "react-secure-storage";
 import LockModal from "components/Modal/LockModal";
@@ -54,25 +53,22 @@ export const Landing = () => {
   return (
     <div className="homeWrap">
       {isModalOpen && <LockModal onClose={handleCloseModal} />}
-      <div className="homeImg">
-        <img src={TigerImg} alt="tiger img"></img>
-      </div>
       <div className="homeTitle">
         <img src={Logo} alt="logo"></img>
       </div>
       <div className="homeSubtitle">
-        <span>올바른 만남이 모여 인연이 되다.</span>
+        <span>올바른 만남이 모여 인연이 되다</span>
       </div>
       <div className="homeBtnContainer">
         <button className="linkSicpama">
-	  <Link to ={"https://order.sicpama.com/?token="+token} style={{textDecorationLine: "none"}}>
+	        <Link to ={"https://order.sicpama.com/?token="+token} style={{textDecorationLine: "none"}}>
             <div className="homeBtnTitle">
               <span>주문하기</span>
             </div>
           </Link>
         </button>
         <button className="linkHEBA">
-	  <Link to={ isModalOpen ? '/error' : '/home' } style={{textDecorationLine:"none"}}>
+	        <Link to={ isModalOpen ? '/error' : '/home' } style={{textDecorationLine:"none"}}>
             <div className="homeBtnTitle">
               <span>헌팅하기</span>
             </div>

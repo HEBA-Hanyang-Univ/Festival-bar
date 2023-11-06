@@ -3,29 +3,20 @@
   flex-direction: column;
   width: 100%;
   margin: 0 auto;
-  
-  .homeImg {
-    margin-top: 12rem;
-
-    img {
-      width: 18rem;
-      height: 13rem;
-    }
-  }
 
   .homeTitle {
     display: flex;
     margin: 0 auto;
-    margin-top: 2rem;
+    margin-top: 10rem;
 
     img {
-      width: 15rem;
-      height: 9rem;
+      width: 22rem;
+      height: 22rem;
     }
   }
 
   .homeSubtitle {
-    margin: 0 auto;
+    margin: -4.9rem auto 9rem;
     padding-top: 1.3rem;
 
     span {
@@ -41,7 +32,7 @@
 
     button {
       margin-bottom: 2rem;
-      width: 17rem;
+      width: 20rem;
       height: 5rem;
 
       border: none;

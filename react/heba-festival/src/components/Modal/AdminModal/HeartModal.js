@@ -3,14 +3,14 @@ import "styles/Modal.scss";
 import useOutSideClick from "../useOutSideClick";
 import ModalContainer from "../ModalContainer";
 
-function HeartModal({ onClose, selectedBoxes, zIndex }) {
+function HeartModal({ onClose, targetTables, zIndex }) {
   const modalRef = useRef(null);
   const [heart, setHeart] = useState(0);
 
   // selectedBoxes가 배열이 아닌 경우, 배열로 변환
-  let selectedBoxesArray = Array.isArray(selectedBoxes)
-    ? selectedBoxes
-    : [selectedBoxes];
+  let targetTableArray = Array.isArray(targetTables)
+    ? targetTables
+    : [targetTables];
 
   const handleClose = () => {
     onClose?.();
@@ -41,7 +41,7 @@ function HeartModal({ onClose, selectedBoxes, zIndex }) {
       <div className="overlay">
         <div className="adminModalWrap" ref={modalRef}>
           <div className="adminModalTitle">
-            <span className="selectnum">{selectedBoxesArray.join(", ")}번 테이블</span>
+            <span className="selectnum">{targetTableArray.join(", ")}번 테이블</span>
           </div>
           <div className="adminModalContent timeSet">
             <button onClick={handleHeartDecrement}>-</button>
