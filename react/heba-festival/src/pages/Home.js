@@ -1,4 +1,4 @@
-import React,{ Component, useState, useEffect } from "react";
+import React,{ Component, useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import secureLocalStorage from "react-secure-storage";
@@ -32,40 +32,57 @@ const Home = () => {
   const [isOpenMyPageModal, setIsOpenMyPageModal] = useState(false);
   const [isOpenAlarmModal, setIsOpenAlarmModal] = useState(false);
   const [filter, setFilter] = useState('all'); // 기본 필터는 전체
-
-  // TODO: 알람 상태 확인을 위한 임시 코드, 알람이 있으면 빨간색 알람 이미지로 전환
-  const [alarms, setAlarms] = useState([]);
+  let hasNotice = false;
 
   let myTableInfo = null;
   let likes = 0;
   let remainedTime = 0;
 
   let timerIntervalId = null;
+  let record = [];
+  let timeRecord = useRef([]);
+  let hasNoticedTimeAlert = useRef(false);
+  let hasNoticedTimeOut = useRef(false);
 
   const setMyTableInfo = (tableData) => {
-    if (tableData == null) return
 
     myTableInfo = tableData;
 
-    if (timerIntervalId) clearInterval(timerIntervalId);
-
-    remainedTime = (new Date(myTableInfo.end_time).getTime() - new Date()) / 1000;
+    const today = new Date();
+    remainedTime = (new Date(myTableInfo.end_time).getTime() - today) / 1000;
     likes = myTableInfo.likes;
 
-    timerIntervalId = setInterval(() => {
-      remainedTime = remainedTime - 1;
-    }, 1000);
+    record = myTableInfo.record;
+    // I don't want to use secureLocalStorage here, but...
+    if (secureLocalStorage.getItem('notice') !== myTableInfo.record) {
+      hasNotice = true;
+      secureLocalStorage.setItem('notice', record);
+    }
 
     if (remainedTime <= 0) {
-      clearInterval(timerIntervalId);
       remainedTime = 0;
+      if (!hasNoticedTimeOut.current) {
+	timeRecord.current.push({ "type": "timeout", 
+		          "time": today.getHours() + ":" + today.getMinutes(), });
+	hasNoticedTimeOut.current = true;
+	hasNotice = true;
+	console.log(timeRecord.current);
+      }
+    } else if (remainedTime <= 600) {
+	console.log(hasNoticedTimeAlert);
+	if (!hasNoticedTimeAlert.current) { // don't combine this with upper line
+	  timeRecord.current.push({ "type": "timeAlert",
+                            "time": today.getHours() + ":" + today.getMinutes(), });
+	  hasNoticedTimeAlert.current = true;
+	  hasNotice = true;
+          console.log(timeRecord.current);
+	}
+    } else {
+      // to ensure notice if time is added by admin
+      hasNoticedTimeAlert = false;
+      hasNoticedTimeOut = false;
     }
-  }
-
-  useEffect(() => {
-    return () => clearInterval(timerIntervalId);
-  },[])
-  
+  }  
 
   const navigate = useNavigate();
 
@@ -130,6 +147,8 @@ const Home = () => {
     } else if (modalType === "myPage") {
       setIsOpenMyPageModal(true);
     } else if (modalType === "alarm") {
+      console.log('has notice sets to false');
+      hasNotice = false;
       setIsOpenAlarmModal(true);
     }
   };
@@ -166,13 +185,12 @@ const Home = () => {
               <img className="landing" src={HomeImg} alt="homepage img"></img>
             </Link>   
             <span>바른주점</span>
-            {/* TODO: 알람 상황별로  display */}
             <button className="alarmBtn" onClick={() => onClickButton("alarm")}>
-              <img className="alarmImg" src={alarms.length > 0 ? RedAlarmImg : AlarmImg} alt="alarm img"></img>
+              <img className="alarmImg" src={hasNotice ? RedAlarmImg : AlarmImg} alt="alarm img"></img>
             </button>
             {isOpenAlarmModal && (
-            <AlarmModal open={isOpenAlarmModal} onClose={() => onCloseModal("alarm")}></AlarmModal>
-          )} 
+            <AlarmModal onClose={() => onCloseModal("alarm")} alarmData={record.concat(timeRecord.current)}></AlarmModal>
+	    )} 
           </nav>
           <div id="subNav">
             <div id="subNavFilter">
