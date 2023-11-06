@@ -291,17 +291,29 @@ function Admin() {
               <span class="info_title">빈&nbsp;T</span>
             </div>
           </div>
-          <div class="table-container">
-            <div className="table-container-grid">
-              {React.Children.toArray(data)}
-            </div>
-            { isOpenTableInfoModal && 
-              <TableInfoModal onClose={() => onCloseModal("tableInfo")}
-                tableNumber={ tableElem.table_no } nums={ tableElem.nums }
-                startTime={ tableElem.start_time } endTime={ tableElem.end_time }
-                code={ tableElem.code } referrer={ tableElem.referrer }>
-              </TableInfoModal> }
-          </div>
+          <div className="table-container">
+         <div className="table-container-grid">
+         {React.Children.toArray(data).map((child) => {
+         const tableNumber = child.props.tableNumber;
+         const isSelected = selectedTable.includes(tableNumber);
+
+         return React.cloneElement(child, {
+         className: isSelected ? "border: 2px solid red" : ""
+         });
+         })}
+        </div>
+      {isOpenTableInfoModal && (
+      <TableInfoModal
+      onClose={() => onCloseModal("tableInfo")}
+      tableNumber={tableElem.table_no}
+      nums={tableElem.nums}
+      startTime={tableElem.start_time}
+      endTime={tableElem.end_time}
+      code={tableElem.code}
+      referrer={tableElem.referrer}
+      ></TableInfoModal>
+       )}
+      </div>
           <div className="admin-footer">
             <div className="footer-button">
               <div className="blue-btn-box">
@@ -349,6 +361,8 @@ function Admin() {
                         ? "#FF8FD2"
                         : alarmData.type === "call"
                         ? "#FFC555"
+                        : alarmData.type === "time"
+                        ? "red"
                         : "red",
                   }}
                 >
@@ -358,7 +372,9 @@ function Admin() {
                     ? "[하트충전]"
                     : alarmData.type === "call"
                     ? "[직원 호출]"
-                    : "[이용시간][테이블 시간 소진]"}
+                    : alarmData.type === "time"
+                    ? "[이용시간]"
+                    : "[테이블 시간 소진]"}
                 </span>
                 <span className="alarm-message">{item.alarm}</span>
                 <p className="alarm-time-p">{item.time}</p>
