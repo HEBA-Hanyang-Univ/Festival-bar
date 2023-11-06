@@ -19,17 +19,23 @@ def add_likes():
     data = request.get_json()
 
     token = data.get('token')
-    if controller.get_table_no_by_token(token) == 'admin':
-        table_no = data.get('table_no')
-        count = data.get('count')
-
-        output['result'] = controller.add_likes(table_no, count)
-        return output
-    else:
-        output['result'] = "fail"
+    if controller.get_table_no_by_token(token) != 'admin':
+        output['result'] = 'fail'
         return output
 
+    count = data.get('count')
+    table_list = data.get('table_list')
+    result = {}
+    for t in table_list :
+        try :
+            table_no = int(t)
+            if controller.get_table(table_no).get('active') :
+                result[table_no] = controller.add_likes(table_no, count)
+        except :
+            pass
 
+    output['result'] = result
+    return output
 
 
 
@@ -41,22 +47,23 @@ def add_time():
     data = request.get_json()
 
     token = data.get('token')
-
-    if controller.get_table_no_by_token(token) == 'admin':
-        table_no = data.get('table_no')
-
-        if controller.get_table(table_no)['active'] == True:
-            minutes = data.get('minutes')
-
-            output['result'] = controller.add_time(table_no, minutes)
-            return output
-        else:
-            output['result'] = {"fail" : f"Table {table_no} active False"}
-            return output
-    else:
-        output['result'] = "fail"
+    if controller.get_table_no_by_token(token) != 'admin':
+        output['result'] = 'fail'
         return output
 
+    mins = data.get('mins')
+    table_list = data.get('table_list')
+    result = {}
+    for t in table_list :
+        try :
+            table_no = int(t)
+            if controller.get_table(table_no).get('active') :
+                result[table_no] = controller.add_time(table_no, mins)
+        except :
+            pass
+
+    output['result'] = result
+    return output
 
 
 ### 합석 처리 
@@ -86,12 +93,19 @@ def reset_table():
     data = request.get_json()
 
     token = data.get('token')
-    table_no = data.get('table_no')
-    
-    if controller.get_table_no_by_token(token) == 'admin' and table_no:
-        output['result'] = controller.reset_table(table_no)
-        return output
-    else:
+    if controller.get_table_no_by_token(token) != 'admin' :
         output['result'] = "fail"
         return output
 
+    table_list = data.get('table_list')
+    result = {}
+    for t in table_list :
+        try :
+            table_no = int(t)
+            if controller.get_table(table_no).get('active') :
+                result[table_no] = controller.reset_table(table_no)
+        except :
+            pass
+
+    output['result'] = result
+    return result

@@ -6,7 +6,6 @@ import pytz
 my_dir = os.path.dirname(__file__)
 json_file = os.path.join(my_dir, 'table.json')
 json_file2 = os.path.join(my_dir, 'admin.json')
-json_file3 = os.path.join(my_dir, 'table_code.json')
 
 def read_json_file(file_name):
     try:
@@ -19,13 +18,11 @@ def read_json_file(file_name):
     return data
 
 
-def write_json_file(file_name, data, file_name2, data2, file_name3, data3):
+def write_json_file(file_name, data, file_name2, data2):
     with open(file_name, "w") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
     with open(file_name2, "w") as f:
         json.dump(data2, f, ensure_ascii=False, indent=4)
-    with open(file_name3, "w") as f:
-        json.dump(data3, f, ensure_ascii=False, indent=4)
 
 
 qr_data = read_json_file('table_token.json')
@@ -37,7 +34,7 @@ with open('name_list.txt', 'r') as name_file :
 
 
 def write_table_data():
-    write_json_file(json_file, table_data, json_file2, admin, json_file3, table_code_list)
+    write_json_file(json_file, table_data, json_file2, admin)
 
 
 def set_time():
@@ -107,6 +104,7 @@ def set_table(table_no, nums, gender, photo, note, referrer, random_code):
         if table_data[index]['active'] == True:
             return "fail"
 
+        reset(table_no)
         table_data[index]['nums'] = nums
         table_data[index]['gender'] = gender
         table_data[index]['photo'] = photo
@@ -169,7 +167,7 @@ def get_table_no_by_token(token):
     try :
         table_no = int(table_no)
     except Exception as e :
-        print(e)
+        pass
 
     return table_no
 
@@ -183,31 +181,47 @@ def get_table(table_no):
 ### send 
 def send_like(my_table, received_table):
     try:
-        if my_table == received_table :
+        if not check_avilable(my_table, received_table) == False :
             return "fail"
 
-        if my_table in table_data[received_table-1]['received'] or my_table in table_data[received_table-1]['rejected'] :
+        if received_table in table_data[my_table-1]['sent'] :
             return "fail"
 
-        if table_data[my_table-1]['likes'] <= 0 :
-            return "fail"
-
-        if table_data[received_table-1]['active'] == False or table_data[my_table-1]['active'] == False :
-            return "fail"
-        
-        if table_data[my_table-1]['gender'] == 'mixed' or table_data[received_table-1]['gender'] == 'mixed' :
-            return "fail"
-        
-        if table_data[my_table-1]['gender'] == table_data[received_table-1]['gender'] :
-            return "fail"
-
-        if table_data[my_table-1]['join'] or table_data[received_table-1]['join'] :
-            return "fail"
-
-        table_data[my_table-1]['likes'] -= 1
+        # reply don't use a like
+        if my_table not in table_data[received_table-1]['sent'] :
+            if table_data[my_table-1]['likes'] <= 0 :
+                return "fail"
+            else :
+                table_data[my_table-1]['likes'] -= 1
         table_data[my_table-1]['sent'].append(received_table)
-        table_data[received_table-1]['received'].append(my_table)       
-        table_data[received_table-1]['record'].insert(0, {"type" : "received", "from" : str(my_table), "time": set_time().strftime('%Y-%m-%d %H:%M:%S')}) 
+        table_data[received_table-1]['received'].append(my_table)
+
+        current_time = set_time().strftime('%Y-%m-%d %H:%M:%S')
+
+        if my_table not in table_data[received_table-1]['sent'] :
+            table_data[received_table-1]['record'].insert(0, { \
+                    "type" : "received", \
+                    "from" : int(my_table), \
+                    "time" : current_time \
+                    "index" : len(table_data[received_table-1]['record'])})
+        else :
+            table_data[my_table-1]['record'].insert(0, { \
+                    "type" : "matched", \
+                    "from" : int(received_table), \
+                    "time" : current_time, \
+                    "index" : len(table_data[my_table-1]['record'])})
+            table_data[received_table-1]['record'].insert(0, { \
+                    "type" : "matched", \
+                    "from" : int(my_table), \
+                    "time" : current_time, \
+                    "index" : len(table_data[my_table-1]['record'])})
+            admin['record'].insert(0, { \
+                    "type" : "join", \
+                    "from" : int(my_table), \
+                    "to" : int(received_table), \
+                    "time" : current_time, \
+                    "index" : len(table_data[my_table-1]['record'])})
+
         return "ok"
 
     except:
@@ -216,6 +230,8 @@ def send_like(my_table, received_table):
 
 ### reject
 def reject(my_table, reject_table):
+    if check_available(my_table, reject_table) :
+        return "fail"
 
     if reject_table not in table_data[my_table-1]['received']:
         return "fail"
@@ -223,22 +239,23 @@ def reject(my_table, reject_table):
     table_data[reject_table-1]['rejected'].insert(0, my_table)
     table_data[my_table-1]['rejected'].insert(0, reject_table)
 
-    table_data[reject_table-1]['record'].insert(0, {"type" : "rejected", "from" : my_table, "time": set_time().strftime('%Y-%m-%d %H:%M:%S')})
+    table_data[reject_table-1]['record'].insert(0, { \
+            "type" : "rejected", \
+            "from" : my_table, \
+            "time": set_time().strftime('%Y-%m-%d %H:%M:%S')})
         
     return "ok"
 
 
 ### 직원 호출
-def call(table_no, join):
+def call(table_no):
+    admin['record'].insert(0, { \
+            "type" : "call", \
+            "from" : table_no, \
+            "time" : set_time().strftime('%Y-%m-%d %H:%M:%S'), \
+            "index" : len(table_data[my_table-1]['record'])})
 
-    if len(admin['record']) == 20:
-        admin['record'].pop()
-    if not join:
-        admin['record'].insert(0, {"type" : "call", "from" : table_no, "time" : set_time().strftime('%Y-%m-%d %H:%M:%S')})
-        return "ok"
-    else:
-        admin['record'].insert(0, {"type" : "join", "from" : table_no, "time" : set_time().strftime('%Y-%m-%d %H:%M:%S')})
-        return "ok"
+    return "ok"
 
 
 ##########################################################
@@ -266,30 +283,23 @@ def add_time(table_no, minutes):
 ### 합석 처리
 def join_table(from_where, to_where):
     try:
-        if from_where == to_where:
+        if not check_available(from_where, to_where) :
             return "fail"
+        # find who's table has more time
+        influent = table_data[to_where-1] \
+                if datetime.strptime(table_data[to_where-1]['end_time'], '%Y-%m-%d %H:%M:%S') \
+                > datetime.strptime(table_data[from_where-1]['end_time'], '%Y-%m-%d %H:%M:%S') \
+                else table_data[from_where-1]
 
-        if table_data[from_where-1]['active'] == False or table_data[to_where-1]['active'] == False:
-            return "fail"
-
-        if table_data[from_where-1]['gender'] == 'mixed' or table_data[to_where-1]['gender'] == 'mixed':
-            return "fail"
-
-        if table_data[from_where-1]['gender'] != table_data[to_where-1]['gender'] :
-            return "fail"
-
-        if table_data[from_where-1]['join'] or table_data[to_where-1]['join'] :
-            return "fail"
-        
         # 합석으로 인한 정보 변경
         table_data[to_where-1]['nums'] += table_data[from_where-1]['nums']
         table_data[to_where-1]['gender'] = "mixed"
         table_data[to_where-1]['join'] = True
-        table_data[to_where-1]['end_time'] = table_data[to_where-1]['end_time'] if table_data[to_where-1]['end_time'] > table_data[from_where-1]['end_time'] else table_data[from_where-1]['end_time']
+        table_data[to_where-1]['end_time'] = influent['end_time']
+        table_data[to_where-1]['referrer'] = influent['referrer']
         table_data[to_where-1]['note'] = ""
 
-        table_data[to_where-1]['record'].insert(0, {"type" : "matched", "from" : from_where, "time": set_time().strftime('%Y-%m-%d %H:%M:%S')})
-
+        remove_like(to_table)
         # table_data[from_where-1] = reset(from_where)
         reset_table(from_where)
 
@@ -300,6 +310,33 @@ def join_table(from_where, to_where):
 
 ### 테이블 비우기
 def reset_table(table_no):
+    remove_like(table_no)
+
+    table_data[table_no-1] = reset(table_no)
+
+    return "ok"
+
+
+#########################################################
+###################### utility ##########################
+#########################################################
+def check_available(me, opponent) :
+    if me == opponent :
+        return False
+    if not table_data[opponent-1]['active'] or not table_data[me-1]['active'] :
+        return False
+    if me in table_data[opponent-1]['rejected'] :
+        return False
+    if table_data[opponent-1]['join'] or table_data[me-1]['join'] :
+        return False
+    if table_data[opponent-1]['gender'] == 'mixed' or table_data[me-1]['gender'] == 'mixed' :
+        return False
+    if table_data[opponent-1]['gender'] == table_data[me-1]['gender'] :
+        return False
+
+    return True
+
+def remove_like(table_no) :
     if table_data[table_no-1]['sent'] != []:
         for sent_no in table_data[table_no-1]['sent']:
             table_data[sent_no-1]['received'].remove(table_no)
@@ -308,13 +345,7 @@ def reset_table(table_no):
             table_data[reject_no-1]['rejected'].remove(table_no)
     if table_data[table_no-1]['received'] != []:
         for received_no in table_data[table_no-1]['received']:
-            table_data[received_no-1]['sent'].remove(table_no)    
-
-    table_data[table_no-1] = reset(table_no)
-
-    return "ok"
-
-
+            table_data[received_no-1]['sent'].remove(table_no)
 
 ##########################################################
 ########################## test ##########################
