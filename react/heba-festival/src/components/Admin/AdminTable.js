@@ -50,8 +50,8 @@ const AdminTable = ({ tableNumber, friendCode, gender, huntingSuccess, headCount
 
   const imgStyle = {
     width: "5rem",
-    height: "auto",
-    marginTop: '1.7rem',
+    height: "3.8rem",
+    marginTop: '1.4rem',
     marginRight: '0.4rem',
   };
 
@@ -63,7 +63,7 @@ const AdminTable = ({ tableNumber, friendCode, gender, huntingSuccess, headCount
   };
 
   const timeStyle = {
-    fontSize: "1.5rem",
+    fontSize: "1.3rem",
     fontWeight: "800",
     color: (remainedTime <= 600) ? "red" : "black",
   };
@@ -72,7 +72,7 @@ const AdminTable = ({ tableNumber, friendCode, gender, huntingSuccess, headCount
     width: "3rem",
     height: "3rem",
     marginLeft: "0.8rem",
-    marginTop: "0.8rem",
+    marginTop: '0.8rem'
   };
 
   let isTimeOut = false
@@ -82,7 +82,7 @@ const AdminTable = ({ tableNumber, friendCode, gender, huntingSuccess, headCount
 
   return (
     <div className="adminTableWrap">
-      <button className="adminTable" style={ managerCall ? { ...tableStyle, border: "2px solid red" } : tableStyle } onClick={ onClickButton }>
+      <button className="adminTable" style={ tableStyle } onClick={ onClickButton }>
         <div className="adminTableTop">
           <span className="table-number" style={{color:renderOption.textColor}}>{ tableNumber }번</span>
           { friendCode !== "" && <span className="friend-code">{ friendCode }</span> }

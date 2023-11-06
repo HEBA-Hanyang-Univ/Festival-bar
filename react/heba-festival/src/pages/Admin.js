@@ -61,48 +61,48 @@ function Admin() {
 
   // // variables that related to data fetching
   // // !!! DO NOT MODIFY !!!
-  // const { token } = useParams();
-  // const navigate = useNavigate();
+  const { token } = useParams();
+  const navigate = useNavigate();
 
-  // // Refetch query
-  // const queryclient = useQueryClient();
-  // const { data, isLoading, error, isFetching } = useQuery({
-  //   queryKey: ["get-all"],
-  //   queryFn: async () => {
-  //     const response = await fetch("http://150.230.252.177:5000/get-all", {
-  //       mode: "cors",
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({
-  //         token: token,
-  //       }),
-  //     }).then((res) => res.json());
-  //     return response;
-  //   },
-  //   select: (data) => {
-  //     if (data.result && data.result !== "fail") {
-  //       return postProcessData(data.result);
-  //     } else {
-  //       navigate("/error");
-  //       return [];
-  //     }
-  //   },
-  //   refetchInterval: 1000, // data refetch for every 1 sec.
-  //   refetchIntervalInBackground: true,
-  //   initialData: () => {
-  //     // this seems to be not working as intended...
-  //     return Array.from({ length: 30 }, (_, i) => {
-  //       return {
-  //         table_no: i + 1,
-  //         gender: "",
-  //         active: false,
-  //         nums: 0,
-  //         join: false,
-  //         referrer: "",
-  //       };
-  //     });
-  //   },
-  // });
+  // Refetch query
+  const queryclient = useQueryClient();
+  const { data, isLoading, error, isFetching } = useQuery({
+    queryKey: ["get-all"],
+    queryFn: async () => {
+      const response = await fetch("http://150.230.252.177:5000/get-all", {
+        mode: "cors",
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          token: token,
+        }),
+      }).then((res) => res.json());
+      return response;
+    },
+    select: (data) => {
+      if (data.result && data.result !== "fail") {
+        return postProcessData(data.result);
+      } else {
+        navigate("/error");
+        return [];
+      }
+    },
+    refetchInterval: 1000, // data refetch for every 1 sec.
+    refetchIntervalInBackground: true,
+    initialData: () => {
+      // this seems to be not working as intended...
+      return Array.from({ length: 30 }, (_, i) => {
+        return {
+          table_no: i + 1,
+          gender: "",
+          active: false,
+          nums: 0,
+          join: false,
+          referrer: "",
+        };
+      });
+    },
+  });
 
   // this function is for buttons below tables.
   // modal will be opened if multiple select mode is enabled
@@ -136,7 +136,6 @@ function Admin() {
   // handle both multiple and single selection of tables
   // if multiple mode is inactive, TableInfoModal will be opened
   // if multiple mode is active, selection mode will be executed
-  
   const [isMultipleSelectMode, setIsMultipleSelectMode] = useState(false);
   const [selectedTable, setSelectedTable] = useState([]);
 
@@ -154,7 +153,6 @@ function Admin() {
       if (selectedTable.includes(tableData.table_no)) {
         setSelectedTable(
           selectedTable.filter((table) => table.table_no !== tableData.table_no)
-
         );
       } else {
         setSelectedTable([...selectedTable, tableData.table_no]);
@@ -293,29 +291,17 @@ function Admin() {
               <span class="info_title">빈&nbsp;T</span>
             </div>
           </div>
-          <div className="table-container">
-         <div className="table-container-grid">
-    {React.Children.toArray(data).map((child) => {
-      const tableNumber = child.props.tableNumber;
-      const isSelected = selectedTable.includes(tableNumber);
-
-      return React.cloneElement(child, {
-        className: isSelected ? "border: 2px solid red" : ""
-      });
-    })}
-      </div>
-      {isOpenTableInfoModal && (
-      <TableInfoModal
-      onClose={() => onCloseModal("tableInfo")}
-      tableNumber={tableElem.table_no}
-      nums={tableElem.nums}
-      startTime={tableElem.start_time}
-      endTime={tableElem.end_time}
-      code={tableElem.code}
-      referrer={tableElem.referrer}
-      ></TableInfoModal>
-       )}
-      </div>
+          <div class="table-container">
+            <div className="table-container-grid">
+              {React.Children.toArray(data)}
+            </div>
+            { isOpenTableInfoModal && 
+              <TableInfoModal onClose={() => onCloseModal("tableInfo")}
+                tableNumber={ tableElem.table_no } nums={ tableElem.nums }
+                startTime={ tableElem.start_time } endTime={ tableElem.end_time }
+                code={ tableElem.code } referrer={ tableElem.referrer }>
+              </TableInfoModal> }
+          </div>
           <div className="admin-footer">
             <div className="footer-button">
               <div className="blue-btn-box">
@@ -363,8 +349,6 @@ function Admin() {
                         ? "#FF8FD2"
                         : alarmData.type === "call"
                         ? "#FFC555"
-                        : alarmData.type === "time"
-                        ? "red"
                         : "red",
                   }}
                 >
@@ -374,9 +358,7 @@ function Admin() {
                     ? "[하트충전]"
                     : alarmData.type === "call"
                     ? "[직원 호출]"
-                    : alarmData.type === "time"
-                    ? "[이용시간]"
-                    : "[테이블 시간 소진]"}
+                    : "[이용시간][테이블 시간 소진]"}
                 </span>
                 <span className="alarm-message">{item.alarm}</span>
                 <p className="alarm-time-p">{item.time}</p>
