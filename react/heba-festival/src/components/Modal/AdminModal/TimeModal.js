@@ -52,7 +52,7 @@ function TimeModal({ onClose, targetTables }) {
             <button onClick={handleTimeIncrement}>+</button>
           </div>
             <div className="adminModalBtn">
-              <button>
+              <button onClick={handleClose}>
                 <span>시간 추가</span>
               </button>
             </div>
