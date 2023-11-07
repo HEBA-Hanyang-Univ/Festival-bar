@@ -319,19 +319,19 @@ function Admin() {
               <span class="info_title">빈&nbsp;T</span>
             </div>
           </div>
-          <div className="table-container">
-         <div className="table-container-grid">
-         {React.Children.toArray(data).map((child) => {
-         const tableNumber = child.props.tableNumber;
-         const isSelected = selectedTable.includes(tableNumber);
+          <div className="table-container" style={{ backgroundColor: isMultipleSelectMode ? '#c8c8c8' : 'initial' }}>
+  <div className="table-container-grid">
+    {React.Children.toArray(data).map((child) => {
+      const tableNumber = child.props.tableNumber;
+      const isSelected = selectedTable.includes(tableNumber);
 
-         return React.cloneElement(child, {
-         className: isSelected ? "border: 2px solid red" : ""
-         });
-         })}
-        </div>
-      {isOpenTableInfoModal && (
-      <TableInfoModal
+      return React.cloneElement(child, {
+        className: isSelected ? "selected-table" : ""
+      });
+    })}
+  </div>
+  {isOpenTableInfoModal && (
+    <TableInfoModal
       onClose={() => onCloseModal("tableInfo")}
       tableNumber={tableElem.table_no}
       nums={tableElem.nums}
@@ -339,9 +339,9 @@ function Admin() {
       endTime={tableElem.end_time}
       code={tableElem.code}
       referrer={tableElem.referrer}
-      ></TableInfoModal>
-       )}
-      </div>
+    ></TableInfoModal>
+  )}
+</div>
           <div className="admin-footer">
             <div className="footer-button">
               <div className="blue-btn-box">
