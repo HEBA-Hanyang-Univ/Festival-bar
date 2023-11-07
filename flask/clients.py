@@ -95,7 +95,7 @@ def get_all():
         return output
     elif table_no == 'admin':
         output['result'] = table_data
-        outout['result']['admin_record'] = admin['record']
+        output['admin_record'] = controller.admin['record']
         return output
     else:
         output['result'] = "fail"

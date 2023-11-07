@@ -36,6 +36,17 @@ function Admin() {
   function postProcessData(datas) {
     record = datas.admin_record
     let callList = []
+    record.map((rec) => {
+      if (rec.type == "call") {
+        callList = [...callList, rec.from];
+        rec.message = String(rec.from) + "번 테이블에서 직원을 호출했습니다.";
+      } else if (rec.type == "join") {
+	rec.message = String(rec.from) +"번, " + String(rec.to)
+	              + "번 테이블의 합석 처리를 진행해 주세요.";
+      }
+      return rec;
+    })
+    /*
     for (let rec in record) {
       if (rec.type == "call") {
         callList = [...callList, rec.from];
@@ -45,7 +56,7 @@ function Admin() {
 		      + "번 테이블의 합석 처리를 진행해 주세요.";
       }
     }
-    
+    */  
     tableNums = { male: 0, female: 0, mixed: 0, joined: 0, empty: 0 };
     const currentTime = new Date();
 

@@ -105,7 +105,7 @@ function TableInfoModal({ onClose, tableNumber, nums, startTime, endTime, code, 
               </button>
             )}
             {isOpenJoinTableModal && (
-              <JoinTableModal targetTables={tableNumber} onClose={() => onCloseModal('joinTable')}></JoinTableModal>
+              <JoinTableModal targetTable={tableNumber} onClose={() => onCloseModal('joinTable')}></JoinTableModal>
             )}
             
             {/* 퇴장 처리 */}
