@@ -29,6 +29,14 @@ function SendHeartModal({ onClose, tableNumber, tableGender, headCount, tableInt
       }),
     })
     .then((res) => res.json())
+    .then((res) => {
+      if (res && res.result === 'ok') {
+        alert('성공!');
+      } else {
+	alert('보내기에 실패했습니다. 관리자에게 문의해주세요.');
+      }
+      return res;
+    })
     .then((res) => { handleClose(); })
   }
 

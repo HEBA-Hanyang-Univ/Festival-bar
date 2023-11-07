@@ -18,9 +18,6 @@ const AlarmModal = ({onClose, alarmData}) => {
   };
 
   // I don't wanna use secureLocalStorage here, but...
-  if (secureLocalStorage.getItem('notice_filter' == null)) {
-    secureLocalStorage.setItem('notice_filter', []);
-  }
   let filter = secureLocalStorage.getItem('notice_filter');
   if (filter == null) {
     filter = [];
@@ -28,13 +25,14 @@ const AlarmModal = ({onClose, alarmData}) => {
 
   const removeAlarm = (index) => {
     filter = [...filter, index];
-    setAlarms(alarms.filter((alarm) => !filter.includes(alarm.index)));
+    setAlarms(alarms.filter((alarm) => !filter.includes(alarm.index)).sort((a,b) => a.index - b.index));
     secureLocalStorage.setItem("notice_filter", filter);
+    secureLocalStorage.setItem('notice', alarms);
   };
 
   useOutSideClick(modalRef, handleClose);
   useEffect(() => {
-    setAlarms(alarms.filter((alarm) => !filter.includes(alarm.index)));
+    setAlarms(alarms.filter((alarm) => !filter.includes(alarm.index)).sort((a,b) => a.index - b.index));
 
     const $body = document.querySelector("body");
     const overflow = $body.style.overflow;

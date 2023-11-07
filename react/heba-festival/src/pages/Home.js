@@ -32,7 +32,7 @@ const Home = () => {
   const [isOpenMyPageModal, setIsOpenMyPageModal] = useState(false);
   const [isOpenAlarmModal, setIsOpenAlarmModal] = useState(false);
   const [filter, setFilter] = useState('all'); // 기본 필터는 전체
-  let hasNotice = false;
+  let hasNotice = useRef(false);
 
   let myTableInfo = null;
   let likes = 0;
@@ -41,6 +41,7 @@ const Home = () => {
   let timerIntervalId = null;
   let record = [];
   let timeRecord = useRef([]);
+  let totalRecord = [];
   let hasNoticedTimeAlert = useRef(false);
   let hasNoticedTimeOut = useRef(false);
 
@@ -49,50 +50,65 @@ const Home = () => {
     myTableInfo = tableData;
 
     const today = new Date();
-    remainedTime = (new Date(myTableInfo.end_time).getTime() - today) / 1000;
+    const endTime = new Date(myTableInfo.end_time);
+    remainedTime = (endTime.getTime() - today) / 1000;
     likes = myTableInfo.likes;
 
     record = myTableInfo.record;
-    // I don't want to use secureLocalStorage here, but...
-    if (secureLocalStorage.getItem('notice') !== myTableInfo.record) {
-      hasNotice = true;
-      secureLocalStorage.setItem('notice', record);
-    }
 
     if (remainedTime <= 0) {
       remainedTime = 0;
       if (!hasNoticedTimeOut.current) {
-	timeRecord.current.push({ "type": "timeout", 
-		          "time": today.getHours() + ":" + today.getMinutes(), });
+	String(Math.floor(remainedTime/60)).padStart(2, '0')
+	timeRecord.current.push({
+		"type": "timeout", 
+		"time": String(endTime.getHours()).padStart(2, '0') + ":"
+		        + String(endTime.getMinutes()).padStart(2, '0'), 
+		"index": -2});
 	hasNoticedTimeOut.current = true;
-	hasNotice = true;
-	console.log(timeRecord.current);
       }
     } else if (remainedTime <= 600) {
-	console.log(hasNoticedTimeAlert);
 	if (!hasNoticedTimeAlert.current) { // don't combine this with upper line
-	  timeRecord.current.push({ "type": "timeAlert",
-                            "time": today.getHours() + ":" + today.getMinutes(), });
+	  const alertTime = new Date(endTime.getTime() - (10 * 60 * 1000))
+	  timeRecord.current.push({
+		  "type": "timeAlert",
+		  "time": String(alertTime.getHours()).padStart(2, '0') + ":"
+		          + String(alertTime.getMinutes()).padStart(2, '0'),
+		  "index": -1});
 	  hasNoticedTimeAlert.current = true;
-	  hasNotice = true;
-          console.log(timeRecord.current);
 	}
     } else {
       // to ensure notice if time is added by admin
-      hasNoticedTimeAlert = false;
-      hasNoticedTimeOut = false;
+      hasNoticedTimeAlert.current = false;
+      hasNoticedTimeOut.current = false;
+    }
+
+    let noticeFilter = secureLocalStorage.getItem('notice_filter');
+    if (noticeFilter == null) {
+      noticeFilter = [];
+      secureLocalStorage.setItem('notice_filter', noticeFilter);
+    }
+
+    totalRecord = record.concat(timeRecord.current).filter(
+	    (record) => !noticeFilter.includes(record.index)).sort((a,b) => a.index - b.index);
+
+    // I don't want to use this logic, but...
+    if (JSON.stringify(secureLocalStorage.getItem('notice')) !== JSON.stringify(totalRecord)) {
+      hasNotice.current = true;
+      secureLocalStorage.setItem('notice', totalRecord);
     }
   }  
 
   const navigate = useNavigate();
 
   function getHuntingState(data) {
-    if (myTableInfo.received.includes(data.table_no)) {
+    if (myTableInfo.rejected.includes(data.table_no) || 
+	data.rejected.includes(myTableInfo.table_no)) {
+      return "broken";
+    } else if (myTableInfo.received.includes(data.table_no)) {
       return "received";
     } else if (myTableInfo.sent.includes(data.table_no)) {
       return "sent";
-    } else if (myTableInfo.rejected.includes(data.table_no) || data.rejected.includes(myTableInfo.table_no)) {
-      return "broken";
     }
     return "";
   }
@@ -121,7 +137,6 @@ const Home = () => {
 	}),
       })
       .then((res) => res.json())
-      console.log(response);
       return response;
     },
     select: (data) => {
@@ -147,8 +162,7 @@ const Home = () => {
     } else if (modalType === "myPage") {
       setIsOpenMyPageModal(true);
     } else if (modalType === "alarm") {
-      console.log('has notice sets to false');
-      hasNotice = false;
+      hasNotice.current = false;
       setIsOpenAlarmModal(true);
     }
   };
@@ -175,7 +189,6 @@ const Home = () => {
     navigate('/error');
   }
 
-
   return (
     <div>
       <div id="wrapper">
@@ -186,7 +199,7 @@ const Home = () => {
             </Link>   
             <span>바른주점</span>
             <button className="alarmBtn" onClick={() => onClickButton("alarm")}>
-              <img className="alarmImg" src={hasNotice ? RedAlarmImg : AlarmImg} alt="alarm img"></img>
+              <img className="alarmImg" src={hasNotice.current ? RedAlarmImg : AlarmImg} alt="alarm img"></img>
             </button>
             {isOpenAlarmModal && (
             <AlarmModal onClose={() => onCloseModal("alarm")} alarmData={record.concat(timeRecord.current)}></AlarmModal>
