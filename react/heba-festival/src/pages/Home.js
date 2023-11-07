@@ -197,7 +197,7 @@ const Home = () => {
             </Link>   
             <span>바른주점</span>
             <button className="alarmBtn" onClick={() => onClickButton("alarm")}>
-              <img className="alarmImg" src={hasNotice.current ? RedAlarmImg : AlarmImg} alt="alarm img"></img>
+              <img className={`alarmImg ${hasNotice.current ? 'red': ''}`} src={hasNotice.current ? RedAlarmImg : AlarmImg} alt="alarm img"></img>
             </button>
             {isOpenAlarmModal && (
             <AlarmModal onClose={() => onCloseModal("alarm")} alarmData={totalRecord}></AlarmModal>
