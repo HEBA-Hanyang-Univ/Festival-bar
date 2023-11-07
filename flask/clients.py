@@ -165,11 +165,15 @@ def send_like():
     my_table = controller.get_table_no_by_token(token)
     received_table = data.get('received_table')
 
+    try :
+        received_table = int(received_table)
+    except :
+        pass
+
     if type(my_table) == int and table_data[my_table-1]['code'] == code:
         output['result'] = controller.send_like(my_table, received_table)
         return output
     else:
-        print(f'{my_table} table failed to send a like to {received_table}')
         output['result'] = "fail"
         return output
 
@@ -183,19 +187,18 @@ def send_like():
 def reject():
     output = dict()
     data = request.get_json()
-
     token = data.get('token')
     code = data.get('code')
-
     table_no = controller.get_table_no_by_token(token)
+    rejected_table = data.get('received_table')
+
+    try :
+        rejected_table = int(rejected_table)
+    except :
+        pass
 
     if type(table_no) == int and table_data[table_no-1]['code'] == code:
-        reject_table = data.get('reject')
-        try :
-            reject_table = int(reject_table)
-        except Exception as e:
-            pass
-        output['result'] = controller.reject(table_no, reject_table)
+        output['result'] = controller.reject(table_no, rejected_table)
         return output
     else:
         output['result'] = "fail"

@@ -117,7 +117,7 @@ def set_table(table_no, nums, gender, photo, note, referrer, random_code):
         table_data[index]['active'] = True
         korea_time = set_time()
         table_data[index]['start_time'] = korea_time.strftime('%Y-%m-%d %H:%M:%S')
-        table_data[index]['end_time'] = (korea_time + timedelta(hours=1.5)).strftime('%Y-%m-%d %H:%M:%S')
+        table_data[index]['end_time'] = (korea_time + timedelta(hours=0.2)).strftime('%Y-%m-%d %H:%M:%S')
         table_data[index]['code'] = random_code
         return table_data[index]['code']
         
@@ -181,15 +181,18 @@ def get_table(table_no):
 ### send 
 def send_like(my_table, received_table):
     try:
-        if not check_avilable(my_table, received_table) == False :
+        if check_available(my_table, received_table) == False :
+            print('unavilable')
             return "fail"
 
         if received_table in table_data[my_table-1]['sent'] :
+            print(f'{my_table} already sent to {received_table}')
             return "fail"
 
         # reply don't use a like
         if my_table not in table_data[received_table-1]['sent'] :
             if table_data[my_table-1]['likes'] <= 0 :
+                print(f'{my_table} has no likes')
                 return "fail"
             else :
                 table_data[my_table-1]['likes'] -= 1
@@ -214,23 +217,24 @@ def send_like(my_table, received_table):
                     "type" : "matched", \
                     "from" : int(my_table), \
                     "time" : current_time, \
-                    "index" : len(table_data[my_table-1]['record'])})
+                    "index" : len(table_data[received_table-1]['record'])})
             admin['record'].insert(0, { \
                     "type" : "join", \
                     "from" : int(my_table), \
                     "to" : int(received_table), \
                     "time" : current_time, \
-                    "index" : len(table_data[my_table-1]['record'])})
+                    "index" : len(admin['record'])})
 
         return "ok"
 
-    except:
+    except Exception as e:
+        print(e)
         return "fail"
 
 
 ### reject
 def reject(my_table, reject_table):
-    if check_available(my_table, reject_table) :
+    if check_available(my_table, reject_table) == False:
         return "fail"
 
     if reject_table not in table_data[my_table-1]['received']:
@@ -253,7 +257,7 @@ def call(table_no):
             "type" : "call", \
             "from" : table_no, \
             "time" : set_time().strftime('%Y-%m-%d %H:%M:%S'), \
-            "index" : len(table_data[my_table-1]['record'])})
+            "index" : len(admin['record'])})
 
     return "ok"
 
