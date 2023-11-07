@@ -23,14 +23,14 @@ function JoinTableModal({ onClose, targetTable, zIndex }) {
   }, []);
 
   const processJoin = async() => {
-    const response = await fetch('http://150.230.252.177:5000/admin/reset-table', {
+    const response = await fetch('http://150.230.252.177:5000/admin/join', {
       mode: 'cors',
       method: 'POST',
       headers: {'Content-Type': 'application/json',},
       body: JSON.stringify({
         'token': token,
-	'from_where': targetTable,
-	'to_where': to,
+	'from_where': Number(targetTable),
+	'to_where': Number(to),
       }),
     })
     .then((res) => res.json())
@@ -45,7 +45,10 @@ function JoinTableModal({ onClose, targetTable, zIndex }) {
     handleClose();
     return response;
   }
-
+  
+  const onChange = (event) => {
+    setTo(event.target.value);
+  }
 
   return (
     <ModalContainer style={{ zIndex: zIndex }}>
@@ -56,7 +59,7 @@ function JoinTableModal({ onClose, targetTable, zIndex }) {
           </div>
           <div className="adminModalContent">
             <span className="joinSpan">몇 번 테이블로 합석처리<br></br>하시겠습니까?<br></br></span>
-            <input className="joinTableNum" type="number" value={to} maxLength="2"></input>
+            <input className="joinTableNum" type="number" value={to} onChange={onChange}></input>
           </div>
           <div className="adminModalBtn">
             <button onClick={processJoin}>
