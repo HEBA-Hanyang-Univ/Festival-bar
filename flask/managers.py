@@ -76,7 +76,6 @@ def join_table():
     if controller.get_table_no_by_token(token) == 'admin':
         from_where = data.get('from_where')
         to_where = data.get('to_where')
-        print(from_where, to_where)
         
         output['result'] = controller.join_table(from_where, to_where)
         return output
@@ -131,7 +130,7 @@ def delete_record() :
 
     [controller.admin['record'].remove(noti) for noti in controller.admin['record'] \
             if noti['index'] == notice_index]
-    print(controller.admin['record'])
+    
     output['result'] = "ok"
     return output
 
