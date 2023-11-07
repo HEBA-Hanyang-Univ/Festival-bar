@@ -84,12 +84,12 @@ function SendHeartModal({ onClose, tableNumber, tableGender, headCount, tableInt
                 <span>{tableIntro}</span>
               </div>
             </div>
-            <div className="modalBtnBox">
-	            <button className="btnFilled" style={{marginTop: '-1rem'}} type="submit" onClick={remainedLikes>0 ? (isSendAvailable ? handleSubmit : ()=>alert('보내기가 불가능한 테이블입니다')) : ()=>alert('남은 하트가 없습니다')}>
+            <div className="modalBtnBoxSendHeart">
+	            <button className="btnFilled" type="submit" onClick={remainedLikes>0 ? (isSendAvailable ? handleSubmit : ()=>alert('보내기가 불가능한 테이블입니다')) : ()=>alert('남은 하트가 없습니다')}>
                 <img src={SendHeartImg} alt="sendheart img"></img>
               </button>
-              <button className="btnBlank  "onClick={handleClose}>
-                <span>취소</span>
+              <button className="btnBlank" onClick={handleClose}>
+                <span className="btnBlankSpan">취소</span>
               </button>
             </div>
           </div>
