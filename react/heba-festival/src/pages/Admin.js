@@ -289,6 +289,7 @@ function Admin() {
 
   return (
     <div className="admin_body">
+     <div style={{backgroundColor: isMultipleSelectMode ? "#868e96" : "initial"}}>
       <header id="admin_header_top">
         <div class="admin_header">
           <div class="main-title">
@@ -304,7 +305,9 @@ function Admin() {
           <img class="title-bell" src={Call} alt="Call img" />
         </div>
       </header>
+    </div>
       <main id="admin_main">
+      <div style={{backgroundColor: isMultipleSelectMode ? "#868e96" : "initial"}}>
         <div id="table-information">
           <div class="table-list">
             <div class="table-man">{tableNums.male}</div>
@@ -330,17 +333,15 @@ function Admin() {
               <span class="info_title">빈&nbsp;T</span>
             </div>
           </div>
-          <div className="table-container" style={{ backgroundColor: isMultipleSelectMode ? '#f1f3f5' : 'initial' }}>
-  <div className="table-container-grid">
-    {React.Children.toArray(data).map((child) => {
-      const tableNumber = child.props.tableNumber;
-      const isSelected = selectedTable.includes(tableNumber);
+        </div>
+          <div class="table-container">
+            <div className="table-container-grid">
+            {React.Children.toArray(data).map((child) => {
+            const tableNumber = child.props.tableNumber;
+            const isSelected = selectedTable.includes(tableNumber);
 
       return React.cloneElement(child, {
-        style: {
-          ...(child.props.style || {}),
-          border: isSelected ? '2px solid red' : ''
-        }
+        className: isSelected ? "selected-table" : ""
       });
     })}
   </div>

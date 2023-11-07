@@ -351,6 +351,6 @@
   transition: 0.1s;
 }
 
-/* .selected-table {
-  border: 2px solid red !important;
-} */
+.selected-table {
+  border: 2px solid red;
+}
