@@ -319,7 +319,7 @@ function Admin() {
               <span class="info_title">빈&nbsp;T</span>
             </div>
           </div>
-          <div className="table-container" style={{ backgroundColor: isMultipleSelectMode ? '#c8c8c8' : 'initial' }}>
+          <div className="table-container" style={{ backgroundColor: isMultipleSelectMode ? '#f1f3f5' : 'initial' }}>
   <div className="table-container-grid">
     {React.Children.toArray(data).map((child) => {
       const tableNumber = child.props.tableNumber;

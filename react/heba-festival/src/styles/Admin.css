@@ -330,16 +330,6 @@
   font-size: 1.5rem;
   font-weight: 600;
 }
-/*
- * button hover disable
-.time-plus:hover,
-.heart-plus:hover,
-.table-exit:hover {
-  border: 2px solid black;
-  box-shadow: 1px 1px 1px black;
-  transition: 0.2s;
-}
-*/
 
 .table_choice {
   margin-left: 14rem;
@@ -347,9 +337,8 @@
   width: 17rem;
   border-radius: 9rem;
   background: #fff;
-  border: #87deff;
   color: #87deff;
-  border: 0.15rem solid #2d63a4;
+  border: 0.15rem solid #2d63a4; /* border 설정 한 번으로 수정 */
   font-size: 1.5rem;
   font-weight: 600;
 }
@@ -363,5 +352,5 @@
 }
 
 .selected-table {
-  border: 2px solid red; /* 원하는 스타일로 변경 가능 */
+  border: 2px solid red !important;  /* 원하는 스타일로 변경 가능 */
 }
