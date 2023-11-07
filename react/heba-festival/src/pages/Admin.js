@@ -239,8 +239,8 @@ function Admin() {
 
 useEffect(() => {
   /* ref객체(computedStyleRef)의 current를 출력*/
+    /* computedStyleRef의 모든 CSS 속성 값을 담은 객체 생성*/
     console.log(computedStyleRef.current);
-  /* computedStyleRef의 모든 CSS 속성 값을 담은 객체 생성*/
 }, []);
 
   const onDeleteAlarm = async(index) => {
