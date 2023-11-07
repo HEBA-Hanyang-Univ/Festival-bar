@@ -19,17 +19,23 @@ def add_likes():
     data = request.get_json()
 
     token = data.get('token')
-    if controller.get_table_no_by_token(token) == 'admin':
-        table_no = data.get('table_no')
-        count = data.get('count')
-
-        output['result'] = controller.add_likes(table_no, count)
-        return output
-    else:
-        output['result'] = "fail"
+    if controller.get_table_no_by_token(token) != 'admin':
+        output['result'] = 'fail'
         return output
 
+    count = data.get('count')
+    table_list = data.get('table_list')
+    result = {}
+    for t in table_list :
+        try :
+            table_no = int(t)
+            if controller.get_table(table_no).get('active') :
+                result[table_no] = controller.add_likes(table_no, count)
+        except :
+            pass
 
+    output['result'] = result
+    return output
 
 
 
@@ -41,22 +47,23 @@ def add_time():
     data = request.get_json()
 
     token = data.get('token')
-
-    if controller.get_table_no_by_token(token) == 'admin':
-        table_no = data.get('table_no')
-
-        if controller.get_table(table_no)['active'] == True:
-            minutes = data.get('minutes')
-
-            output['result'] = controller.add_time(table_no, minutes)
-            return output
-        else:
-            output['result'] = {"fail" : f"Table {table_no} active False"}
-            return output
-    else:
-        output['result'] = "fail"
+    if controller.get_table_no_by_token(token) != 'admin':
+        output['result'] = 'fail'
         return output
 
+    mins = data.get('mins')
+    table_list = data.get('table_list')
+    result = {}
+    for t in table_list :
+        try :
+            table_no = int(t)
+            if controller.get_table(table_no).get('active') :
+                result[table_no] = controller.add_time(table_no, mins)
+        except :
+            pass
+
+    output['result'] = result
+    return output
 
 
 ### 합석 처리 
@@ -69,6 +76,7 @@ def join_table():
     if controller.get_table_no_by_token(token) == 'admin':
         from_where = data.get('from_where')
         to_where = data.get('to_where')
+        print(from_where, to_where)
         
         output['result'] = controller.join_table(from_where, to_where)
         return output
@@ -86,12 +94,44 @@ def reset_table():
     data = request.get_json()
 
     token = data.get('token')
-    table_no = data.get('table_no')
-    
-    if controller.get_table_no_by_token(token) == 'admin' and table_no:
-        output['result'] = controller.reset_table(table_no)
-        return output
-    else:
+    if controller.get_table_no_by_token(token) != 'admin' :
         output['result'] = "fail"
         return output
+
+    table_list = data.get('table_list')
+    result = {}
+    for t in table_list :
+        try :
+            table_no = int(t)
+            if controller.get_table(table_no).get('active') :
+                result[table_no] = controller.reset_table(table_no)
+        except :
+            pass
+
+    output['result'] = result
+    return result
+
+### 알림 처리
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/admin/del-record -d '{"token":"5ea91197-09ef-42e9-9bd9-d1d183b6db70", "notice_index":1}' 
+@app.route('/admin/del-record', methods=['POST'])
+def delete_record() :
+    output = dict()
+    data = request.get_json()
+
+    token = data.get('token')
+    if controller.get_table_no_by_token(token) != 'admin' :
+        output['result'] = "fail"
+        return output
+
+    notice_index = data.get('notice_index')
+    try :
+        notice_index = int(notice_index)
+    except :
+        pass
+
+    [controller.admin['record'].remove(noti) for noti in controller.admin['record'] \
+            if noti['index'] == notice_index]
+    print(controller.admin['record'])
+    output['result'] = "ok"
+    return output
 

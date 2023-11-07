@@ -1,4 +1,4 @@
-  import React, { useState } from "react";
+  import React, { useState, useRef } from "react";
   import "styles/Table.scss";
   import SendHeartModal from "components/Modal/SendHeartModal";
   import Icon from "assets/images/icon.svg";
@@ -15,6 +15,12 @@
 
       const [isOpenSendHeartModal, setIsOpenSendHeartModal] = useState(false);
       let isSendAvailable = true;
+
+      const myGender = useRef(secureLocalStorage.getItem('gender'));
+
+      if (myGender.current === gender) {
+	isSendAvailable = false;
+      }
 
       if (gender === "male") {
         backgroundColor = "#80C2FF"; // 성별 남성
@@ -61,7 +67,9 @@
       const onClickButton = (modalType) => {
         if (modalType === "sendHeart" && isSendAvailable) {
           setIsOpenSendHeartModal(true);
-        }
+        } else {
+          alert('테이블 정보를 볼 수 없습니다!');
+	}
       };
 
       const onCloseModal = (modalType) => {

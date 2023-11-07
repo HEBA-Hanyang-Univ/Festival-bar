@@ -35,14 +35,14 @@
 }
 
 .title-tiger {
-  width: 6rem;
-  height: 5rem;
+  width: 7rem;
+  height: 6rem;
   margin-right: 1.8rem;
 }
 
 .title-logo {
-  width: 11rem;
-  height: 5rem;
+  width: 13rem;
+  height: 7rem;
   margin-top: 0.3rem;
 }
 
@@ -54,14 +54,14 @@
 }
 
 .header-date {
-  font-size: 2.1rem;
+  font-size: 3rem;
   font-weight: 300;
   color: #B0B0B0;
 }
 
 .header-time {
   color: #202020;
-  font-size: 2.4rem;
+  font-size: 3rem;
   font-weight: bold;
 }
 
@@ -156,41 +156,41 @@
 
 .info_table1 {
   width: 15rem;
-  height: 5rem;
+  height: 5.5rem;
   border-radius: 3rem;
   background: #80c2ff;
-  padding-top: 1rem;
+  padding-top: 1.2rem;
 }
 
 .info_table2 {
   width: 15rem;
-  height: 5rem;
+  height: 5.5rem;
   border-radius: 3rem;
   background: #ff8fd2;
-  padding-top: 1rem;
+  padding-top: 1.2rem;
 }
 
 .info_table3 {
   width: 15rem;
-  height: 5rem;
+  height: 5.5rem;
   border-radius: 3rem;
-  padding-top: 1rem;
+  padding-top: 1.2rem;
   background: #ffc555;
 }
 
 .info_table4 {
   width: 15rem;
-  height: 5rem;
+  height: 5.5rem;
   border-radius: 3rem;
-  padding-top: 1rem;
+  padding-top: 1.2rem;
   background: #dd7dff;
 }
 
 .info_table5 {
   width: 15rem;
-  height: 5rem;
+  height: 5.5rem;
   border-radius: 3rem;
-  padding-top: 1rem;
+  padding-top: 1.2rem;
   background: #c8c8c8;
 }
 
@@ -222,7 +222,7 @@
   text-align: center;
   padding-left: 2rem;
   padding-right: 2rem;
-  margin-top: 1rem;
+  margin-top: 3rem;
 }
 
 .table-man {
@@ -360,4 +360,8 @@
   border: 0.15rem solid #2d63a4;
   font-weight: 900;
   transition: 0.1s;
+}
+
+.selected-table {
+  border: 2px solid red; /* 원하는 스타일로 변경 가능 */
 }

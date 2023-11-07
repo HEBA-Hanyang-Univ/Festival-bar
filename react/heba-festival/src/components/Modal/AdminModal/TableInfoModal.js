@@ -9,8 +9,11 @@ import JoinTableModal from "./JoinTableModal";
 
 function TableInfoModal({ onClose, tableNumber, nums, startTime, endTime, code, referrer }) {
   const modalRef = useRef(null);
-  const [modalType, setModalType] = useState(null);
   const [zIndex, setZIndex] = useState(1000);
+  const [isOpenTimeModal, setIsOpenTimeModal] = useState(false);
+  const [isOpenHeartModal, setIsOpenHeartModal] = useState(false);
+  const [isOpenExitModal, setIsOpenExitModal] = useState(false); 
+  const [isOpenJoinTableModal, setIsOpenJoinTableModal] = useState(false);
 
   const handleClose = () => {
     onClose ?.();
@@ -26,10 +29,33 @@ function TableInfoModal({ onClose, tableNumber, nums, startTime, endTime, code, 
     };
   }, []);
 
-  const handleModalOpen = (type) => {
-    setZIndex(prevZIndex => prevZIndex + 1);  // 모달이 열릴 때마다 z-index 값 증가
-    setModalType(type);
-  };
+  const handleModalOpen = (modalType) => {
+    if (modalType === "time") {
+      setIsOpenTimeModal(true);
+    } else if (modalType === "heart") {
+      setIsOpenHeartModal(true);
+    } else if (modalType === "exit") {
+      setIsOpenExitModal(true);
+    } else if (modalType === "joinTable") {
+      setIsOpenJoinTableModal(true);
+    }
+  }
+
+  const onCloseModal = (modalType) => {
+    if (modalType === "time") {
+      setIsOpenTimeModal(false);
+      handleClose();
+    } else if (modalType === "heart") {
+      setIsOpenHeartModal(false);
+      handleClose();
+    } else if (modalType === "exit") {
+      setIsOpenExitModal(false);
+      handleClose();
+    } else if (modalType === "joinTable") {
+      setIsOpenJoinTableModal(false);
+      handleClose();
+    }
+  }
 
   return (
     <ModalContainer>
@@ -51,20 +77,47 @@ function TableInfoModal({ onClose, tableNumber, nums, startTime, endTime, code, 
             </span>
           </div>
           <div className="adminBtnBox tableInfoBtn">
-            <button className="btnFilled" onClick={() => handleModalOpen('time')}>시간 추가</button>
-            <button className="btnFilled" onClick={() => handleModalOpen('heart')}>하트 충전</button>
-            <button className="btnFilled" onClick={() => handleModalOpen('joinTable')}>합석 처리</button>
-            <button className="btnFilled" onClick={() => handleModalOpen('exit')}>퇴장 처리</button>
+            {/* 시간 추가 */}
+            {!isOpenTimeModal && (
+              <button className="btnFilled" onClick={() => handleModalOpen('time')}>
+                시간 추가
+              </button>
+            )}
+            {isOpenTimeModal && (
+              <TimeModal targetTables={tableNumber} onClose={() => onCloseModal('time')}></TimeModal>
+            )}
+
+            {/* 하트 충전 */}
+            {!isOpenHeartModal && (
+              <button className="btnFilled" onClick={() => handleModalOpen('heart')}>
+                하트 충전
+              </button>
+            )}
+            {isOpenHeartModal && (
+              <HeartModal targetTables={tableNumber} onClose={() => onCloseModal('heart')}></HeartModal>
+            )}
+
+            {/* 합석 처리 */}
+	          {/* JoinTableModal's field name targetTable is different from others.  */}
+            {!isOpenJoinTableModal && (
+              <button className="btnFilled" onClick={() => handleModalOpen('joinTable')}>
+                합석 처리
+              </button>
+            )}
+            {isOpenJoinTableModal && (
+              <JoinTableModal targetTable={tableNumber} onClose={() => onCloseModal('joinTable')}></JoinTableModal>
+            )}
+            
+            {/* 퇴장 처리 */}
+            {!isOpenExitModal && (
+              <button className="btnFilled" onClick={() => handleModalOpen('exit')}>
+                퇴장 처리
+              </button>
+            )}
+            {isOpenExitModal && (
+              <ExitTableModal targetTables={tableNumber} onClose={() => onCloseModal('exit')}></ExitTableModal>
+            )}
           </div>
-          { modalType === 'time' && <TimeModal onClose={ () => setModalType(null) }
-		                     targetTables={ tableNumber } zIndex={ zIndex }/> }
-          { modalType === 'heart' && <HeartModal onClose={ () => setModalType(null) }
-		                      targetTables={ tableNumber } zIndex={ zIndex }/> }
-	  {/* JoinTableModal's field name targetTable is different from others.  */}
-          { modalType === 'joinTable' && <JoinTableModal onClose={ () => setModalType(null) }
-		                          targetTable={ tableNumber } zIndex={ zIndex }/> }
-          { modalType === 'exit' && <ExitTableModal onClose={ () => setModalType(null) }
-		                     targetTables={ tableNumber } zIndex={ zIndex }/> }
         </div>
       </div>
     </ModalContainer>

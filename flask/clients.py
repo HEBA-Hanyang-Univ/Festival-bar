@@ -5,7 +5,6 @@ import random
 import copy
 
 table_data = controller.table_data
-table_code_list = controller.table_code_list
 
 @app.route('/<token>')
 def index(token):
@@ -96,9 +95,9 @@ def get_all():
         return output
     elif table_no == 'admin':
         output['result'] = table_data
+        output['admin_record'] = controller.admin['record']
         return output
     else:
-        print(f'get-all request failed with table {table_no}')
         output['result'] = "fail"
         return output
 
@@ -167,12 +166,15 @@ def send_like():
     my_table = controller.get_table_no_by_token(token)
     received_table = data.get('received_table')
 
+    try :
+        received_table = int(received_table)
+    except :
+        pass
+
     if type(my_table) == int and table_data[my_table-1]['code'] == code:
-        print(f'{my_table} table send a like to {received_table}')
         output['result'] = controller.send_like(my_table, received_table)
         return output
     else:
-        print(f'{my_table} table failed to send a like to {received_table}')
         output['result'] = "fail"
         return output
 
@@ -186,23 +188,20 @@ def send_like():
 def reject():
     output = dict()
     data = request.get_json()
-
     token = data.get('token')
     code = data.get('code')
-
     table_no = controller.get_table_no_by_token(token)
+    rejected_table = data.get('received_table')
+
+    try :
+        rejected_table = int(rejected_table)
+    except :
+        pass
 
     if type(table_no) == int and table_data[table_no-1]['code'] == code:
-        reject_table = data.get('reject')
-        try :
-            reject_table = int(reject_table)
-        except Exception as e:
-            pass
-        print(f'{table_no} table reject a like from {reject_table}')
-        output['result'] = controller.reject(table_no, reject_table)
+        output['result'] = controller.reject(table_no, rejected_table)
         return output
     else:
-        print(f'{table_no} table failed to reject a like from {reject_table}')
         output['result'] = "fail"
         return output
 
@@ -210,24 +209,21 @@ def reject():
 
 
 
-### 직원 호출 / 합석 처리 요청 ( 일단 시간 추가 요청, 하트 충전 요청 없음 )
-# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/call -d '{"token":"0b79fdd4-8cf8-4a5f-8506-904d1207e9fb", "code":470066, "join":false}'
-# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/call -d '{"token":"0b79fdd4-8cf8-4a5f-8506-904d1207e9fb", "code":470066, "join":true}'
+### 직원 호출  ( 일단 시간 추가 요청, 하트 충전 요청 없음 )
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/call -d '{"token":"0b79fdd4-8cf8-4a5f-8506-904d1207e9fb", "code":470066}'
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/call -d '{"token":"0b79fdd4-8cf8-4a5f-8506-904d1207e9fb", "code":470066}'
 @app.route('/call', methods=["POST"])
 def call():
     output = dict()
     data = request.get_json()
     token = data.get('token')
-    join = data.get('join')
     code = data.get('code')
 
     table_no = controller.get_table_no_by_token(token)
 
     if type(table_no) == int and table_data[table_no-1]['code'] == code:
-        print(f'{table_no} table called server')
-        output['result'] = controller.call(table_no, join)
+        output['result'] = controller.call(table_no)
         return output
     else:
-        print(f'{table_no} table failed to call server')
         output['result'] = "fail"
         return output

@@ -26,14 +26,14 @@
   color: #105390;
   font-size: 1.3rem;
   font-weight: 900;
-  margin-left: 0.8rem;
+  margin-left: 1.3rem;
   padding-top: 1.5rem;
 }
 
 .adminTableMiddle {
   display: flex;
   justify-content: center;
-  margin-left: 2.6rem;
+  margin-left: 3rem;
   margin-top: -1rem;
 }
 
