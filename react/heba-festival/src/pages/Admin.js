@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import "styles/Admin.css";
@@ -25,38 +25,82 @@ function Admin() {
 
   // a variable for render nums of each tables
   let tableNums = { male: 0, female: 0, mixed: 0, joined: 0, empty: 0, };
+  let record = [];
+  let timeRecord = useRef([]);
+  let totalRecord = [];
+  let hasNoticedTimeAlert = useRef(Array.from({length:30}, () => false));
+  let hasNoticedTimeOut = useRef(Array.from({length:30}, () => false));
 
   // a function for processing data after fetching
   // count each table's number and calculate remained time
   function postProcessData(datas) {
+    record = datas.admin_record
+    let callList = []
+    for (let rec in record) {
+      if (rec.type == "call") {
+        callList = [...callList, rec.from];
+	rec.message = String(rec.from) + "번 테이블에서 직원을 호출했습니다.";
+      } else if (rec.type == "join") {
+	rec.message = String(rec.from) + "번, " + String(rec.to)
+		      + "번 테이블의 합석 처리를 진행해 주세요.";
+      }
+    }
+    
     tableNums = { male: 0, female: 0, mixed: 0, joined: 0, empty: 0 };
     const currentTime = new Date();
 
     const processIndividualData = (data) => {
-      const remainedTime =
-        (new Date(data.end_time).getTime() - currentTime) / 1000;
+      const endTime = new Date(data.end_time);
+      const remainedTime = (endTime.getTime() - currentTime) / 1000;
+      if (data.active && remainedTime <= 0) {
+        if(!hasNoticedTimeOut.current[data.table_no-1]) {
+	  timeRecord.current.push({
+		  "type": "timeout",
+		  "time": String(endTime.getHours()).padStart(2,'0') + ":"
+		          + String(endTime.getMinutes()).padStart(2,'0'),
+		  "message": String(data.table_no) + "번 테이블의 시간이 모두 소진되었습니다.",
+		  "index": -2});
+	  hasNoticedTimeOut.current[data.table_no-1] = true;
+	}
+      } else if (data.active && remainedTime <= 600) {
+	if(!hasNoticedTimeAlert.current[data.table_no-1]) {
+          const alertTime = new Date(endTime.getTime() - (10 * 60 * 1000))
+	  timeRecord.current.push({
+		  "type": "timeAlert",
+		  "time": String(alertTime.getHours()).padStart(2,'0') + ":"
+		          + String(alertTime.getMinutes()).padStart(2,'0'),
+		  "message": String(data.table_no) + "번 테이블의 이용시간이 약 10분 남았습니다.",
+		  "index": -1});
+	  hasNoticedTimeAlert.current[data.table_no-1] = true;
+	}
+      } else {
+	  hasNoticedTimeAlert.current[data.table_no-1] = false;
+	  hasNoticedTimeOut.current[data.table_no-1] = false;
+      }
 
       // count for each tables
       if (data.join) {
         tableNums.joined += 1;
-      } else if (
-        data.gender === "male" ||
-        data.gender === "female" ||
-        data.gender === "mixed"
-      ) {
+      } else if (data.gender === "male" || data.gender === "female" || data.gender === "mixed") {
         tableNums[data.gender] += 1;
       } else {
         tableNums.empty += 1;
       }
+      
+
       // translate data to AdminTable
       // TODO : add managerCall by alarmData
       return (
         <AdminTable tableNumber={data.table_no} gender={data.gender} headCount={data.nums}
-         huntingSuccess={data.join} remainedTime={remainedTime} managerCall={false}
-	 friendCode={data.referrer} onClickTable={ (e) => { onClickTableElem(e, data); } }/>
+         huntingSuccess={data.join} remainedTime={remainedTime}
+	 managerCall={callList.includes(data.table_no)} friendCode={data.referrer}
+	 onClickTable={ (e) => { onClickTableElem(e, data); } }/>
       );
     };
-    return datas.map((data) => processIndividualData(data));
+    const ret = datas.result.map((data) => processIndividualData(data));
+    totalRecord = record.concat(timeRecord.current).sort((a,b) => a.index - b.index);
+
+    return ret;
   }
 
   // // variables that related to data fetching
@@ -81,7 +125,7 @@ function Admin() {
     },
     select: (data) => {
       if (data.result && data.result !== "fail") {
-        return postProcessData(data.result);
+        return postProcessData(data);
       } else {
         navigate("/error");
         return [];
@@ -186,38 +230,22 @@ function Admin() {
     setIsMultipleSelectMode(!isMultipleSelectMode);
   };
 
-  /*  TODO: 알람데이터 연결 + 알람 타입 넣어주기 */
-  let [alarmData, setAlarmData] = useState([
-    {
-      alarm: "1번, 2번 테이블의 합석처리를 진행해주세요.",
-      time: "19:20",
-    },
-    {
-      alarm: "4번 테이블의 하트 N개를 충전해주세요.",
-      time: "19:20",
-    },
-    {
-      alarm: "9번 테이블에서 직원을 호출했습니다.",
-      time: "19:20",
-    },
-    {
-      alarm: "5번 테이블을 비워주세요.",
-      time: "19:20",
-    },
-    {
-      alarm: "4번, 16번 시간이 초과되었습니다.",
-      time: "19:20",
-    },
-  ]);
-
-  // TODO: this function's name is ambiguous... should change it to onDeleteAlarm
-  const onDeleteAlarm = (index) => {
-    // 삭제 로직을 구현합니다.
-    // 예를 들어, alarmData 배열에서 index에 해당하는 항목을 제거할 수 있습니다.
-    const updatedAlarmData = [...alarmData];
-    updatedAlarmData.splice(index, 1);
-    // 업데이트된 alarmData를 사용하도록 설정합니다.
-    setAlarmData(updatedAlarmData);
+  const onDeleteAlarm = async(index) => {
+    await fetch('http://150.230.252.177:5000/admin/del-record', {
+      mode: 'cors',
+      method: 'POST',
+      headers: {'Content-Type': 'application/json',},
+      body: JSON.stringify({
+        'token': token,
+	'notice_index': index,
+      }),
+    })
+    .then((res) => res.json())
+    .then((res) => {
+      if (res.result == 'fail') {
+        alert('서버 에러 발생!');
+      }
+    })
   };
 
   // 현재 시간 출력
@@ -339,44 +367,26 @@ function Admin() {
             </div>
           </div>
         </div>
-        {/* TODO: 알람 데이터 연결 */}
         <div className="alarm-container">
-          {alarmData.map((item, index) => {
+          {totalRecord.map((item) => {
             return (
-              <div key={index} className="alarm-item">
-                <button
-                  className="alarmdel"
-                  onClick={() => onDeleteAlarm(index)}
-                >
+              <div className="alarm-item">
+                <button className="alarmdel" onClick={() => onDeleteAlarm(item.index)}>
                   <img className="alarmbtn" src={CloseBtn} alt="close btn"></img>
                 </button>
-                <br />
+                <br/>
                 {/* 알람데이터 type에 따라 color 지정 */}
-                <span className="alarmData-span"
-                  style={{
-                    color:
-                      alarmData.type === "join"
-                        ? "#DD7DFF"
-                        : alarmData.type === "heart"
-                        ? "#FF8FD2"
-                        : alarmData.type === "call"
-                        ? "#FFC555"
-                        : alarmData.type === "time"
-                        ? "red"
-                        : "red",
-                  }}
-                >
-                  {alarmData.type === "join"
-                    ? "[합석처리]"
-                    : alarmData.type === "heart"
-                    ? "[하트충전]"
-                    : alarmData.type === "call"
-                    ? "[직원 호출]"
-                    : alarmData.type === "time"
-                    ? "[이용시간]"
-                    : "[테이블 시간 소진]"}
+                <span className="alarmData-span" style={{ color: item.type == "join" ? "#DD7DFF"
+				                               : item.type == "heart" ? "#FF8FD2"
+				                               : item.type == "call" ? "#FFC555"
+                                                               : "red",}}>
+                  { item.type == "join" ? "[합석처리]"
+                    : item.type == "heart" ? "[하트충전]"
+                    : item.type == "call" ? "[직원 호출]"
+                    : item.type == "timeAlert" ? "[이용시간]"
+		    : item.type == "timeout" ? "[테이블 시간 소진]" : ""}
                 </span>
-                <span className="alarm-message">{item.alarm}</span>
+                <span className="alarm-message">{item.message}</span>
                 <p className="alarm-time-p">{item.time}</p>
               </div>
             );

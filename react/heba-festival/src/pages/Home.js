@@ -38,7 +38,6 @@ const Home = () => {
   let likes = 0;
   let remainedTime = 0;
 
-  let timerIntervalId = null;
   let record = [];
   let timeRecord = useRef([]);
   let totalRecord = [];
@@ -59,7 +58,6 @@ const Home = () => {
     if (remainedTime <= 0) {
       remainedTime = 0;
       if (!hasNoticedTimeOut.current) {
-	String(Math.floor(remainedTime/60)).padStart(2, '0')
 	timeRecord.current.push({
 		"type": "timeout", 
 		"time": String(endTime.getHours()).padStart(2, '0') + ":"
@@ -202,7 +200,7 @@ const Home = () => {
               <img className="alarmImg" src={hasNotice.current ? RedAlarmImg : AlarmImg} alt="alarm img"></img>
             </button>
             {isOpenAlarmModal && (
-            <AlarmModal onClose={() => onCloseModal("alarm")} alarmData={record.concat(timeRecord.current)}></AlarmModal>
+            <AlarmModal onClose={() => onCloseModal("alarm")} alarmData={totalRecord}></AlarmModal>
 	    )} 
           </nav>
           <div id="subNav">

@@ -6,36 +6,32 @@ import CloseBtn from "assets/images/alarmClose.svg";
 
 const ReceivedHeartAlarm = ({onClose, tableNumber, time}) => {
 
-  const onAccept = () => {
-    const response = fetchData('http://150.230.252.177:5000/send-like');
-    if (response == null) {
+  const onAccept = () => fetchData('http://150.230.252.177:5000/send-like')
+    .then((response) => {
+      if (response == null) {
+        return response;
+      }
+      if(response.result && response.result !== 'fail') {
+        // TODO : 합석 대기 모달 띄워야함
+        alert('수락 완료!');
+      } else {
+        alert('수락 실패... 관리자에게 문의해주세요');
+      }
       return response;
-    }
+    })
 
-    if(response.result && response.result !== 'fail') {
-      // TODO : 합석 대기 모달 띄워야함
-      alert('수락 완료!');
-    } else {
-      alert('수락 실패... 관리자에게 문의해주세요');
-    }
-
-    return response;
-  }
-
-  const onReject = () => {
-    const response = fetchData('http://150.230.252.177:5000/reject');
-    if (response == null) {
+  const onReject = () => fetchData('http://150.230.252.177:5000/reject')
+    .then((response) => {
+      if (response == null) {
+        return response;
+      }
+      if (response.result && response.result !== 'fail') {
+        alert('거절 완료!');
+      } else {
+        alert('거절 실패... 관리자에게 문의해주세요');
+      }
       return response;
-    }
-
-    if (response.result && response.result !== 'fail') {
-      alert('거절 완료!');
-    } else {
-      alert('거절 실패... 관리자에게 문의해주세요');
-    }
-
-    return response;
-  }
+    })
 
   const fetchData = async(url) => {
     try {
