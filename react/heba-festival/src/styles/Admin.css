@@ -351,6 +351,6 @@
   transition: 0.1s;
 }
 
-.selected-table {
-  border: 2px solid red !important;  /* 원하는 스타일로 변경 가능 */
-}
+/* .selected-table {
+  border: 2px solid red !important;
+} */

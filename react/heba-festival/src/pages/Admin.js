@@ -337,7 +337,10 @@ function Admin() {
       const isSelected = selectedTable.includes(tableNumber);
 
       return React.cloneElement(child, {
-        className: isSelected ? "selected-table" : ""
+        style: {
+          ...(child.props.style || {}),
+          border: isSelected ? '2px solid red' : ''
+        }
       });
     })}
   </div>
