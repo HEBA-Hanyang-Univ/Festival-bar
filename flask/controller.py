@@ -28,6 +28,16 @@ def write_json_file(file_name, data, file_name2, data2):
 qr_data = read_json_file('table_token.json')
 table_data = read_json_file('table.json')
 admin = read_json_file('admin.json')
+if not isinstance(admin, dict):
+    admin = {}
+    admin['record'] = []
+    admin['record_idx'] = 0,
+
+if not isinstance(admin['record'], list) :
+    admin['record'] = []
+
+if not isinstance(admin['record_idx'], int) :
+    admin['record_idx'] = 0
 
 with open('name_list.txt', 'r') as name_file :
     referrer_list = [line.strip() for line in name_file]
@@ -239,6 +249,7 @@ def reject(my_table, reject_table):
         return "fail"
 
     if reject_table not in table_data[my_table-1]['received']:
+        print('rejected already')
         return "fail"
     
     table_data[reject_table-1]['rejected'].insert(0, my_table)
@@ -303,12 +314,18 @@ def join_table(from_where, to_where):
         table_data[to_where-1]['gender'] = "mixed"
         table_data[to_where-1]['join'] = True
         table_data[to_where-1]['end_time'] = influent['end_time']
-        table_data[to_where-1]['referrer'] = influent['referrer']
+        if table_data[to_where-1]['referrer'] == "" :
+            table_data[to_where-1]['referrer'] = table_data[from_where-1]['referrer']
+        elif table_data[to_where-1]['referrer'] != "" :
+            table_data[to_where-1]['referrer'] = influent['referrer']
         table_data[to_where-1]['note'] = ""
 
-        remove_like(to_where)
+        remove_like(to_where)        
         # table_data[from_where-1] = reset(from_where)
         reset_table(from_where)
+        table_data[to_where-1]['received'] = []
+        table_data[to_where-1]['sent'] = []
+        table_data[to_where-1]['rejected'] = []
 
         return "ok"
     except Exception as e:
@@ -319,6 +336,7 @@ def join_table(from_where, to_where):
 ### 테이블 비우기
 def reset_table(table_no):
     remove_like(table_no)
+    remove_record(table_no)
 
     table_data[table_no-1] = reset(table_no)
 
@@ -330,36 +348,58 @@ def reset_table(table_no):
 #########################################################
 def check_available(me, opponent) :
     if me == opponent :
-        print(me, opponent)
+        print(f'{me} and {opponent} is same!')
         return False
     if not table_data[opponent-1]['active'] or not table_data[me-1]['active'] :
-        print('inactive')
+        print(f'{opponent}\'s active : {table_data[opponent-1]["active"]}')
+        print(f'{me}\'s active : {table_data[me-1]["active"]}')
         return False
     if me in table_data[opponent-1]['rejected'] :
-        print('already rejected')
+        print(f'{me} and {opponent} rejected each other')
         return False
     if table_data[opponent-1]['join'] or table_data[me-1]['join'] :
-        print('join')
+        print(f'already joined {me} or {opponent}')
         return False
     if table_data[opponent-1]['gender'] == 'mixed' or table_data[me-1]['gender'] == 'mixed' :
-        print('mix')
+        print(f'gender is mixed!')
         return False
     if table_data[opponent-1]['gender'] == table_data[me-1]['gender'] :
-        print('gender')
+        print(f'gender is same')
         return False
 
     return True
 
 def remove_like(table_no) :
+    print(f'try to remove likes related to {table_no}')
     if table_data[table_no-1]['sent'] != []:
-        for sent_no in table_data[table_no-1]['sent']:
+        for sent_no in table_data[table_no-1]['sent'][:]:
+            #for rec in table_data[sent_no-1]['record'] :
+            #    if rec['from'] == sent_no :
+            #        table_data[sent_no-1]['record'].remove(rec)
+            print(f'remove {sent_no} received from {table_no}')
             table_data[sent_no-1]['received'].remove(table_no)
+
     if table_data[table_no-1]['rejected'] != []:
-        for reject_no in table_data[table_no-1]['rejected']:
+        for reject_no in table_data[table_no-1]['rejected'][:]:
+            print(f'remove {reject_no} rejected {table_no}')
             table_data[reject_no-1]['rejected'].remove(table_no)
+
     if table_data[table_no-1]['received'] != []:
-        for received_no in table_data[table_no-1]['received']:
+        for received_no in table_data[table_no-1]['received'][:]:
+            print(f'remove {received_no} sent to {table_no}')
             table_data[received_no-1]['sent'].remove(table_no)
+
+
+def remove_record(table_no) :
+    print(f'try to remove record from {table_no}')
+    for rec in admin['record'][:]:
+        if rec.get('from') == table_no :
+            print(f'record found! : {rec}')
+            admin['record'].remove(rec)
+        elif rec.get('to') == table_no :
+            print(f'record found! : {rec}')
+            admin['record'].remove(rec)
+        
 
 ##########################################################
 ########################## test ##########################
