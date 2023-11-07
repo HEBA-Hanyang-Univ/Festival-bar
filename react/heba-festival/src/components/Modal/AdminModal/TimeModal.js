@@ -3,7 +3,7 @@ import "styles/Modal.scss";
 import useOutSideClick from "../useOutSideClick";
 import ModalContainer from "../ModalContainer";
 
-function TimeModal({ onClose, targetTables, zIndex }) {
+function TimeModal({ onClose, targetTables }) {
   const modalRef = useRef(null);
   const [time, setTime] = useState(0);
 
@@ -37,7 +37,7 @@ function TimeModal({ onClose, targetTables, zIndex }) {
   }, []);
 
   return (
-    <ModalContainer style={{ zIndex: zIndex }}>
+    <ModalContainer>
       <div className="overlay">
         <div className="adminModalWrap" ref={modalRef}>
           <div className="adminModalTitle">
@@ -51,11 +51,11 @@ function TimeModal({ onClose, targetTables, zIndex }) {
             <span className="subtext">분</span>
             <button onClick={handleTimeIncrement}>+</button>
           </div>
-          <div className="adminModalBtn">
-            <button onClick={handleClose}>
-              <span>시간 추가</span>
-            </button>
-          </div>
+            <div className="adminModalBtn">
+              <button onClick={handleClose}>
+                <span>시간 추가</span>
+              </button>
+            </div>
         </div>
       </div>
     </ModalContainer>
