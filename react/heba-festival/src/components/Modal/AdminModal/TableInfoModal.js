@@ -9,7 +9,6 @@ import JoinTableModal from "./JoinTableModal";
 
 function TableInfoModal({ onClose, tableNumber, nums, startTime, endTime, code, referrer }) {
   const modalRef = useRef(null);
-  const [modalType, setModalType] = useState(null);
   const [zIndex, setZIndex] = useState(1000);
   const [isOpenTimeModal, setIsOpenTimeModal] = useState(false);
   const [isOpenHeartModal, setIsOpenHeartModal] = useState(false);
@@ -85,7 +84,7 @@ function TableInfoModal({ onClose, tableNumber, nums, startTime, endTime, code, 
               </button>
             )}
             {isOpenTimeModal && (
-              <TimeModal onClose={() => onCloseModal('time')}></TimeModal>
+              <TimeModal targetTables={tableNumber} onClose={() => onCloseModal('time')}></TimeModal>
             )}
 
             {/* 하트 충전 */}
@@ -95,7 +94,7 @@ function TableInfoModal({ onClose, tableNumber, nums, startTime, endTime, code, 
               </button>
             )}
             {isOpenHeartModal && (
-              <HeartModal onClose={() => onCloseModal('heart')}></HeartModal>
+              <HeartModal targetTables={tableNumber} onClose={() => onCloseModal('heart')}></HeartModal>
             )}
 
             {/* 합석 처리 */}
@@ -106,7 +105,7 @@ function TableInfoModal({ onClose, tableNumber, nums, startTime, endTime, code, 
               </button>
             )}
             {isOpenJoinTableModal && (
-              <JoinTableModal onClose={() => onCloseModal('joinTable')}></JoinTableModal>
+              <JoinTableModal targetTables={tableNumber} onClose={() => onCloseModal('joinTable')}></JoinTableModal>
             )}
             
             {/* 퇴장 처리 */}
@@ -116,7 +115,7 @@ function TableInfoModal({ onClose, tableNumber, nums, startTime, endTime, code, 
               </button>
             )}
             {isOpenExitModal && (
-              <ExitTableModal onClose={() => onCloseModal('exit')}></ExitTableModal>
+              <ExitTableModal targetTables={tableNumber} onClose={() => onCloseModal('exit')}></ExitTableModal>
             )}
           </div>
         </div>
