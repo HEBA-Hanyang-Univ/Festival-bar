@@ -287,7 +287,6 @@ function Admin() {
 
   return (
     <div className="admin_body">
-	  {/*<div style={{backgroundColor: isMultipleSelectMode ? "#868e96" : "initial"}}>*/}
       <header id="admin_header_top">
         <div class="admin_header">
           <div class="main-title">
@@ -303,9 +302,7 @@ function Admin() {
           <img class="title-bell" src={Call} alt="Call img" />
         </div>
       </header>
-	  {/* </div>*/}
       <main id="admin_main">
-	  {/*<div style={{backgroundColor: isMultipleSelectMode ? "#868e96" : "initial"}}>*/}
         <div id="table-information">
           <div class="table-list">
             <div class="table-man">{tableNums.male}</div>

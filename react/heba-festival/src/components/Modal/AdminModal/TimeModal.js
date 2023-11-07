@@ -39,7 +39,7 @@ function TimeModal({ onClose, targetTables }) {
     })
     .then((res) => res.json())
     .then((res) => {
-      let successList = Object.keys(res)
+      let successList = Object.keys(res.result)
 
       if(successList.length > 0) {
         alert(String(successList.join(', ')) + "번 테이블에 " + time + "분 추가완료!");
