@@ -223,7 +223,8 @@ def send_like(my_table, received_table):
                     "from" : int(my_table), \
                     "to" : int(received_table), \
                     "time" : current_time, \
-                    "index" : len(admin['record'])})
+                    "index" : admin['record_idx'] + 1})
+            admin['record_idx'] += 1
 
         return "ok"
 
@@ -257,7 +258,8 @@ def call(table_no):
             "type" : "call", \
             "from" : table_no, \
             "time" : set_time().strftime('%Y-%m-%d %H:%M:%S'), \
-            "index" : len(admin['record'])})
+            "index" : admin['record_idx'] + 1})
+    admin['record_idx'] += 1
 
     return "ok"
 
@@ -287,7 +289,8 @@ def add_time(table_no, minutes):
 ### 합석 처리
 def join_table(from_where, to_where):
     try:
-        if not check_available(from_where, to_where) :
+        if check_available(from_where, to_where) == False :
+            print('not available')
             return "fail"
         # find who's table has more time
         influent = table_data[to_where-1] \
@@ -303,12 +306,13 @@ def join_table(from_where, to_where):
         table_data[to_where-1]['referrer'] = influent['referrer']
         table_data[to_where-1]['note'] = ""
 
-        remove_like(to_table)
+        remove_like(to_where)
         # table_data[from_where-1] = reset(from_where)
         reset_table(from_where)
 
         return "ok"
-    except:
+    except Exception as e:
+        print(e)
         return "fail"
 
 
@@ -326,16 +330,22 @@ def reset_table(table_no):
 #########################################################
 def check_available(me, opponent) :
     if me == opponent :
+        print(me, opponent)
         return False
     if not table_data[opponent-1]['active'] or not table_data[me-1]['active'] :
+        print('inactive')
         return False
     if me in table_data[opponent-1]['rejected'] :
+        print('already rejected')
         return False
     if table_data[opponent-1]['join'] or table_data[me-1]['join'] :
+        print('join')
         return False
     if table_data[opponent-1]['gender'] == 'mixed' or table_data[me-1]['gender'] == 'mixed' :
+        print('mix')
         return False
     if table_data[opponent-1]['gender'] == table_data[me-1]['gender'] :
+        print('gender')
         return False
 
     return True
