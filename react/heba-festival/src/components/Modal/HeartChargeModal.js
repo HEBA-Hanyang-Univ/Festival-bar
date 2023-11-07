@@ -47,7 +47,7 @@ function HeartChargeModal({ onClose }) {
           </div>
           <div className="modalContent heartContent">
             <span style={{fontSize: '1.3rem', lineHeight: '150%'}}>
-              하트는 칩 4개로 구매 가능합니다.
+              하트는 칩 2개로 구매 가능합니다.
               <br></br>
               칩이 있으시면 '직원 호출'을
               <br></br>

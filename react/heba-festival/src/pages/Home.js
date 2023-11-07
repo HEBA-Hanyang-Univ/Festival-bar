@@ -91,7 +91,11 @@ const Home = () => {
 	    (record) => !noticeFilter.includes(record.index)).sort((a,b) => a.index - b.index);
 
     // I don't want to use this logic, but...
-    if (JSON.stringify(secureLocalStorage.getItem('notice')) !== JSON.stringify(totalRecord)) {
+    const noticeBefore = secureLocalStorage.getItem('notice');
+    if (noticeBefore == null) {
+      // it's first time connection, so set notice to local storage and disable alert
+      secureLocalStorage.setItem('notice', totalRecord);
+    } else if (JSON.stringify(noticeBefore) !== JSON.stringify(totalRecord)) {
       hasNotice.current = true;
       secureLocalStorage.setItem('notice', totalRecord);
     }
