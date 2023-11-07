@@ -39,6 +39,7 @@ export const Landing = () => {
           setIsModalOpen(true);
         } else { 
 	  setIsModalOpen(false);
+          secureLocalStorage.setItem('gender', response.result.gender);
 	}
       });
     } catch (error) {

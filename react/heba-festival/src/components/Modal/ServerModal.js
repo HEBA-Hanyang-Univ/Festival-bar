@@ -23,6 +23,14 @@ function ServerModal({ onClose }) {
       }),
     })
     .then((res) => res.json())
+    .then((res) => {
+      if (res.result && res.result === 'ok') {
+        // TODO : open wait server modal
+      } else {
+	alert('호출에 실패했습니다... 관리자에게 문의해주세요');
+      }
+      return res;
+    })
     .then((res) => { handleClose(); })
   }
 
