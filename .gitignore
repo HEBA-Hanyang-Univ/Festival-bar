@@ -28,3 +28,8 @@ yarn-error.log*
 
 # name list
 name_list.txt
+
+# log files and log dir
+*.log
+
+flask/logs/
