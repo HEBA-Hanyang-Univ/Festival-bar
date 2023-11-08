@@ -119,7 +119,9 @@ const Home = () => {
     // 이게 여기가 아니면 동작을 안해서 일단 임시로 여기 넣어둠...
     // 이거 위치 수정하다 2시간 넘게 썼으니 수정 시 유의.. 
     setMyTableInfo(datas.find((elem) => elem.table_no === secureLocalStorage.getItem('table_no')));
-    const transformTableData = (data) => <Table tableNumber={data.table_no} gender={data.gender} headCount={data.nums} tableIntro={data.note} huntingSuccess={data.join} huntingStatus={getHuntingState(data)}  remainedLikes={myTableInfo.likes}/>
+    const transformTableData = (data) => <Table tableData={data} myGender={myTableInfo.gender}
+                                          huntingStatus={getHuntingState(data)}
+                                          remainedLikes={myTableInfo.likes}/>
     return datas.map((data) => transformTableData(data));
   }
 
@@ -282,7 +284,8 @@ const Home = () => {
             </div>         
           </button>
           {isOpenMyPageModal && (
-            <MyPageModal open={isOpenMyPageModal} onClose={() => onCloseModal("myPage")}></MyPageModal>
+            <MyPageModal open={isOpenMyPageModal} onClose={() => onCloseModal("myPage")}
+             myInfo={myTableInfo}></MyPageModal>
           )} 
         </footer>
       </div>
