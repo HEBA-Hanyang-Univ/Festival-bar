@@ -8,8 +8,10 @@ import Couple from "assets/images/Couple.svg";
 import SendHeartImg from "assets/images/SendHeart.svg";
 import secureLocalStorage from "react-secure-storage";
 
+import FailedToSendModal from "./FailedToSendModal";
+
 // 원하는 테이블에 하트 보내기
-function SendHeartModal({ onClose, tableNumber, tableGender, headCount, tableIntro, isSendAvailable, remainedLikes }) {
+function SendHeartModal({ onClose, tableData, isSendAvailable, remainedLikes }) {
   const modalRef = useRef(null)
   const handleClose = () => {
     onClose ?.();
@@ -25,7 +27,7 @@ function SendHeartModal({ onClose, tableNumber, tableGender, headCount, tableInt
       body:JSON.stringify({
         token: secureLocalStorage.getItem('token'),
         code: secureLocalStorage.getItem('code'),
-        received_table: tableNumber,
+        received_table: tableData.table_no,
       }),
     })
     .then((res) => res.json())
@@ -52,12 +54,10 @@ function SendHeartModal({ onClose, tableNumber, tableGender, headCount, tableInt
   }, []);
 
   let tableGenderImg;
-  if (tableGender === "male") {
+  if (tableData.gender === "male") {
     tableGenderImg = Man;
-  } else if (tableGender === "female") {
+  } else if (tableData.gender === "female") {
     tableGenderImg = Woman;
-  } else if (tableGender === "couple") {
-    tableGenderImg = Couple;
   } else {
     tableGenderImg = null;
   }
@@ -67,7 +67,7 @@ function SendHeartModal({ onClose, tableNumber, tableGender, headCount, tableInt
       <div className="overlay">
         <div className="modalWrap" ref={modalRef} style={{height: '21rem'}}>
           <div className="modalTitle">
-            <span style={{fontWeight: '900', fontSize: '1.8rem'}}>{tableNumber}번 테이블</span>
+            <span style={{fontWeight: '900', fontSize: '1.8rem'}}>{tableData.table_no}번 테이블</span>
           </div>
           <div className="modalContent">
             <div className="SendHeartTop">
@@ -76,20 +76,20 @@ function SendHeartModal({ onClose, tableNumber, tableGender, headCount, tableInt
               </div>
               <div className="SendHeartSpan">
                 <span>x</span>
-                <span style={{marginTop: '2rem'}}>{headCount}</span>
+                <span style={{marginTop: '2rem'}}>{tableData.nums}</span>
               </div>
             </div>
             <div className="sendHeartMiddle"> 
               <div className="SendHeartIntroduce">
-                <span>{tableIntro}</span>
+                <span>{tableData.note}</span>
               </div>
             </div>
-            <div className="modalBtnBox">
-	            <button className="btnFilled" style={{marginTop: '-1rem'}} type="submit" onClick={remainedLikes>0 ? (isSendAvailable ? handleSubmit : ()=>alert('보내기가 불가능한 테이블입니다')) : ()=>alert('남은 하트가 없습니다')}>
+            <div className="modalBtnBoxSendHeart">
+	            <button className="btnFilled" type="submit" onClick={remainedLikes>0 ? (isSendAvailable ? handleSubmit : ()=>alert('보내기가 불가능한 테이블입니다')) : ()=>alert('남은 하트가 없습니다')}>
                 <img src={SendHeartImg} alt="sendheart img"></img>
               </button>
-              <button className="btnBlank  "onClick={handleClose}>
-                <span>취소</span>
+              <button className="btnBlank" onClick={handleClose}>
+                <span className="btnBlankSpan">취소</span>
               </button>
             </div>
           </div>

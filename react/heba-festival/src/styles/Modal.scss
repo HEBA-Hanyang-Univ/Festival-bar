@@ -290,6 +290,44 @@
   }
 }
 
+.modalBtnBoxSendHeart {
+  height: 3rem;
+  display: flex;
+  margin: 1.3rem auto;
+
+  .btnBlank {
+    border: 1px solid #87deff;
+    background-color: #fff;
+    border-radius: 1.6rem;
+    width: 10rem;
+    height: 3rem;
+    margin: 0;
+    margin-left: 1.4rem;
+
+    .btnBlankSpan {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #87deff;
+    }
+  }
+
+  .btnFilled {
+    border: none;
+    background-color: #87deff;
+    border-radius: 1.6rem;;
+    width: 10rem;
+    height: 3rem;
+    margin: 0;
+
+    span {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+    }
+  }
+
+}
+
 .SendHeartTop {
   display: flex;
   margin: 0.2rem auto 0;

@@ -8,7 +8,7 @@ import "styles/Home.scss";
 import Table from "components/Table";
 import Dashed from "assets/images/dashed.svg";
 import HomeImg from "assets/images/home.svg";
-import AlarmImg from "assets/images/alarm.svg";
+import AlarmImg from "assets/images/Alarm.svg";
 import RedAlarmImg from "assets/images/RedAlarm.svg";
 import SendHeartImg from "assets/images/SendHeart.svg";
 import TimeImg from "assets/images/Time.svg";
@@ -25,7 +25,6 @@ import ReceivedHeartModal from "components/Modal/ReceivedHeartModal";
 import HuntingSuccessModal from "components/Modal/HuntingSucessModal"; 
 
 import AlarmModal from "components/Modal/Alarm/AlarmModal";
-
 const Home = () => {
   const [isOpenServerModal, setIsOpenServerModal] = useState(false);
   const [isOpenHeartChargeModal, setIsOpenHeartChargeModal] = useState(false);
@@ -91,7 +90,11 @@ const Home = () => {
 	    (record) => !noticeFilter.includes(record.index)).sort((a,b) => a.index - b.index);
 
     // I don't want to use this logic, but...
-    if (JSON.stringify(secureLocalStorage.getItem('notice')) !== JSON.stringify(totalRecord)) {
+    const noticeBefore = secureLocalStorage.getItem('notice');
+    if (noticeBefore == null) {
+      // it's first time connection, so set notice to local storage and disable alert
+      secureLocalStorage.setItem('notice', totalRecord);
+    } else if (JSON.stringify(noticeBefore) !== JSON.stringify(totalRecord)) {
       hasNotice.current = true;
       secureLocalStorage.setItem('notice', totalRecord);
     }
@@ -115,7 +118,9 @@ const Home = () => {
     // 이게 여기가 아니면 동작을 안해서 일단 임시로 여기 넣어둠...
     // 이거 위치 수정하다 2시간 넘게 썼으니 수정 시 유의.. 
     setMyTableInfo(datas.find((elem) => elem.table_no === secureLocalStorage.getItem('table_no')));
-    const transformTableData = (data) => <Table tableNumber={data.table_no} gender={data.gender} headCount={data.nums} tableIntro={data.note} huntingSuccess={data.join} huntingStatus={getHuntingState(data)}  remainedLikes={myTableInfo.likes}/>
+    const transformTableData = (data) => <Table tableData={data} myGender={myTableInfo.gender}
+                                          huntingStatus={getHuntingState(data)}
+                                          remainedLikes={myTableInfo.likes}/>
     return datas.map((data) => transformTableData(data));
   }
 
@@ -197,7 +202,7 @@ const Home = () => {
             </Link>   
             <span>바른주점</span>
             <button className="alarmBtn" onClick={() => onClickButton("alarm")}>
-              <img className="alarmImg" src={hasNotice.current ? RedAlarmImg : AlarmImg} alt="alarm img"></img>
+              <img className={`alarmImg ${hasNotice.current ? 'red': ''}`} src={hasNotice.current ? RedAlarmImg : AlarmImg} alt="alarm img"></img>
             </button>
             {isOpenAlarmModal && (
             <AlarmModal onClose={() => onCloseModal("alarm")} alarmData={totalRecord}></AlarmModal>
@@ -278,7 +283,8 @@ const Home = () => {
             </div>         
           </button>
           {isOpenMyPageModal && (
-            <MyPageModal open={isOpenMyPageModal} onClose={() => onCloseModal("myPage")}></MyPageModal>
+            <MyPageModal open={isOpenMyPageModal} onClose={() => onCloseModal("myPage")}
+             myInfo={myTableInfo}></MyPageModal>
           )} 
         </footer>
       </div>

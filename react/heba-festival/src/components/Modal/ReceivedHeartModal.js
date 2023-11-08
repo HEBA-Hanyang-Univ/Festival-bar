@@ -7,7 +7,7 @@ import Woman from "assets/images/Woman.svg";
 import Couple from "assets/images/Couple.svg";
 
 // 원하는 테이블에 하트 보내기
-function SendHeartModal({ onClose, tableNumber, tableGender }) {
+function ReceivedHeartModal({ onClose, tableData }) {
   const modalRef = useRef(null)
   const handleClose = () => {
     onClose ?.();
@@ -24,12 +24,10 @@ function SendHeartModal({ onClose, tableNumber, tableGender }) {
   }, []);
 
   let tableGenderImg;
-  if (tableGender === "male") {
+  if (tableData.gender === "male") {
     tableGenderImg = Man;
-  } else if (tableGender === "female") {
+  } else if (tableData.gender === "female") {
     tableGenderImg = Woman;
-  } else if (tableGender === "couple") {
-    tableGenderImg = Couple;
   } else {
     tableGenderImg = null;
   }
@@ -40,7 +38,7 @@ function SendHeartModal({ onClose, tableNumber, tableGender }) {
         <div className="modalWrap" style={{height: '16rem'}} ref={modalRef}>
           {/* TODO: 하트를 보낸 테이블 번호 받아오기 */}
           <div className="modalTitle">
-            <span>{tableNumber}번 테이블</span>
+            <span>{tableData.table_no}번 테이블</span>
           </div>
           <div className="modalContent">
             <div className="SendHeartTop">
@@ -49,13 +47,13 @@ function SendHeartModal({ onClose, tableNumber, tableGender }) {
               </div>
               <div className="SendHeartSpan">
                 {/* TODO: 하트를 보낸 테이블 인원 수  */}
-                <span>x3</span>
+                <span>x{tableData.nums}</span>
               </div>
             </div>
             <div className="sendHeartMiddle"> 
               <div className="SendHeartIntroduce">
                 {/* TODO: 하트를 보낸 테이블 소개 */}
-                <span>우리랑 술 먹을 사람~</span>
+                <span>{ tableData.note }</span>
               </div>
             </div>
             {/* TODO: 하트 수락/거절 */}
@@ -74,4 +72,4 @@ function SendHeartModal({ onClose, tableNumber, tableGender }) {
   )
 }
 
-export default SendHeartModal;
+export default ReceivedHeartModal;

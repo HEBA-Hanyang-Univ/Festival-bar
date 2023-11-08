@@ -8,7 +8,7 @@ import QuantityControl from "components/QuantityControl";
 import Man from "assets/images/Man.svg";
 import Woman from "assets/images/Woman.svg";
 
-function MyPageModal({ onClose }) {
+function MyPageModal({ onClose, myInfo }) {
   const modalRef = useRef(null)
   const handleClose = () => {
     onClose ?.();
@@ -16,7 +16,7 @@ function MyPageModal({ onClose }) {
 
   const [quantityMan, setQuantityMan] = useState(0);
   const [quantityWoman, setQuantityWoman] = useState(0);
-  const [modifyIntroduce, setModifyIntroduce] = useState("");
+  const [modifyIntroduce, setModifyIntroduce] = useState(myInfo.note);
 
   const handleModifyIntroduce = (event) => {
     setModifyIntroduce(event.target.value);
@@ -40,6 +40,11 @@ function MyPageModal({ onClose }) {
 
   useOutSideClick(modalRef, handleClose);
   useEffect(() => {
+    if (myInfo.gender === "male") {
+      setQuantityMan(myInfo.nums);
+    } else if (myInfo.gender === "female") {
+      setQuantityWoman(myInfo.nums);
+    }
     const $body = document.querySelector("body");
     const overflow = $body.style.overflow;
     $body.style.overflow = "hidden";
@@ -50,9 +55,16 @@ function MyPageModal({ onClose }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     if (quantityMan === 0 && quantityWoman === 0) {
       return;
+    }
+    
+    if ((myInfo.gender === "male" && quantityWoman > 0)
+       || (myInfo.gender === "female" && quantityMan > 0)) {
+      if(window.confirm('성별을 바꾸면 합석이 안 될 수도 있습니다!  바꾸시겠습니까?') == false) {
+        return;
+      }
     }
     fetch('http://150.230.252.177:5000/update-info', {
       mode:'cors',
@@ -67,6 +79,12 @@ function MyPageModal({ onClose }) {
       }),
     })
     .then((res) => res.json())
+    .then((res) => {
+      if (res.result && res.result == 'ok') {
+        alert('정보가 변경되었습니다!')
+      }
+      return res;
+    })
     .then((res) => { handleClose(); })
   }
 

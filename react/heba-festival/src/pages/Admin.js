@@ -46,17 +46,7 @@ function Admin() {
       }
       return rec;
     })
-    /*
-    for (let rec in record) {
-      if (rec.type == "call") {
-        callList = [...callList, rec.from];
-	rec.message = String(rec.from) + "번 테이블에서 직원을 호출했습니다.";
-      } else if (rec.type == "join") {
-	rec.message = String(rec.from) + "번, " + String(rec.to)
-		      + "번 테이블의 합석 처리를 진행해 주세요.";
-      }
-    }
-    */  
+
     tableNums = { male: 0, female: 0, mixed: 0, joined: 0, empty: 0 };
     const currentTime = new Date();
 
@@ -70,7 +60,8 @@ function Admin() {
 		  "time": String(endTime.getHours()).padStart(2,'0') + ":"
 		          + String(endTime.getMinutes()).padStart(2,'0'),
 		  "message": String(data.table_no) + "번 테이블의 시간이 모두 소진되었습니다.",
-		  "index": -2});
+		  "index": data.table_no * -1 - 30
+	  });
 	  hasNoticedTimeOut.current[data.table_no-1] = true;
 	}
       } else if (data.active && remainedTime <= 600) {
@@ -81,7 +72,8 @@ function Admin() {
 		  "time": String(alertTime.getHours()).padStart(2,'0') + ":"
 		          + String(alertTime.getMinutes()).padStart(2,'0'),
 		  "message": String(data.table_no) + "번 테이블의 이용시간이 약 10분 남았습니다.",
-		  "index": -1});
+		  "index": data.table_no * -1
+	  });
 	  hasNoticedTimeAlert.current[data.table_no-1] = true;
 	}
       } else {
@@ -242,6 +234,12 @@ function Admin() {
   };
 
   const onDeleteAlarm = async(index) => {
+    if (index < 0) {
+      const item = timeRecord.current.find((elem) => elem.index === index);
+      const idx = timeRecord.current.indexOf(item);
+      if (idx > -1) timeRecord.current.splice(idx, 1)
+      return;
+    }
     await fetch('http://150.230.252.177:5000/admin/del-record', {
       mode: 'cors',
       method: 'POST',
@@ -330,29 +328,23 @@ function Admin() {
               <span class="info_title">빈&nbsp;T</span>
             </div>
           </div>
-          <div className="table-container" style={{ backgroundColor: isMultipleSelectMode ? '#c8c8c8' : 'initial' }}>
-  <div className="table-container-grid">
-    {React.Children.toArray(data).map((child) => {
-      const tableNumber = child.props.tableNumber;
-      const isSelected = selectedTable.includes(tableNumber);
-
-      return React.cloneElement(child, {
-        className: isSelected ? "selected-table" : ""
-      });
-    })}
-  </div>
-  {isOpenTableInfoModal && (
-    <TableInfoModal
-      onClose={() => onCloseModal("tableInfo")}
-      tableNumber={tableElem.table_no}
-      nums={tableElem.nums}
-      startTime={tableElem.start_time}
-      endTime={tableElem.end_time}
-      code={tableElem.code}
-      referrer={tableElem.referrer}
-    ></TableInfoModal>
-  )}
-</div>
+          <div class="table-container">
+            <div className="table-container-grid">
+            {React.Children.toArray(data).map((child) => {
+              const tableNumber = child.props.tableNumber;
+              const isSelected = selectedTable.includes(tableNumber);
+              return React.cloneElement(child, {
+                className: isSelected ? "selected-table" : ""
+              });
+            })}
+            </div>
+            {isOpenTableInfoModal && <TableInfoModal onClose={() => onCloseModal("tableInfo")}
+                                      tableNumber={tableElem.table_no} nums={tableElem.nums}
+                                      startTime={tableElem.start_time} endTime={tableElem.end_time}
+                                      code={tableElem.code} referrer={tableElem.referrer}>
+                                     </TableInfoModal>
+            }
+          </div>
           <div className="admin-footer">
             <div className="footer-button">
               <div className="blue-btn-box">
@@ -375,7 +367,7 @@ function Admin() {
               <button className="table_choice" style={ buttonStyle } onClick={ onClickTableSelectButton }>
                 { isMultipleSelectMode ? "선택 취소" : "테이블 선택" }
               </button>
-            </div>
+	    </div>
           </div>
         </div>
         <div className="alarm-container">
