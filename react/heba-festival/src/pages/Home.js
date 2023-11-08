@@ -8,7 +8,7 @@ import "styles/Home.scss";
 import Table from "components/Table";
 import Dashed from "assets/images/dashed.svg";
 import HomeImg from "assets/images/home.svg";
-import AlarmImg from "assets/images/alarm.svg";
+import AlarmImg from "assets/images/Alarm.svg";
 import RedAlarmImg from "assets/images/RedAlarm.svg";
 import SendHeartImg from "assets/images/SendHeart.svg";
 import TimeImg from "assets/images/Time.svg";
@@ -25,7 +25,6 @@ import ReceivedHeartModal from "components/Modal/ReceivedHeartModal";
 import HuntingSuccessModal from "components/Modal/HuntingSucessModal"; 
 
 import AlarmModal from "components/Modal/Alarm/AlarmModal";
-
 const Home = () => {
   const [isOpenServerModal, setIsOpenServerModal] = useState(false);
   const [isOpenHeartChargeModal, setIsOpenHeartChargeModal] = useState(false);

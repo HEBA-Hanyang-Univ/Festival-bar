@@ -1,14 +1,20 @@
-import React, {useEffect, useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import "styles/Modal.scss";
 import useOutSideClick from "./useOutSideClick";
 import ModalContainer from "./ModalContainer";
+import WaitForServer from "./WaitForServer";
+import FailedCallServerModal from "./FailedCallServerModal";
 import secureLocalStorage from "react-secure-storage";
 
 function ServerModal({ onClose }) {
   const modalRef = useRef(null)
+  const [isOpenWaitForServer, setIsOpenWaitForServer] = useState(false);
+  const [isOpenFailedModal, setIsOpenFailedModal] = useState(false);
   const handleClose = () => {
+    setIsOpenWaitForServer(true);
     onClose ?.()
   };
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -26,7 +32,8 @@ function ServerModal({ onClose }) {
     .then((res) => {
       if (res.result && res.result === 'ok') {
         // TODO : open wait server modal
-      } else {
+        handleClose();
+      } else {  
 	alert('호출에 실패했습니다... 관리자에게 문의해주세요');
       }
       return res;
@@ -45,6 +52,7 @@ function ServerModal({ onClose }) {
   }, []);
 
   return (
+    <>
     <ModalContainer>
       <div className="overlay">
         <div className="modalWrap" ref={modalRef} style={{width: '25rem'}}>
@@ -60,6 +68,8 @@ function ServerModal({ onClose }) {
         </div>
       </div>
     </ModalContainer>
+    {isOpenWaitForServer && <WaitForServer />}
+    </>
   )
 }
 

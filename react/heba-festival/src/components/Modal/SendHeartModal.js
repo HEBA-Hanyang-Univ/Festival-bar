@@ -8,6 +8,8 @@ import Couple from "assets/images/Couple.svg";
 import SendHeartImg from "assets/images/SendHeart.svg";
 import secureLocalStorage from "react-secure-storage";
 
+import FailedToSendModal from "./FailedToSendModal";
+
 // 원하는 테이블에 하트 보내기
 function SendHeartModal({ onClose, tableNumber, tableGender, headCount, tableIntro, isSendAvailable, remainedLikes }) {
   const modalRef = useRef(null)

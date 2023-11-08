@@ -4,7 +4,7 @@ import {useNavigate} from "react-router-dom";
 import "styles/Modal.scss";
 import LockImg from "assets/images/Lock.svg";
 import ModalContainer from "./ModalContainer";
-
+import CodeUnmatch from "./CodeUnmatch";
 function LockModal({ onClose }) {
   const modalRef = useRef(null)
   const [code, setCode] = useState('');
