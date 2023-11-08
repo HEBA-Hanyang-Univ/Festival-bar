@@ -82,6 +82,7 @@ export const CheckIn = () => {
         if (response.result === 'fail') {
           navigate('/error');
         } else {
+	  alert('코드는 ' + String(response.result) + '입니다!');
           secureLocalStorage.setItem('code', response.result);
           navigate('/landing');
 	}
@@ -186,6 +187,17 @@ export const CheckIn = () => {
             저희 주점에서 좋은 인연과 추억 많이 만들어 가시면 좋겠습니다.
             <br></br>
             감사합니다.
+	    
+	    <br></br>
+	    개인정보의 제3자 제공 동의약관
+	    <br></br>
+	    ① 회사는 원칙적으로 수집 · 이용 목적 범위를 초과하거나 회원의 동의 없이 개인정보를 제3자에게 제공하지 않습니다. 개인정보를 제3자에게 제공하는 경우, 사전에 회원에게 ‘제공받는 자, 제공받는 자의 이용 목적, 제공하는 개인정보 항목, 보유 및 이용기간을 고지 후 동의를 구하며, 회원이 동의하지 않는 경우에는 제공하지 않습니다
+	    <br></br>
+	    ② 회사는 다음과 같이 개인정보를 제3자에게 제공하고 있습니다.<br></br>
+	  가. 제공받는 자 :(주)식파마/ 서비스를 이용하여 본인과 함께 주문한 적이 있는 다른 이용자<br></br>
+	  나 제공목적 : 기업홍보<br></br>
+	  다 제공하는 개인정보 항목 : 주점내에서 카메라로 촬영한 영상<br></br>
+	  라. 개인정보 보유 및 이용기간 : 이용자의 주문에 따른 서비스 제공 완료 시까지 / 이용자의 동의 철회 시 지체없이 삭제 / 이용자의 동의 철회 시 지체없이 삭제<br></br>
           </div>
           <div className="agreeCheckBox">
             <input type="checkbox" id="agree" name="agree" checked={agree} onChange={handleAgreeChange}></input>
