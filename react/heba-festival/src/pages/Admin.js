@@ -233,6 +233,16 @@ function Admin() {
     setIsMultipleSelectMode(!isMultipleSelectMode);
   };
 
+  //다중속성 스타일
+  /* useRef Hook을 통해 ref객체(computedStyle) 생성*/
+  const computedStyleRef = useRef(computedStyle);
+
+useEffect(() => {
+  /* ref객체(computedStyleRef)의 current를 출력*/
+    /* computedStyleRef의 모든 CSS 속성 값을 담은 객체 생성*/
+    console.log(computedStyleRef.current);
+}, []);
+
   const onDeleteAlarm = async(index) => {
     if (index < 0) {
       const item = timeRecord.current.find((elem) => elem.index === index);
@@ -334,9 +344,9 @@ function Admin() {
               const tableNumber = child.props.tableNumber;
               const isSelected = selectedTable.includes(tableNumber);
               return React.cloneElement(child, {
-                className: isSelected ? "selected-table" : ""
+              style: isMultipleSelectMode && isSelected ? {...computedStyleRef.current, border: "2px solid red"} : computedStyleRef.current
               });
-            })}
+              })}
             </div>
             {isOpenTableInfoModal && <TableInfoModal onClose={() => onCloseModal("tableInfo")}
                                       tableNumber={tableElem.table_no} nums={tableElem.nums}
