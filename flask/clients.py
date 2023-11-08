@@ -59,7 +59,7 @@ def set_table():
         random_code = str(random.randint(0000, 9999)).zfill(4)
         
         result = controller.set_table(table_no, nums, gender, photo, note, referrer, random_code)
-        print(f'Table "{table_no}" has activated with code: {random_code}')
+            
         output['result'] = result
         return output
 
@@ -119,12 +119,11 @@ def get_table():
     
     table_info = controller.get_table(controller.get_table_no_by_token(token))
 
-    if table_info and controller.get_table_no_by_token(admin_token) == 'admin' \
-           or (table_info['active'] and table_info['code'] == code) :
+    if table_info and (controller.get_table_no_by_token(admin_token) == 'admin' \
+           or table_info['active'] and table_info['code'] == code) :
             output['result'] = table_info
             return output
     
-    print('failed to get_table')
     output['result'] = "fail"
     return output
 
@@ -141,7 +140,6 @@ def update_info():
     table_no = controller.get_table_no_by_token(token)
 
     if type(table_no) == int and table_data[table_no-1]['code'] == code:
-        print(f'table info update : {table_no}, {code}')
         m_count = data.get('m_count')
         f_count = data.get('f_count')
         note = data.get('note')
@@ -227,3 +225,11 @@ def call():
     else:
         output['result'] = "fail"
         return output
+
+@app.route('/record', methods=['GET'])
+def record():
+    output = dict()
+    controller.write_table_data()
+    print('log saved')
+    output['result'] = 'ok'
+    return output
