@@ -128,8 +128,7 @@ def delete_record() :
     except :
         pass
 
-    [controller.admin['record'].remove(noti) for noti in controller.admin['record'] \
-            if noti['index'] == notice_index]
+    [controller.admin['record'].remove(noti) for noti in controller.admin['record'] if noti['index'] == notice_index]
     
     output['result'] = "ok"
     return output
