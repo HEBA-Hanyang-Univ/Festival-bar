@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import secureLocalStorage from 'react-secure-storage';
 import "styles/AlarmModal.scss";
 import HeartMessage from "assets/images/ReceivedHeart.svg";
 import CloseBtn from "assets/images/alarmClose.svg";
+import MessageModal from "components/Modal/MessageModal";
 
 const ReceivedHeartAlarm = ({onClose, tableNumber, time}) => {
+
+  const [openModal, setOpenModal] = useState(false);
+  const message = useRef("");
 
   const onAccept = () => fetchData('http://150.230.252.177:5000/send-like')
     .then((response) => {
@@ -13,10 +17,11 @@ const ReceivedHeartAlarm = ({onClose, tableNumber, time}) => {
       }
       if(response.result && response.result !== 'fail') {
         // TODO : 합석 대기 모달 띄워야함
-        alert('수락 완료!');
+        message.current = '수락 완료!\n직원의 합석 처리를 기다려주세요!';
       } else {
-        alert('수락 실패... 관리자에게 문의해주세요');
+        message.current = '수락 실패... 관리자에게 문의해주세요';
       }
+      setOpenModal(true);
       return response;
     })
 
@@ -26,10 +31,11 @@ const ReceivedHeartAlarm = ({onClose, tableNumber, time}) => {
         return response;
       }
       if (response.result && response.result !== 'fail') {
-        alert('거절 완료!');
+        message.current = '하트를 거절했어요...\n다른 상대를 찾아보아요!';
       } else {
-        alert('거절 실패... 관리자에게 문의해주세요');
+        message.current = '거절 실패... 관리자에게 문의해주세요';
       }
+      setOpenModal(true);
       return response;
     })
 
@@ -53,8 +59,13 @@ const ReceivedHeartAlarm = ({onClose, tableNumber, time}) => {
     }
   }
 
+  const onCloseMessageModal = () => {
+    setOpenModal(false);
+  }
+
   return (
     <div className="leftTimeAlarmBox receivedHeartBox">
+      {openModal && <MessageModal onClose={onCloseMessageModal} message={message.current}></MessageModal>}
       <div className="alarmTop">
         <div className="leftTimeImg">
           <img src={HeartMessage} alt="alarm img"></img>

@@ -47,12 +47,10 @@
 	isSendAvailable = false;
       }
 
-      if (tableData.table_no === secureLocalStorage.getItem('table_no')) {
+      let isEmptyTable = false;
+      if (tableData.nums === 0 || !tableData.active) {
         isSendAvailable = false;
-      }
-
-      if (tableData.nums === 0) {
-        isSendAvailable = false;
+	isEmptyTable = true;
       }
 
       // switch
@@ -63,11 +61,9 @@
       };
 
       const onClickButton = (modalType) => {
-        if (modalType === "sendHeart" && isSendAvailable) {
+        if (modalType === "sendHeart" && !isEmptyTable) {
           setIsOpenSendHeartModal(true);
-        } else {
-          alert('합석할 수 없는 테이블이에요!');
-	}
+        }
       };
 
       const onCloseModal = (modalType) => {

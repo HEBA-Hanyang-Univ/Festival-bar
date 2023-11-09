@@ -8,7 +8,7 @@ import "styles/Home.scss";
 import Table from "components/Table";
 import Dashed from "assets/images/dashed.svg";
 import HomeImg from "assets/images/home.svg";
-import AlarmImg from "assets/images/Alarm.svg";
+import AlarmImg from "assets/images/alarm.svg";
 import RedAlarmImg from "assets/images/RedAlarm.svg";
 import SendHeartImg from "assets/images/SendHeart.svg";
 import TimeImg from "assets/images/Time.svg";
@@ -61,7 +61,7 @@ const Home = () => {
 		"type": "timeout", 
 		"time": String(endTime.getHours()).padStart(2, '0') + ":"
 		        + String(endTime.getMinutes()).padStart(2, '0'), 
-		"index": -2});
+		"index": 999999999});
 	hasNoticedTimeOut.current = true;
       }
     } else if (remainedTime <= 600) {
@@ -71,7 +71,7 @@ const Home = () => {
 		  "type": "timeAlert",
 		  "time": String(alertTime.getHours()).padStart(2, '0') + ":"
 		          + String(alertTime.getMinutes()).padStart(2, '0'),
-		  "index": -1});
+		  "index": 999999999});
 	  hasNoticedTimeAlert.current = true;
 	}
     } else {
@@ -87,7 +87,7 @@ const Home = () => {
     }
 
     totalRecord = record.concat(timeRecord.current).filter(
-	    (record) => !noticeFilter.includes(record.index)).sort((a,b) => a.index - b.index);
+	    (record) => !noticeFilter.includes(record.index)).sort((a,b) => b.index - a.index);
 
     // I don't want to use this logic, but...
     const noticeBefore = secureLocalStorage.getItem('notice');

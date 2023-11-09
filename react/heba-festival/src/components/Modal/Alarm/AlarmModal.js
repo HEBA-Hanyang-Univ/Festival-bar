@@ -25,14 +25,14 @@ const AlarmModal = ({onClose, alarmData}) => {
 
   const removeAlarm = (index) => {
     filter = [...filter, index];
-    setAlarms(alarms.filter((alarm) => !filter.includes(alarm.index)).sort((a,b) => a.index - b.index));
+    setAlarms(alarms.filter((alarm) => !filter.includes(alarm.index)).sort((a,b) => b.index - a.index));
     secureLocalStorage.setItem("notice_filter", filter);
     secureLocalStorage.setItem('notice', alarms);
   };
 
   useOutSideClick(modalRef, handleClose);
   useEffect(() => {
-    setAlarms(alarms.filter((alarm) => !filter.includes(alarm.index)).sort((a,b) => a.index - b.index));
+    setAlarms(alarms.filter((alarm) => !filter.includes(alarm.index)).sort((a,b) => b.index - a.index));
 
     const $body = document.querySelector("body");
     const overflow = $body.style.overflow;

@@ -26,10 +26,6 @@ function Admin() {
   // a variable for render nums of each tables
   let tableNums = { male: 0, female: 0, mixed: 0, joined: 0, empty: 0, };
   let record = [];
-  let timeRecord = useRef([]);
-  let totalRecord = [];
-  let hasNoticedTimeAlert = useRef(Array.from({length:30}, () => false));
-  let hasNoticedTimeOut = useRef(Array.from({length:30}, () => false));
 
   // a function for processing data after fetching
   // count each table's number and calculate remained time
@@ -43,6 +39,9 @@ function Admin() {
       } else if (rec.type == "join") {
 	rec.message = String(rec.from) +"번, " + String(rec.to)
 	              + "번 테이블의 합석 처리를 진행해 주세요.";
+      } else if (rec.type == "like") {
+	rec.message = String(rec.from)+"번 테이블이 " + String(rec.to)
+		      + "번 테이블에게 좋아요를 보냈습니다.";
       }
       return rec;
     })
@@ -52,47 +51,9 @@ function Admin() {
 
     const processIndividualData = (data) => {
       const endTime = new Date(data.end_time);
-      const remainedTime = (endTime.getTime() - currentTime) / 1000;
-      if (data.active && remainedTime <= 0) {
-        if(!hasNoticedTimeOut.current[data.table_no-1]) {
-	  timeRecord.current.push({
-		  "type": "timeout",
-		  "time": String(endTime.getHours()).padStart(2,'0') + ":"
-		          + String(endTime.getMinutes()).padStart(2,'0'),
-		  "message": String(data.table_no) + "번 테이블의 시간이 모두 소진되었습니다.",
-		  "index": data.table_no * -1 - 30
-	  });
-	  hasNoticedTimeOut.current[data.table_no-1] = true;
-	}
-      } else if (data.active && remainedTime <= 600) {
-	if(!hasNoticedTimeAlert.current[data.table_no-1]) {
-          const alertTime = new Date(endTime.getTime() - (10 * 60 * 1000))
-	  timeRecord.current.push({
-		  "type": "timeAlert",
-		  "time": String(alertTime.getHours()).padStart(2,'0') + ":"
-		          + String(alertTime.getMinutes()).padStart(2,'0'),
-		  "message": String(data.table_no) + "번 테이블의 이용시간이 약 10분 남았습니다.",
-		  "index": data.table_no * -1
-	  });
-	  hasNoticedTimeAlert.current[data.table_no-1] = true;
-	}
-      } else {
-	  hasNoticedTimeAlert.current[data.table_no-1] = false;
-	  hasNoticedTimeOut.current[data.table_no-1] = false;
-      }
-
-      // count for each tables
-      if (data.join) {
-        tableNums.joined += 1;
-      } else if (data.gender === "male" || data.gender === "female" || data.gender === "mixed") {
-        tableNums[data.gender] += 1;
-      } else {
-        tableNums.empty += 1;
-      }
-      
+      const remainedTime = (endTime.getTime() - currentTime) / 1000;    
 
       // translate data to AdminTable
-      // TODO : add managerCall by alarmData
       return (
         <AdminTable tableNumber={data.table_no} gender={data.gender} headCount={data.nums}
          huntingSuccess={data.join} remainedTime={remainedTime}
@@ -100,9 +61,8 @@ function Admin() {
 	 onClickTable={ (e) => { onClickTableElem(e, data); } }/>
       );
     };
+    record.sort((a,b) => b.index - a.index);
     const ret = datas.result.map((data) => processIndividualData(data));
-    totalRecord = record.concat(timeRecord.current).sort((a,b) => a.index - b.index);
-
     return ret;
   }
 
@@ -234,12 +194,6 @@ function Admin() {
   };
 
   const onDeleteAlarm = async(index) => {
-    if (index < 0) {
-      const item = timeRecord.current.find((elem) => elem.index === index);
-      const idx = timeRecord.current.indexOf(item);
-      if (idx > -1) timeRecord.current.splice(idx, 1)
-      return;
-    }
     await fetch('http://150.230.252.177:5000/admin/del-record', {
       mode: 'cors',
       method: 'POST',
@@ -371,7 +325,7 @@ function Admin() {
           </div>
         </div>
         <div className="alarm-container">
-          {totalRecord.map((item) => {
+          {record.map((item) => {
             return (
               <div className="alarm-item">
                 <button className="alarmdel" onClick={() => onDeleteAlarm(item.index)}>
@@ -380,14 +334,12 @@ function Admin() {
                 <br/>
                 {/* 알람데이터 type에 따라 color 지정 */}
                 <span className="alarmData-span" style={{ color: item.type == "join" ? "#DD7DFF"
-				                               : item.type == "heart" ? "#FF8FD2"
+				                               : item.type == "like" ? "#FF8FD2"
 				                               : item.type == "call" ? "#FFC555"
                                                                : "red",}}>
                   { item.type == "join" ? "[합석처리]"
-                    : item.type == "heart" ? "[하트충전]"
                     : item.type == "call" ? "[직원 호출]"
-                    : item.type == "timeAlert" ? "[이용시간]"
-		    : item.type == "timeout" ? "[테이블 시간 소진]" : ""}
+		    : item.type == "like" ? "[하트 수신]" : "[undefined]"}
                 </span>
                 <span className="alarm-message">{item.message}</span>
                 <p className="alarm-time-p">{item.time}</p>

@@ -36,8 +36,10 @@ export const Landing = () => {
       .then((res) => res.json())
       .then((response) => {
         if (response.result === 'fail') {
+          navigate('/error');
+        } else if (response.result === 'code_unmatch') {
           setIsModalOpen(true);
-        } else { 
+	} else { 
 	  setIsModalOpen(false);
           secureLocalStorage.setItem('gender', response.result.gender);
 	}

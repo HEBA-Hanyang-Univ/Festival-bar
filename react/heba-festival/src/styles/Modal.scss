@@ -37,20 +37,23 @@
 }
 
 .modalContent {
+  padding-top: 2.3rem;
   display: flex;
   flex-direction: column;
-  height: 10rem;
+  height: auto;
   margin: 0 auto;
+  padding-bottom: 2.3rem;
 
   span {
     color: #000;
     font-size: 1.2rem;
     font-weight: 600;
+    position: relative;
   }
 
   button {
-    margin: 2.3rem auto 0;
-    height: 1.9rem;
+    margin: 2.3rem auto;
+    height: 3rem;
     align-items: center;
     width: 8rem;
     border: none;
@@ -60,7 +63,7 @@
     span {
       color: #fff;
       text-align: center;
-      font-size: 0.9rem;
+      font-size: 1.1rem;
       font-weight: 700;
     }
   }

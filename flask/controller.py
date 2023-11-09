@@ -2,6 +2,25 @@ import json
 import os
 from datetime import datetime, timedelta
 import pytz
+import logging
+
+# set logger
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+formatter = logging.Formatter('[%(levelname)s][%(asctime)s] >> %(message)s')
+streamHandler = logging.StreamHandler()
+streamHandler.setFormatter(formatter)
+fileHandler = logging.FileHandler('./logs/server.log')
+fileHandler.setFormatter(formatter)
+logger.addHandler(streamHandler)
+logger.addHandler(fileHandler)
+
+# logger levels
+# logger.debug('DEBUG log')
+# logger.info('INFO log')
+# logger.warning('WARNING log')
+# logger.error('ERROR log')
+# logger.critical('CRITICAL log')
 
 my_dir = os.path.dirname(__file__)
 json_file = os.path.join(my_dir, 'table.json')
@@ -71,6 +90,7 @@ def reset(table_no):
             "received" : [], # int list
             "rejected" : [],
             "record" : [], # dic list
+            "record_id" : 0,
             "photo" : False,
             "note" : "",
             "referrer" : "",
@@ -90,6 +110,7 @@ def test_reset_table(table_no):
             "received" : [],
             "rejected" : [],
             "record" : [],
+            "record_id" : 0,
             "photo" : False, 
             "note" : "",
             "referrer" : ""
@@ -116,7 +137,7 @@ def set_table(table_no, nums, gender, photo, note, referrer, random_code):
     try:
         index = table_no-1
         if table_data[index]['active'] == True:
-            print(f'Already enabled table : {table_no}')
+            logger.warning(f'Already enabled table : {table_no}')
             return "fail"
 
         reset(table_no)
@@ -134,11 +155,12 @@ def set_table(table_no, nums, gender, photo, note, referrer, random_code):
         table_data[index]['start_time'] = korea_time.strftime('%Y-%m-%d %H:%M:%S')
         table_data[index]['end_time'] = (korea_time + timedelta(hours=1.5)).strftime('%Y-%m-%d %H:%M:%S')
         table_data[index]['code'] = random_code
-        print(f'{table_no} has activated with code: {random_code}, agree: {photo}')
+
+        logger.info(f'{table_no} has activated with code: {random_code}, agree: {photo}')
         return table_data[index]['code']
         
     except Exception as e:
-        print(e)
+        logger.error(e)
         return "fail"
 
 
@@ -156,7 +178,7 @@ def update_info(table_no, male_count, female_count, note):
     index = table_no-1
 
     if table_data[index]['active'] == False:
-        print(f'cannot update inactive table : {table_no}')
+        logger.warning(f'cannot update inactive table : {table_no}')
         return "fail"
     
     table_data[index]['note'] = note
@@ -172,7 +194,8 @@ def update_info(table_no, male_count, female_count, note):
     if male_count and female_count:
         table_data[index]['gender'] = 'mixed'
         table_data[index]['nums'] = male_count + female_count
-    print(f'{table_no} updated info, {table_data[index]["gender"]}, {table_data[index]["nums"]}')
+
+    logger.info(f'{table_no} updated info, {table_data[index]["gender"]}, {table_data[index]["nums"]}')
     return "ok"
 
 
@@ -200,43 +223,61 @@ def get_table(table_no):
 def send_like(my_table, received_table):
     try:
         if check_available(my_table, received_table) == False :
-            print(f'{my_table} tried to send a like to {received_table}, but unavailable')
+            logger.warning(f'unable to send a like: {my_table} to {received_table}')
             return "fail"
 
         if received_table in table_data[my_table-1]['sent'] :
-            print(f'{my_table} already sent to {received_table}')
+            logger.warning(f'{my_table} already sent to {received_table}')
             return "fail"
 
         # reply don't use a like
         if my_table not in table_data[received_table-1]['sent'] :
             if table_data[my_table-1]['likes'] <= 0 :
-                print(f'{my_table} has no likes')
+                logger.warning(f'{my_table} has no likes, so failed to send a like')
                 return "fail"
             else :
                 table_data[my_table-1]['likes'] -= 1
+
         table_data[my_table-1]['sent'].append(received_table)
         table_data[received_table-1]['received'].append(my_table)
 
         current_time = set_time().strftime('%Y-%m-%d %H:%M:%S')
 
+        # if received table doesn't send a like to my table
         if my_table not in table_data[received_table-1]['sent'] :
             table_data[received_table-1]['record'].insert(0, { \
                     "type" : "received", \
                     "from" : int(my_table), \
                     "time" : current_time, \
-                    "index" : len(table_data[received_table-1]['record'])})
-            print(f'{my_table} sent a like to {received_table}')
+                    "index" : table_data[received_table-1]['record_id'] + 1})
+            table_data[received_table-1]['record_id'] += 1
+
+            admin['record'].insert(0, {\
+                    "type" : "like", \
+                    "from" : int(my_table), \
+                    "to" : int(received_table), \
+                    "time" : current_time, \
+                    "index" : admin['record_idx'] + 1})
+            admin['record_idx'] += 1
+
+            logger.info(f'{my_table} sent a like to {received_table}')
+
+        # if received table already sent a like to my table
         else :
             table_data[my_table-1]['record'].insert(0, { \
                     "type" : "matched", \
                     "from" : int(received_table), \
                     "time" : current_time, \
-                    "index" : len(table_data[my_table-1]['record'])})
+                    "index" : table_data[my_table-1]['record_id'] + 1})
+            table_data[my_table-1]['record_id'] += 1
+
             table_data[received_table-1]['record'].insert(0, { \
                     "type" : "matched", \
                     "from" : int(my_table), \
                     "time" : current_time, \
-                    "index" : len(table_data[received_table-1]['record'])})
+                    "index" : table_data[received_table-1]['record_id'] + 1})
+            table_data[received_table-1]['record_id'] += 1
+
             admin['record'].insert(0, { \
                     "type" : "join", \
                     "from" : int(my_table), \
@@ -244,23 +285,23 @@ def send_like(my_table, received_table):
                     "time" : current_time, \
                     "index" : admin['record_idx'] + 1})
             admin['record_idx'] += 1
-            print(f'{my_table} and {received_table} sent likes to each other')
 
+            logger.info(f'{my_table} and {received_table} sent likes to each other')
         return "ok"
 
     except Exception as e:
-        print(e)
+        logger.error(e)
         return "fail"
 
 
 ### reject
 def reject(my_table, reject_table):
     if check_available(my_table, reject_table) == False:
-        print(f'unable to reject : {my_table}, {reject_table}')
+        logger.warning(f'unable to reject : {my_table}, {reject_table}')
         return "fail"
 
     if reject_table not in table_data[my_table-1]['received']:
-        print(f'rejected already : {my_table}, {reject_table}')
+        logger.warning(f'rejected already : {my_table}, {reject_table}')
         return "fail"
     
     table_data[reject_table-1]['rejected'].insert(0, my_table)
@@ -270,8 +311,8 @@ def reject(my_table, reject_table):
             "type" : "rejected", \
             "from" : my_table, \
             "time": set_time().strftime('%Y-%m-%d %H:%M:%S')})
-    print(f'{my_table} rejected {reject_table}')
-        
+
+    logger.info(f'{my_table} rejected {reject_table}')
     return "ok"
 
 
@@ -283,10 +324,18 @@ def call(table_no):
             "time" : set_time().strftime('%Y-%m-%d %H:%M:%S'), \
             "index" : admin['record_idx'] + 1})
     admin['record_idx'] += 1
-    print(f'{table_no} called worker')
 
+    logger.info(f'{table_no} called worker')
     return "ok"
 
+def delete_record(table_no, record_id) :
+    try :
+        record_id = int(record_id)
+        table_idx = table_no - 1
+        [table_data[table_idx]['record'].remove(rec) for rec in table_data[table_idx]['record'] if rec['index'] == record_id]
+        return 'ok'
+    except :
+        return 'fail'
 
 ##########################################################
 ########################## 관리자 ##########################
@@ -294,20 +343,18 @@ def call(table_no):
 
 ### 하트 충전
 def add_likes(table_no, count):
-
     table_data[table_no-1]['likes'] += count
-    print(f'add {count} like(s) to {table_no}')
+
+    logger.info(f'add {count} like(s) to {table_no}')
     return "ok"
 
 
 ### 시간 충전
 def add_time(table_no, minutes):
-
-    end_time = datetime.strptime(table_data[table_no-1]['end_time'], '%Y-%m-%d %H:%M:%S')
-    new_end_time = end_time + timedelta(minutes=minutes)
+    new_end_time = set_time() + timedelta(minutes=minutes)
     table_data[table_no-1]['end_time'] = new_end_time.strftime('%Y-%m-%d %H:%M:%S')  
 
-    print(f'add {minutes}min(s) to {table_no}')
+    logger.info(f'add {minutes} min(s) to {table_no}')
     return "ok"
 
 
@@ -315,8 +362,9 @@ def add_time(table_no, minutes):
 def join_table(from_where, to_where):
     try:
         if check_available(from_where, to_where) == False :
-            print(f'join {from_where} to {to_where} is unavailable')
+            logger.warning(f'join {from_where} to {to_where} is unavailable')
             return "fail"
+
         # find who's table has more time
         influent = table_data[to_where-1] \
                 if datetime.strptime(table_data[to_where-1]['end_time'], '%Y-%m-%d %H:%M:%S') \
@@ -330,20 +378,24 @@ def join_table(from_where, to_where):
         table_data[to_where-1]['end_time'] = influent['end_time']
         if table_data[to_where-1]['referrer'] == "" :
             table_data[to_where-1]['referrer'] = table_data[from_where-1]['referrer']
-        elif table_data[to_where-1]['referrer'] != "" :
+        else :
             table_data[to_where-1]['referrer'] = influent['referrer']
         table_data[to_where-1]['note'] = ""
 
-        remove_like(to_where)        
-        # table_data[from_where-1] = reset(from_where)
+        # reset table info
+        remove_like(to_where)
+        remove_from_admin_record(to_where)
         reset_table(from_where)
+
+        # remove joined table's heart record
         table_data[to_where-1]['received'] = []
         table_data[to_where-1]['sent'] = []
         table_data[to_where-1]['rejected'] = []
-        print(f'{from_where} joined to {to_where}')
+
+        logger.info(f'{from_where} joined to {to_where}')
         return "ok"
     except Exception as e:
-        print(e)
+        logger.error(e)
         return "fail"
 
 
@@ -351,13 +403,13 @@ def join_table(from_where, to_where):
 def reset_table(table_no):
     try :
         remove_like(table_no)
-        remove_record(table_no)
+        remove_from_admin_record(table_no)
     except Exception as e:
-        print(e)
+        logger.error(e)
         pass
     
     table_data[table_no-1] = reset(table_no)
-    print(f'reset {table_no}')
+    logger.info(f'reset {table_no}')
     return "ok"
 
 
@@ -381,28 +433,29 @@ def check_available(me, opponent) :
     return True
 
 def remove_like(table_no) :
-    if table_data[table_no-1]['sent'] != []:
-        for sent_no in table_data[table_no-1]['sent'][:]:
-            #for rec in table_data[sent_no-1]['record'] :
-            #    if rec['from'] == sent_no :
-            #        table_data[sent_no-1]['record'].remove(rec)
-            table_data[sent_no-1]['received'].remove(table_no)
+    try :
+        if table_data[table_no-1]['sent'] != []:
+            for sent_no in table_data[table_no-1]['sent']:
+                table_data[sent_no-1]['received'].remove(table_no)
+                [table_data[sent_no-1]['record'].remove(noti) for noti in table_data[sent_no-1]['record'] if noti['from'] == table_no-1]
 
-    if table_data[table_no-1]['rejected'] != []:
-        for reject_no in table_data[table_no-1]['rejected'][:]:
-            table_data[reject_no-1]['rejected'].remove(table_no)
+        if table_data[table_no-1]['rejected'] != []:
+            for reject_no in table_data[table_no-1]['rejected']:
+                table_data[reject_no-1]['rejected'].remove(table_no)
+                [table_data[reject_no-1]['record'].remove(noti) for noti in table_data[reject_no-1]['record'] if noti['from'] == table_no-1]
 
-    if table_data[table_no-1]['received'] != []:
-        for received_no in table_data[table_no-1]['received'][:]:
-            table_data[received_no-1]['sent'].remove(table_no)
+        if table_data[table_no-1]['received'] != []:
+            for received_no in table_data[table_no-1]['received']:
+                table_data[received_no-1]['sent'].remove(table_no)
+                [table_data[received_no-1]['record'].remove(noti) for noti in table_data[received_no-1]['record'] if noti['from'] == table_no-1]
+
+    except Exception as e :
+        logger.error(e)
+        pass
 
 
-def remove_record(table_no) :
-    for rec in admin['record'][:]:
-        if rec.get('from') == table_no :
-            admin['record'].remove(rec)
-        elif rec.get('to') == table_no :
-            admin['record'].remove(rec)
+def remove_from_admin_record(table_no) :
+    [admin['record'].remove(noti) for noti in admin['record'] if noti['from'] == table_no or noti['to'] == table_no]
         
 
 ##########################################################
