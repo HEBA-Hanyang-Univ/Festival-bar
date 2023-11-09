@@ -123,7 +123,10 @@ def get_table():
            or table_info['active'] and table_info['code'] == code) :
             output['result'] = table_info
             return output
-    
+    elif table_info and table_info['code'] != code :
+        output['result'] = "code_unmatch"
+        return output
+
     output['result'] = "fail"
     return output
 
