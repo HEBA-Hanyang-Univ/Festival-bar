@@ -8,7 +8,7 @@ import "styles/Home.scss";
 import Table from "components/Table";
 import Dashed from "assets/images/dashed.svg";
 import HomeImg from "assets/images/home.svg";
-import AlarmImg from "assets/images/Alarm.svg";
+import AlarmImg from "assets/images/alarm.svg";
 import RedAlarmImg from "assets/images/RedAlarm.svg";
 import SendHeartImg from "assets/images/SendHeart.svg";
 import TimeImg from "assets/images/Time.svg";
@@ -87,7 +87,7 @@ const Home = () => {
     }
 
     totalRecord = record.concat(timeRecord.current).filter(
-	    (record) => !noticeFilter.includes(record.index)).sort((a,b) => a.index - b.index);
+	    (record) => !noticeFilter.includes(record.index)).sort((a,b) => b.index - a.index);
 
     // I don't want to use this logic, but...
     const noticeBefore = secureLocalStorage.getItem('notice');
