@@ -69,9 +69,9 @@ const AdminTable = ({ tableNumber, friendCode, gender, huntingSuccess, headCount
   };
 
   const managerCallImgStyle = {
-    width: "3rem",
-    height: "3rem",
-    marginLeft: "0.8rem",
+    width: "2.5rem",
+    height: "2.5rem",
+    marginLeft: "1.7rem",
     marginTop: "0.8rem",
   };
 

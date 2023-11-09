@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";  
+import React, { useState, useEffect, useRef } from "react";  
 import { Link, useNavigate } from "react-router-dom";
 import "styles/CheckIn.scss";
 import "styles/common.scss";
@@ -10,8 +10,7 @@ import Couple from "assets/images/Couple.svg";
 import CoupleSelected from "assets/images/CoupleSelected.svg";
 import QuantityControl from "components/QuantityControl";
 import secureLocalStorage from "react-secure-storage";
-
-//  TODO : 서버로부터 테이블 번호 요청 후 렌더링
+import ButtonModal from "components/Modal/ButtonModal";
 
 export const CheckIn = () => {
   const [selectedGender, setSelectedGender] = useState(null);
@@ -20,9 +19,12 @@ export const CheckIn = () => {
   const [friendCode, setfriendCode] = useState("");
   const [agree, setAgree] = useState(false);
   const [link, setLink] = useState('/error');
+  const [openModal, setOpenModal] = useState(false);
+
   const token = secureLocalStorage.getItem('token');
   const navigate = useNavigate();
-  
+
+  const message = useRef("");
   // check token
   useEffect(() => {
     if (token == null) {
@@ -82,15 +84,27 @@ export const CheckIn = () => {
         if (response.result === 'fail') {
           navigate('/error');
         } else {
-	  alert('코드는 ' + String(response.result) + '입니다!');
-          secureLocalStorage.setItem('code', response.result);
-          navigate('/landing');
+	  secureLocalStorage.setItem('code', response.result);
+	  message.current = "입장 코드는 [" + String(secureLocalStorage.getItem('code')) + "]입니다.\n일행 입장 시 알려주세요!\n코드가 보이지 않거나 기억이 나지 않는다면\n직원에게 문의해주세요."
+	  setOpenModal(true);
 	}
     });
   }
 
+  const onCloseModal = () => {
+    setOpenModal(false);
+    navigate('/landing');
+  }
+  const onClickConfirm = () => {
+    navigate('/landing');
+  }
+
   return (
     <div id="checkInWrap">
+      {openModal && <ButtonModal
+	      onClose={onCloseModal} onClickButton={onClickConfirm}
+              message={message.current}
+              buttonMessage={"확인"}></ButtonModal>}
       <div className="checkInTitle">
         <span>프로필을 설정하세요</span>
       </div>

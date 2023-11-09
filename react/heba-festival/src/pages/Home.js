@@ -61,7 +61,7 @@ const Home = () => {
 		"type": "timeout", 
 		"time": String(endTime.getHours()).padStart(2, '0') + ":"
 		        + String(endTime.getMinutes()).padStart(2, '0'), 
-		"index": -2});
+		"index": 999999999});
 	hasNoticedTimeOut.current = true;
       }
     } else if (remainedTime <= 600) {
@@ -71,7 +71,7 @@ const Home = () => {
 		  "type": "timeAlert",
 		  "time": String(alertTime.getHours()).padStart(2, '0') + ":"
 		          + String(alertTime.getMinutes()).padStart(2, '0'),
-		  "index": -1});
+		  "index": 999999999});
 	  hasNoticedTimeAlert.current = true;
 	}
     } else {

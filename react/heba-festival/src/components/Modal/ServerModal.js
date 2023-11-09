@@ -2,20 +2,19 @@ import React, {useEffect, useRef, useState} from "react";
 import "styles/Modal.scss";
 import useOutSideClick from "./useOutSideClick";
 import ModalContainer from "./ModalContainer";
-import WaitForServer from "./WaitForServer";
-import FailedCallServerModal from "./FailedCallServerModal";
 import secureLocalStorage from "react-secure-storage";
+import MessageModal from "components/Modal/MessageModal";
 
 function ServerModal({ onClose }) {
   const modalRef = useRef(null)
-  const [isOpenWaitForServer, setIsOpenWaitForServer] = useState(false);
-  const [isOpenFailedModal, setIsOpenFailedModal] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+
   const handleClose = () => {
-    setIsOpenWaitForServer(true);
+    setOpenModal(false);
     onClose ?.()
   };
 
-
+  let message = useRef("");
   const handleSubmit = (e) => {
     e.preventDefault();
     fetch('http://150.230.252.177:5000/call', {
@@ -31,14 +30,17 @@ function ServerModal({ onClose }) {
     .then((res) => res.json())
     .then((res) => {
       if (res.result && res.result === 'ok') {
-        // TODO : open wait server modal
-        handleClose();
+        message.current = "직원을 호출하였습니다!\n잠시만 기다려 주세요.";
       } else {  
-	alert('호출에 실패했습니다... 관리자에게 문의해주세요');
+	message.current = '호출에 실패했습니다.\n다시 시도해주세요.';
       }
+      setOpenModal(true);
       return res;
     })
-    .then((res) => { handleClose(); })
+  }
+
+  const onCloseMessageModal = () => {
+    handleClose();
   }
 
   useOutSideClick(modalRef, handleClose);
@@ -52,7 +54,6 @@ function ServerModal({ onClose }) {
   }, []);
 
   return (
-    <>
     <ModalContainer>
       <div className="overlay">
         <div className="modalWrap" ref={modalRef} style={{width: '25rem'}}>
@@ -67,9 +68,8 @@ function ServerModal({ onClose }) {
           </div>
         </div>
       </div>
+    {openModal && <MessageModal onClose={onCloseMessageModal} message={message.current}></MessageModal>}
     </ModalContainer>
-    {isOpenWaitForServer && <WaitForServer />}
-    </>
   )
 }
 

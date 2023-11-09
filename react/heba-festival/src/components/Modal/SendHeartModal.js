@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import "styles/Modal.scss";
 import useOutSideClick from "./useOutSideClick";
 import ModalContainer from "./ModalContainer";
@@ -7,8 +7,7 @@ import Woman from "assets/images/Woman.svg";
 import Couple from "assets/images/Couple.svg";
 import SendHeartImg from "assets/images/SendHeart.svg";
 import secureLocalStorage from "react-secure-storage";
-
-import FailedToSendModal from "./FailedToSendModal";
+import MessageModal from "components/Modal/MessageModal";
 
 // 원하는 테이블에 하트 보내기
 function SendHeartModal({ onClose, tableData, isSendAvailable, remainedLikes }) {
@@ -16,9 +15,26 @@ function SendHeartModal({ onClose, tableData, isSendAvailable, remainedLikes }) 
   const handleClose = () => {
     onClose ?.();
   };
-
+  const [openModal, setOpenModal] = useState(false);
+  const message = useRef("");
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    if (tableData.table_no === secureLocalStorage.getItem('table_no')) {
+      message.current = '자신의 테이블에는 하트를 보낼 수 없어요!';
+      setOpenModal(true);
+      return;
+    }
+    if (!isSendAvailable) {
+      message.current = '합석이 불가능한 테이블이에요.\n다른 테이블을 찾아보아요!';
+      setOpenModal(true);
+      return;
+    }
+    if (remainedLikes <= 0 && !tableData.sent.includes(secureLocalStorage.getItem('table_no'))) {
+      message.current = '남은 하트 수가 없습니다!\n하트 충전 후 다시 시도해주세요.';
+      setOpenModal(true);
+      return;
+    }
 
     fetch('http://150.230.252.177:5000/send-like', {
       mode:'cors',
@@ -33,15 +49,19 @@ function SendHeartModal({ onClose, tableData, isSendAvailable, remainedLikes }) 
     .then((res) => res.json())
     .then((res) => {
       if (res && res.result === 'ok') {
-        alert('성공!');
+        message.current = '하트를 성공적으로 보냈습니다!\n합석에 성공하면 직원이 달려올게요! =3=3=3';
       } else {
-	alert('보내기에 실패했습니다. 관리자에게 문의해주세요.');
+	message.current = '보내기에 실패했습니다...\n관리자에게 문의해주세요.';
       }
+      setOpenModal(true);
       return res;
     })
-    .then((res) => { handleClose(); })
+    //.then((res) => { handleClose(); })
   }
-
+  const onCloseMessageModal = () => {
+    setOpenModal(false);
+    handleClose();
+  }
 
   useOutSideClick(modalRef, handleClose);
   useEffect(() => {
@@ -58,6 +78,8 @@ function SendHeartModal({ onClose, tableData, isSendAvailable, remainedLikes }) 
     tableGenderImg = Man;
   } else if (tableData.gender === "female") {
     tableGenderImg = Woman;
+  } else if (tableData.gender === "mixed") {
+    tableGenderImg = Couple;
   } else {
     tableGenderImg = null;
   }
@@ -65,7 +87,7 @@ function SendHeartModal({ onClose, tableData, isSendAvailable, remainedLikes }) 
   return (
     <ModalContainer>
       <div className="overlay">
-        <div className="modalWrap" ref={modalRef} style={{height: '21rem'}}>
+        <div className="modalWrap" ref={modalRef} style={{height: '23.5rem'}}>
           <div className="modalTitle">
             <span style={{fontWeight: '900', fontSize: '1.8rem'}}>{tableData.table_no}번 테이블</span>
           </div>
@@ -81,11 +103,11 @@ function SendHeartModal({ onClose, tableData, isSendAvailable, remainedLikes }) 
             </div>
             <div className="sendHeartMiddle"> 
               <div className="SendHeartIntroduce">
-                <span>{tableData.note}</span>
+                <span>{tableData.join ? "합석 처리가 완료된 테이블이에요" : tableData.note}</span>
               </div>
             </div>
             <div className="modalBtnBoxSendHeart">
-	            <button className="btnFilled" type="submit" onClick={remainedLikes>0 ? (isSendAvailable ? handleSubmit : ()=>alert('보내기가 불가능한 테이블입니다')) : ()=>alert('남은 하트가 없습니다')}>
+	      <button className="btnFilled" type="submit" onClick={handleSubmit}>
                 <img src={SendHeartImg} alt="sendheart img"></img>
               </button>
               <button className="btnBlank" onClick={handleClose}>
@@ -95,6 +117,10 @@ function SendHeartModal({ onClose, tableData, isSendAvailable, remainedLikes }) 
           </div>
         </div>
       </div>
+      {openModal && <MessageModal
+	             onClose={onCloseMessageModal}
+	             message={message.current}>
+	            </MessageModal>}
     </ModalContainer>
   )
 }

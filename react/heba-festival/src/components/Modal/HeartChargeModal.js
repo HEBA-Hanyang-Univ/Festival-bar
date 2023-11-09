@@ -1,15 +1,18 @@
-import React, {useEffect, useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import "styles/Modal.scss";
 import useOutSideClick from "./useOutSideClick";
 import ModalContainer from "./ModalContainer";
 import { Link } from "react-router-dom";
 import secureLocalStorage from "react-secure-storage";
+import MessageModal from "components/Modal/MessageModal";
 
 function HeartChargeModal({ onClose }) {
   const modalRef = useRef(null)
   const handleClose = () => {
     onClose ?.();
   };
+  const [openModal, setOpenModal] = useState(false);
+  const message = useRef("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -25,7 +28,18 @@ function HeartChargeModal({ onClose }) {
       }),
     })
     .then((res) => res.json())
-    .then((res) => { handleClose(); })
+    .then((res) => {
+      if (res.result && res.result == 'ok') {
+        message.current = '직원을 호출하였습니다!\n잠시만 기다려주세요.';
+      } else {
+	message.current = '직원 호출에 실패하였습니다.\n다시 시도해주세요';
+      }
+      setOpenModal(true);
+    })
+  }
+  const onCloseMessageModal = () => {
+    setOpenModal(false);
+    handleClose();
   }
 
   useOutSideClick(modalRef, handleClose);
@@ -41,6 +55,7 @@ function HeartChargeModal({ onClose }) {
   return (
     <ModalContainer>
       <div className="overlay">
+	{openModal && <MessageModal onClose={onCloseMessageModal} message={message.current}></MessageModal>}
         <div className="modalWrap" ref={modalRef} style={{height: '20rem'}}>
           <div className="modalTitle">
             <span style={{fontWeight: '900', fontSize: '1.5rem'}}>하트 충전하기</span>
