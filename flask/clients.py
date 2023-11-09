@@ -226,6 +226,26 @@ def call():
         output['result'] = "fail"
         return output
 
+@app.route('/del-record', methods=['POST'])
+def del_record() :
+    output = dict()
+    data = request.get_json()
+
+    token = data.get('token')
+    code = data.get('code')
+
+    table_no = controller.get_table_no_by_token(token)
+
+    if type(table_no) != int or table_data[table_no-1]['code'] != code :
+        output['result'] = "fail"
+        return output
+
+    record_id = data.get('record_id')
+    output['result'] = controller.delete_record(table_no, record_id)
+
+    return output
+
+
 @app.route('/record', methods=['GET'])
 def record():
     output = dict()
