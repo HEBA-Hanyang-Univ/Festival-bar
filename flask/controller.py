@@ -384,6 +384,7 @@ def join_table(from_where, to_where):
 
         # reset table info
         remove_like(to_where)
+        remove_from_admin_record(to_where)
         reset_table(from_where)
 
         # remove joined table's heart record
