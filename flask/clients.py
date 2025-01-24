@@ -5,7 +5,6 @@ import random
 import copy
 
 table_data = controller.table_data
-table_code_list = controller.table_code_list
 
 @app.route('/<token>')
 def index(token):
@@ -57,13 +56,10 @@ def set_table():
         photo = data.get('photo')
         referrer = data.get('referrer')
         random_code = 0
-        while True:
-            random_code = random.randint(100000, 999999)
-            if random_code not in table_code_list:
-                break
+        random_code = str(random.randint(0000, 9999)).zfill(4)
         
         result = controller.set_table(table_no, nums, gender, photo, note, referrer, random_code)
-        print(f'Table "{table_no}" has activated with code: {random_code}')
+            
         output['result'] = result
         return output
 
@@ -81,17 +77,13 @@ def set_table():
 ### 전체 테이블 조회
 ### 플라스크를 통한 호출이 아닌 직접 호출 시 매개변수 체크 필수
 # curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/get-all -d '{"token":"0b79fdd4-8cf8-4a5f-8506-904d1207e9fb", "code":470066}'
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/get-all -d '{"token":"{admin token}"}'
 @app.route('/get-all', methods=['POST'])
 def get_all():
     output = dict()
     data = request.get_json()
     token = data.get('token')
     code = data.get('code')
-    if isinstance(code, str) :
-        try :
-            code = int(code)
-        except Exception as e:
-            pass
 
     table_no = controller.get_table_no_by_token(token)
 
@@ -101,8 +93,11 @@ def get_all():
             del data['code']
         output['result'] = exclude_code
         return output
+    elif table_no == 'admin':
+        output['result'] = table_data
+        output['admin_record'] = controller.admin['record']
+        return output
     else:
-        print(f'get-all request failed with table {table_no}')
         output['result'] = "fail"
         return output
 
@@ -121,19 +116,17 @@ def get_table():
     token = data.get('token')
     admin_token = data.get('admin_token')
     code = data.get('code')
-    if isinstance(code, str) :
-        try : 
-            code = int(code)
-        except Exception as e:
-            pass
+    
     table_info = controller.get_table(controller.get_table_no_by_token(token))
 
-    if table_info and controller.get_table_no_by_token(admin_token) == 'admin' \
-           or (table_info['active'] and table_info['code'] == code) :
+    if table_info and (controller.get_table_no_by_token(admin_token) == 'admin' \
+           or table_info['active'] and table_info['code'] == code) :
             output['result'] = table_info
             return output
-    
-    print('failed to get_table')
+    elif table_info and table_info['code'] != code :
+        output['result'] = "code_unmatch"
+        return output
+
     output['result'] = "fail"
     return output
 
@@ -148,13 +141,8 @@ def update_info():
     token = data.get('token')
     code = data.get('code')
     table_no = controller.get_table_no_by_token(token)
-    try :
-        code = int(code)
-    except Exception as e:
-        pass
 
     if type(table_no) == int and table_data[table_no-1]['code'] == code:
-        print(f'table info update : {table_no}, {code}')
         m_count = data.get('m_count')
         f_count = data.get('f_count')
         note = data.get('note')
@@ -177,18 +165,17 @@ def send_like():
     token = data.get('token')
     code = data.get('code')
     my_table = controller.get_table_no_by_token(token)
+    received_table = data.get('received_table')
+
     try :
-        code = int(code)
-    except Exception as e :
+        received_table = int(received_table)
+    except :
         pass
 
     if type(my_table) == int and table_data[my_table-1]['code'] == code:
-        received_table = data.get('received_table')
-        print(f'{my_table} table send a like to {received_table}')
         output['result'] = controller.send_like(my_table, received_table)
         return output
     else:
-        print(f'{my_table} table failed to send a like to {received_table}')
         output['result'] = "fail"
         return output
 
@@ -202,27 +189,20 @@ def send_like():
 def reject():
     output = dict()
     data = request.get_json()
-
     token = data.get('token')
     code = data.get('code')
+    table_no = controller.get_table_no_by_token(token)
+    rejected_table = data.get('received_table')
+
     try :
-        code = int(code)
-    except Exception as e :
+        rejected_table = int(rejected_table)
+    except :
         pass
 
-    table_no = controller.get_table_no_by_token(token)
-
     if type(table_no) == int and table_data[table_no-1]['code'] == code:
-        reject_table = data.get('reject')
-        try :
-            reject_table = int(reject_table)
-        except Exception as e:
-            pass
-        print(f'{table_no} table reject a like from {reject_table}')
-        output['result'] = controller.reject(table_no, reject_table)
+        output['result'] = controller.reject(table_no, rejected_table)
         return output
     else:
-        print(f'{table_no} table failed to reject a like from {reject_table}')
         output['result'] = "fail"
         return output
 
@@ -230,28 +210,49 @@ def reject():
 
 
 
-### 직원 호출 / 합석 처리 요청 ( 일단 시간 추가 요청, 하트 충전 요청 없음 )
-# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/call -d '{"token":"0b79fdd4-8cf8-4a5f-8506-904d1207e9fb", "code":470066, "join":false}'
-# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/call -d '{"token":"0b79fdd4-8cf8-4a5f-8506-904d1207e9fb", "code":470066, "join":true}'
+### 직원 호출  ( 일단 시간 추가 요청, 하트 충전 요청 없음 )
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/call -d '{"token":"0b79fdd4-8cf8-4a5f-8506-904d1207e9fb", "code":470066}'
+# curl -X POST -H 'Content-type:application/json' http://127.0.0.1:5000/call -d '{"token":"0b79fdd4-8cf8-4a5f-8506-904d1207e9fb", "code":470066}'
 @app.route('/call', methods=["POST"])
 def call():
     output = dict()
     data = request.get_json()
     token = data.get('token')
-    join = data.get('join')
     code = data.get('code')
-    try :
-        code = int(code)
-    except Exception as e:
-        pass
 
     table_no = controller.get_table_no_by_token(token)
 
     if type(table_no) == int and table_data[table_no-1]['code'] == code:
-        print(f'{table_no} table called server')
-        output['result'] = controller.call(table_no, join)
+        output['result'] = controller.call(table_no)
         return output
     else:
-        print(f'{table_no} table failed to call server')
         output['result'] = "fail"
         return output
+
+@app.route('/del-record', methods=['POST'])
+def del_record() :
+    output = dict()
+    data = request.get_json()
+
+    token = data.get('token')
+    code = data.get('code')
+
+    table_no = controller.get_table_no_by_token(token)
+
+    if type(table_no) != int or table_data[table_no-1]['code'] != code :
+        output['result'] = "fail"
+        return output
+
+    record_id = data.get('record_id')
+    output['result'] = controller.delete_record(table_no, record_id)
+
+    return output
+
+
+@app.route('/record', methods=['GET'])
+def record():
+    output = dict()
+    controller.write_table_data()
+    print('log saved')
+    output['result'] = 'ok'
+    return output

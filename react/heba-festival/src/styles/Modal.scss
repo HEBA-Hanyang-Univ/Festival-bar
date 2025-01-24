@@ -15,7 +15,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 24rem;
+  width: 30rem;
+  // height: 24rem;
   border: 3px solid #87deff;
   border-radius: 1.4375rem;
   background-color: #fff;
@@ -36,20 +37,23 @@
 }
 
 .modalContent {
+  padding-top: 2.3rem;
   display: flex;
   flex-direction: column;
-  height: 10rem;
+  height: auto;
   margin: 0 auto;
+  padding-bottom: 2.3rem;
 
   span {
     color: #000;
     font-size: 1.2rem;
     font-weight: 600;
+    position: relative;
   }
 
   button {
-    margin: 2.3rem auto 0;
-    height: 1.9rem;
+    margin: 2.3rem auto;
+    height: 3rem;
     align-items: center;
     width: 8rem;
     border: none;
@@ -59,7 +63,7 @@
     span {
       color: #fff;
       text-align: center;
-      font-size: 0.9rem;
+      font-size: 1.1rem;
       font-weight: 700;
     }
   }
@@ -74,6 +78,16 @@
 
 .heartChargeBtnBox {
   margin-top: -1rem;
+}
+
+.heartChargeBtn {
+  margin-top: 3rem !important;
+  width: 10rem !important;
+  height: 2.8rem !important;
+  
+  span {
+    font-size: 1.1rem !important;
+  }
 }
 
 .whiteBtn {
@@ -252,12 +266,12 @@
   .btnBlank {
     border: 1px solid #87deff;
     background-color: #fff;
-    border-radius: 1.2rem;
-    width: 7rem;
-    height: 2rem;
+    border-radius: 1.6rem;
+    width: 10rem;
+    height: 3rem;
 
     span {
-      font-size: 1rem;
+      font-size: 1.2rem;
       font-weight: 700;
       color: #87deff;
     }
@@ -266,35 +280,73 @@
   .btnFilled {
     border: none;
     background-color: #87deff;
-    border-radius: 1.2rem;
-    margin-right: 1.8rem;
-    width: 7rem;
-    height: 2rem;
+    border-radius: 1.6rem;
+    margin-right: 1.4rem;
+    width: 10rem;
+    height: 3rem;
 
     span {
-      font-size: 1rem;
-      font-weight: 7z00;
+      font-size: 1.2rem;
+      font-weight: 700;
       color: #fff;
     }
   }
 }
 
+.modalBtnBoxSendHeart {
+  height: 3rem;
+  display: flex;
+  margin: 1.3rem auto;
+
+  .btnBlank {
+    border: 1px solid #87deff;
+    background-color: #fff;
+    border-radius: 1.6rem;
+    width: 10rem;
+    height: 3rem;
+    margin: 0;
+    margin-left: 1.4rem;
+
+    .btnBlankSpan {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #87deff;
+    }
+  }
+
+  .btnFilled {
+    border: none;
+    background-color: #87deff;
+    border-radius: 1.6rem;;
+    width: 10rem;
+    height: 3rem;
+    margin: 0;
+
+    span {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+    }
+  }
+
+}
+
 .SendHeartTop {
   display: flex;
-  margin: 0 auto;
+  margin: 0.2rem auto 0;
 
   .SendHeartImgBox {
     img {
       margin-top: 1rem;
       margin-right: 0.3rem;
-      width: 5rem;
-      height: 3.5rem;
+      width: 7rem;
+      height: 6rem;
     }
   }
 
   .SendHeartSpan {
     span {
-      font-size: 4.3rem;
+      font-size: 6rem;
       font-weight: 700;
     }
   }
@@ -302,10 +354,11 @@
 
 .sendHeartMiddle {
   margin: 0 auto;
-  margin-bottom: -0.5 rem;
+  margin-bottom: -0.5rem;
+  margin-top: 1rem;
 
   span {
-    font-size: 1rem;
+    font-size: 1.5rem;
     font-weight: 400;
   }
 }
@@ -317,7 +370,14 @@
   font-weight: 600;
   color: #fff;
   margin-right: 2rem;
+
+  img {
+    padding-top: 0.5rem;
+    width: 2rem;
+    height: 2.2rem;
+  }
 }
+
 
 // Admin
 .adminModalWrap {
@@ -336,6 +396,18 @@
     color: #000;
     font-size: 2.6rem;
     font-weight: 700;
+  }
+
+  .recommend-id {
+    margin-right: 6.5rem;
+    color: #0086B9;
+    font-size: 2.6rem;
+  }
+
+  .recommend-name {
+    color: #0086B9;
+    margin-left: 6.5rem;
+    font-size: 2.6rem;
   }
 
   .selectnum {

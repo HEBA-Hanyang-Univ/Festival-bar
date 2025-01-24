@@ -1,16 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
 import "styles/Modal.scss";
 import useOutSideClick from "../useOutSideClick";
 import ModalContainer from "../ModalContainer";
 
-function HeartModal({ onClose, selectedBoxes, zIndex }) {
+function HeartModal({ onClose, targetTables, zIndex }) {
   const modalRef = useRef(null);
+  const { token } = useParams();
   const [heart, setHeart] = useState(0);
 
   // selectedBoxes가 배열이 아닌 경우, 배열로 변환
-  let selectedBoxesArray = Array.isArray(selectedBoxes)
-    ? selectedBoxes
-    : [selectedBoxes];
+  let targetTableArray = Array.isArray(targetTables)
+    ? targetTables
+    : [targetTables];
 
   const handleClose = () => {
     onClose?.();
@@ -21,10 +23,37 @@ function HeartModal({ onClose, selectedBoxes, zIndex }) {
   };
 
   const handleHeartDecrement = () => {
-    if (heart > 0) {
-      setHeart((prevHeart) => prevHeart - 1);
-    }
+    setHeart((prevHeart) => prevHeart - 1);
   };
+
+  const addHeart = async() => {
+    const response = await fetch('http://150.230.252.177:5000/admin/add-likes', {
+      mode: 'cors',
+      method: 'POST',
+      headers: {'Content-Type': 'application/json',},
+      body: JSON.stringify({
+        'token': token,
+        'table_list': targetTableArray,
+	'count': heart,
+      }),
+    })
+    .then((res) => res.json())
+    .then((res) => {
+      let successList = Object.keys(res.result)
+
+      if(successList.length > 0) {
+        alert(String(successList.join(', ')) + "번 테이블에 하트 " + String(heart) + "개 추가완료!");
+      } else {
+        alert('에러 발생! 개발자에게 문의해주세요');
+      }
+
+      return res;
+    });
+    handleClose();
+
+    return response;
+  }
+
 
   useOutSideClick(modalRef, handleClose);
   useEffect(() => {
@@ -41,7 +70,7 @@ function HeartModal({ onClose, selectedBoxes, zIndex }) {
       <div className="overlay">
         <div className="adminModalWrap" ref={modalRef}>
           <div className="adminModalTitle">
-            <span className="selectnum">{selectedBoxesArray.join(", ")}번 테이블</span>
+            <span className="selectnum">{targetTableArray.join(", ")}번 테이블</span>
           </div>
           <div className="adminModalContent timeSet">
             <button onClick={handleHeartDecrement}>-</button>
@@ -50,7 +79,7 @@ function HeartModal({ onClose, selectedBoxes, zIndex }) {
             <button onClick={handleHeartIncrement}>+</button>
           </div>
           <div className="adminModalBtn">
-            <button onClick={handleClose}>
+            <button onClick={addHeart}>
               <span>하트 충전</span>
             </button>
           </div>

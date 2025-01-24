@@ -25,3 +25,11 @@ yarn-error.log*
 
 # json data files
 *.json
+
+# name list
+name_list.txt
+
+# log files and log dir
+*.log
+
+flask/logs/

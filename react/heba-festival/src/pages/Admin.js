@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import "styles/Admin.css";
-import Title from "assets/images/Title.svg";
+import Title from "assets/images/RedLogo.svg";
 import Tiger from "assets/images/Tiger.svg";
 import Call from "assets/images/Call.svg";
+import CloseBtn from "assets/images/close.svg";
 
-import AdminBox from "components/Admin/AdminBox.js";
+import AdminTable from "components/Admin/AdminTable.js";
 import AlarmBorder from "components/Admin/AlarmBorder.js";
 import TableInfoModal from "components/Modal/AdminModal/TableInfoModal";
 import TimeModal from "components/Modal/AdminModal/TimeModal";
@@ -13,162 +16,199 @@ import ExitTableModal from "components/Modal/AdminModal/ExitTableModal";
 import JoinTableModal from "components/Modal/AdminModal/JoinTableModal";
 
 function Admin() {
-  // TODO: useState 제거하고 let으로 변경하기
+
   const [isOpenTableInfoModal, setIsOpenTableInfoModal] = useState(false);
   const [isOpenTimeModal, setIsOpenTimeModal] = useState(false);
   const [isOpenHeartModal, setIsOpenHeartModal] = useState(false);
-  const [isOpenExitModal, setIsOpenExitModal] = useState(false);
-  const [isOpenJoinTableModal, setIsOpenJoinTableModal] = useState(false);
-  const [selectedBox, setSelectedBox] = useState(null);
-  const [selectedBoxes, setSelectedBoxes] = useState([]);
-  const [boxText, setBoxText] = useState("");
-  const [selectedBoxGender, setSelectedBoxGender] = useState(null);
-  const [selectedBoxTime, setSelectedBoxTime] = useState(null);
+  const [isOpenExitModal, setIsOpenExitModal] = useState(false); 
 
-  // TODO: 박스 value 관련 연결
-  const boxData = Array.from({ length: 30 }, (_, index) => {
-    const number = index + 1;
-    const value =
-      index % 6 === 0
-        ? "woman"
-        : index % 6 === 1
-        ? "man"
-        : index % 6 === 2
-        ? "mix"
-        : index % 6 === 3
-        ? "join"
-        : "empty";
 
-    // TODO: 각 박스 별 시간연결
-    const person = value === "empty" ? "" : value === "mix" ? "3" : "2";
-    let time = "";
-    if (value === "mix") {
-      time = "12:00";
-    } else if (value === "man") {
-      time = "21:30";
-    } else if (value === "woman") {
-      time = "22:45";
-    } else if (value === "join") {
-      time = "10:00";
-    } else {
-      time = "";
-    }
-    return { number, value, person, time };
+  // a variable for render nums of each tables
+  let tableNums = { male: 0, female: 0, mixed: 0, joined: 0, empty: 0, };
+  let record = [];
+
+  // a function for processing data after fetching
+  // count each table's number and calculate remained time
+  function postProcessData(datas) {
+    record = datas.admin_record
+    let callList = []
+    record.map((rec) => {
+      if (rec.type == "call") {
+        callList = [...callList, rec.from];
+        rec.message = String(rec.from) + "번 테이블에서 직원을 호출했습니다.";
+      } else if (rec.type == "join") {
+	rec.message = String(rec.from) +"번, " + String(rec.to)
+	              + "번 테이블의 합석 처리를 진행해 주세요.";
+      } else if (rec.type == "like") {
+	rec.message = String(rec.from)+"번 테이블이 " + String(rec.to)
+		      + "번 테이블에게 좋아요를 보냈습니다.";
+      }
+      return rec;
+    })
+
+    tableNums = { male: 0, female: 0, mixed: 0, joined: 0, empty: 0 };
+    const currentTime = new Date();
+
+    const processIndividualData = (data) => {
+      const endTime = new Date(data.end_time);
+      const remainedTime = (endTime.getTime() - currentTime) / 1000;    
+
+      // translate data to AdminTable
+      return (
+        <AdminTable tableNumber={data.table_no} gender={data.gender} headCount={data.nums}
+         huntingSuccess={data.join} remainedTime={remainedTime}
+	 managerCall={callList.includes(data.table_no)} friendCode={data.referrer}
+	 onClickTable={ (e) => { onClickTableElem(e, data); } }/>
+      );
+    };
+    record.sort((a,b) => b.index - a.index);
+    const ret = datas.result.map((data) => processIndividualData(data));
+    return ret;
+  }
+
+  // // variables that related to data fetching
+  // // !!! DO NOT MODIFY !!!
+  const { token } = useParams();
+  const navigate = useNavigate();
+
+  // Refetch query
+  const queryclient = useQueryClient();
+  const { data, isLoading, error, isFetching } = useQuery({
+    queryKey: ["get-all"],
+    queryFn: async () => {
+      const response = await fetch("http://150.230.252.177:5000/get-all", {
+        mode: "cors",
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          token: token,
+        }),
+      }).then((res) => res.json());
+      return response;
+    },
+    select: (data) => {
+      if (data.result && data.result !== "fail") {
+        return postProcessData(data);
+      } else {
+        navigate("/error");
+        return [];
+      }
+    },
+    refetchInterval: 1000, // data refetch for every 1 sec.
+    refetchIntervalInBackground: true,
+    initialData: () => {
+      // this seems to be not working as intended...
+      return Array.from({ length: 30 }, (_, i) => {
+        return {
+          table_no: i + 1,
+          gender: "",
+          active: false,
+          nums: 0,
+          join: false,
+          referrer: "",
+        };
+      });
+    },
   });
 
-  //박스 생성
-  const boxesPerRow = 6;
-  const totalRows = Math.ceil(boxData.length / boxesPerRow);
-
-  const arrangedBoxData = Array.from({ length: totalRows }, (_, rowIndex) => {
-    const start = rowIndex * boxesPerRow;
-    const end = start + boxesPerRow;
-    const rowBoxes = boxData.slice(start, end);
-    return rowBoxes;
-  });
-
-  // 박스 클릭시 나오는 모달창
+  // this function is for buttons below tables.
+  // modal will be opened if multiple select mode is enabled
   const onClickButton = (modalType) => {
-    if (modalType === "tableInfo") {
-      setIsOpenTableInfoModal(true);
-    } else if (modalType === "time") {
+    if (!isMultipleSelectMode || selectedTable.length < 1) {
+      return;
+    }
+
+    if (modalType === "time") {
       setIsOpenTimeModal(true);
     } else if (modalType === "heart") {
       setIsOpenHeartModal(true);
     } else if (modalType === "exit") {
       setIsOpenExitModal(true);
-    } else if (modalType === "joinTable") {
-      setIsOpenJoinTableModal(true);
     }
   };
 
   const onCloseModal = (modalType) => {
     if (modalType === "tableInfo") {
       setIsOpenTableInfoModal(false);
+      setTableElem(null);
     } else if (modalType === "time") {
       setIsOpenTimeModal(false);
     } else if (modalType === "heart") {
       setIsOpenHeartModal(false);
     } else if (modalType === "exit") {
       setIsOpenExitModal(false);
-    } else if (modalType === "joinTable") {
-      setIsOpenJoinTableModal(false);
     }
   };
 
-  // TODO: 박스가 선택됐을 경우 실행하는 것 관련 연결
+  // handle both multiple and single selection of tables
+  // if multiple mode is inactive, TableInfoModal will be opened
+  // if multiple mode is active, selection mode will be executed
+  const [isMultipleSelectMode, setIsMultipleSelectMode] = useState(false);
+  const [selectedTable, setSelectedTable] = useState([]);
 
-  const handleBoxClick = (box) => {
-    setSelectedBox(box.number);
-    const selectedBoxText = `${box.number}번 테이블`;
-    setBoxText(selectedBoxText);
-    setSelectedBoxGender(box.person);
-    setSelectedBoxTime(box.time);
-    setIsOpenTableInfoModal(true);
-  };
+  // data for TableInfoModal
+  const [tableElem, setTableElem] = useState(null);
 
-  const [isButtonSelected, setIsButtonSelected] = useState(false);
-  const toggleModal = () => {
-    setIsOpenTableInfoModal(!isOpenTableInfoModal);
-  };
-
-  const handleButtonClick = (event, boxNumber) => {
+  function onClickTableElem(event, tableData) {
     event.stopPropagation();
 
-    if (selectedBoxes.includes(boxNumber)) {
-      setSelectedBoxes(selectedBoxes.filter((number) => number !== boxNumber));
-    } else {
-      setSelectedBoxes([...selectedBoxes, boxNumber]);
+    if (!tableData.active) {
+      return;
     }
+
+    if (isMultipleSelectMode) {
+      if (selectedTable.includes(tableData.table_no)) {
+        setSelectedTable(
+          selectedTable.filter((table) => table.table_no !== tableData.table_no)
+        );
+      } else {
+        setSelectedTable([...selectedTable, tableData.table_no]);
+      }
+    } else {
+      setIsOpenTableInfoModal(true);
+      setTableElem(tableData);
+    }
+  }
+
+  const [buttonStyle, setButtonStyle] = useState({
+    backgroundColor: "#87deff",
+    color: "#fff",
+  });
+
+  const onClickTableSelectButton = () => {
+    let buttonStyle = {}; // 함수 내부에서 변수 선언
+
+    if (isMultipleSelectMode) {
+      setSelectedTable([]);
+      setButtonStyle({
+        backgroundColor: "#fff",
+        color: "#87deff",
+      });
+    } else {
+      setButtonStyle({
+        backgroundColor: "#87deff",
+        color: "#fff",
+      });
+    }
+    setIsMultipleSelectMode(!isMultipleSelectMode);
   };
 
-  // TODO: 버튼 선택시 실행되는 부분 (주석으로 처리했습니다), 회색으로 전환할 경우에 사용할지 몰라 코드를 남겨두겠습니다
-
-  // const handleAllClick = () => {
-  //   setIsButtonSelected((prevIsButtonSelected) => !prevIsButtonSelected);
-  // };
-
-  // useEffect(() => {
-  //   if (isButtonSelected) {
-  //     const allBoxNumbers = Array.from({ length: 30 }, (_, index) => index + 1);
-  //     setSelectedBoxes(allBoxNumbers);
-  //   } else {
-  //     const allBoxNumbers = Array.from({ length: 30 }, (_, index) => index + 1);
-  //     setSelectedBoxes([]);
-  //   }
-  // }, [isButtonSelected]);
-
-  /*  TODO: 알람데이터 연결 + 알람 타입 넣어주기 */
-  let [alarmData, setAlarmData] = useState([
-    {
-      alarm: "1번, 2번 테이블의 합석처리를 진행해주세요.",
-      time: "19:20",
-    },
-    {
-      alarm: "4번 테이블의 하트 N개를 충전해주세요.",
-      time: "19:20",
-    },
-    {
-      alarm: "9번 테이블에서 직원을 호출했습니다.",
-      time: "19:20",
-    },
-    {
-      alarm: "5번 테이블을 비워주세요.",
-      time: "19:20",
-    },
-    {
-      alarm: "4번, 16번 시간이 초과되었습니다.",
-      time: "19:20",
-    },
-  ]);
-
-  const onDelete = (index) => {
-    // 삭제 로직을 구현합니다.
-    // 예를 들어, alarmData 배열에서 index에 해당하는 항목을 제거할 수 있습니다.
-    const updatedAlarmData = [...alarmData];
-    updatedAlarmData.splice(index, 1);
-    // 업데이트된 alarmData를 사용하도록 설정합니다.
-    setAlarmData(updatedAlarmData);
+  const onDeleteAlarm = async(index) => {
+    await fetch('http://150.230.252.177:5000/admin/del-record', {
+      mode: 'cors',
+      method: 'POST',
+      headers: {'Content-Type': 'application/json',},
+      body: JSON.stringify({
+        'token': token,
+	'notice_index': index,
+      }),
+    })
+    .then((res) => res.json())
+    .then((res) => {
+      if (res.result == 'fail') {
+        alert('서버 에러 발생!');
+      }
+    })
   };
 
   // 현재 시간 출력
@@ -183,26 +223,25 @@ function Admin() {
       return () => clearInterval(intervalId);
     }, []);
 
-    const formattedDateTime = currentDateTime.toLocaleString();
+    const formattedDate = currentDateTime.toLocaleDateString();
+    const hours = currentDateTime.getHours();
+    const minutes = currentDateTime.getMinutes();
+    const formattedHours = hours < 10 ? `0${hours}` : hours;
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+    const period = hours >= 12 ? "PM" : "AM";
+    const formattedTime = `${formattedHours}:${formattedMinutes} ${period}`;
 
     return (
       <div>
-        <p>{formattedDateTime}</p>
+        <span className="header-date">{formattedDate}&nbsp;&nbsp;</span>
+        <span className="header-time">{formattedTime}</span>
       </div>
     );
   };
 
-  const [selectedOption, setSelectedOption] = useState("1");
-
-  const handleChange = (event) => {
-    setSelectedOption(event.target.value);
-  };
-
   return (
     <div className="admin_body">
-      <div class="v-line"></div>
-
-      <header>
+      <header id="admin_header_top">
         <div class="admin_header">
           <div class="main-title">
             <img className="title-tiger" src={Tiger} alt="Tiger"></img>
@@ -212,174 +251,103 @@ function Admin() {
             <CurrentDateTime />
           </div>
         </div>
-
         <div class="title-alarm">
-          <p class="title-notice">
-            <strong>NOTICE</strong>
-          </p>
-          <img class="title-bell" src={Call} alt="Call Image" />
+          <span class="title-notice">NOTICE</span>
+          <img class="title-bell" src={Call} alt="Call img" />
         </div>
-        <div className="alarmborderbox !important">
-          <AlarmBorder />
-        </div>
-        {/* TODO: 알람 데이터 연결 */}
-        <div className="alarm-container">
-          {alarmData.map((item, index) => {
-            return (
-              <div key={index} className="alarm-item">
-                <button className="alarmdel" onClick={() => onDelete(index)}>
-                  <span className="alarmbtn">x</span>
+      </header>
+      <main id="admin_main">
+        <div id="table-information">
+          <div class="table-list">
+            <div class="table-man">{tableNums.male}</div>
+            <div class="table-woman">{tableNums.female}</div>
+            <div class="table-mixed">{tableNums.mixed}</div>
+            <div class="table-join">{tableNums.joined}</div>
+            <div class="table-empty">{tableNums.empty}</div>
+          </div>
+          <div class="admin_nav">
+            <div class="info_table1">
+              <span class="info_title">남자&nbsp;T</span>
+            </div>
+            <div class="info_table2">
+              <span class="info_title">여자&nbsp;T</span>
+            </div>
+            <div class="info_table3">
+              <span class="info_title">혼성&nbsp;T</span>
+            </div>
+            <div class="info_table4 q">
+              <span class="info_title">합석&nbsp;T</span>
+            </div>
+            <div class="info_table5">
+              <span class="info_title">빈&nbsp;T</span>
+            </div>
+          </div>
+          <div class="table-container">
+            <div className="table-container-grid">
+            {React.Children.toArray(data).map((child) => {
+              const tableNumber = child.props.tableNumber;
+              const isSelected = selectedTable.includes(tableNumber);
+              return React.cloneElement(child, {
+                className: isSelected ? "selected-table" : ""
+              });
+            })}
+            </div>
+            {isOpenTableInfoModal && <TableInfoModal onClose={() => onCloseModal("tableInfo")}
+                                      tableNumber={tableElem.table_no} nums={tableElem.nums}
+                                      startTime={tableElem.start_time} endTime={tableElem.end_time}
+                                      code={tableElem.code} referrer={tableElem.referrer}>
+                                     </TableInfoModal>
+            }
+          </div>
+          <div className="admin-footer">
+            <div className="footer-button">
+              <div className="blue-btn-box">
+                <button className="time-plus" onClick={ () => onClickButton("time") }>
+                  시간 추가
                 </button>
-                <br />
+                { isOpenTimeModal && <TimeModal onClose={ () => onCloseModal("time") }
+                          targetTables={ selectedTable }></TimeModal> }
+                <button className="heart-plus" onClick={ () => onClickButton("heart") }>
+                  하트 충전
+                </button>
+                { isOpenHeartModal && <HeartModal onClose={ () => onCloseModal("heart") }
+                                      targetTables={ selectedTable }></HeartModal> }
+                <button className="table-exit" onClick={ () => onClickButton("exit") }>
+                  퇴장 처리
+                </button>
+                { isOpenExitModal && <ExitTableModal onClose={ () => onCloseModal("exit") }
+                                      targetTables={ selectedTable }></ExitTableModal> }
+              </div>
+              <button className="table_choice" style={ buttonStyle } onClick={ onClickTableSelectButton }>
+                { isMultipleSelectMode ? "선택 취소" : "테이블 선택" }
+              </button>
+	    </div>
+          </div>
+        </div>
+        <div className="alarm-container">
+          {record.map((item) => {
+            return (
+              <div className="alarm-item">
+                <button className="alarmdel" onClick={() => onDeleteAlarm(item.index)}>
+                  <img className="alarmbtn" src={CloseBtn} alt="close btn"></img>
+                </button>
+                <br/>
                 {/* 알람데이터 type에 따라 color 지정 */}
-                <span
-                  style={{
-                    color:
-                      alarmData.type === "join"
-                        ? "#DD7DFF"
-                        : alarmData.type === "heart"
-                        ? "#FF8FD2"
-                        : alarmData.type === "call"
-                        ? "#FFC555"
-                        : "#C8C8C8",
-                  }}
-                >
-                  {alarmData.type === "join"
-                    ? "[합석처리]"
-                    : alarmData.type === "heart"
-                    ? "[하트충전]"
-                    : alarmData.type === "call"
-                    ? "[직원 호출]"
-                    : "[테이블 비우기]"}
+                <span className="alarmData-span" style={{ color: item.type == "join" ? "#DD7DFF"
+				                               : item.type == "like" ? "#FF8FD2"
+				                               : item.type == "call" ? "#FFC555"
+                                                               : "red",}}>
+                  { item.type == "join" ? "[합석처리]"
+                    : item.type == "call" ? "[직원 호출]"
+		    : item.type == "like" ? "[하트 수신]" : "[undefined]"}
                 </span>
-                <span className="alarm-message">{item.alarm}</span>
-                <p>{item.time}</p>
+                <span className="alarm-message">{item.message}</span>
+                <p className="alarm-time-p">{item.time}</p>
               </div>
             );
           })}
         </div>
-        <div class="bottom-line"></div>
-      </header>
-      <div class="table-list">
-        {/* TODO: 각 테이블에 해당하는 인원수 데이터 연결 */}
-        <div class="tableman">8</div>
-        <div class="tablewom">8</div>
-        <div class="tablecou">2</div>
-        <div class="tablemix">7</div>
-        <div class="tableemp">5</div>
-      </div>
-
-      <div class="admin_nav">
-        <div class="info_table1">
-          <p class="info_title">남자 T</p>
-        </div>
-
-        <div class="info_table2">
-          <p class="info_title">여자 T</p>
-        </div>
-
-        <div class="info_table3">
-          <p class="info_title">혼성 T</p>
-        </div>
-
-        <div class="info_table4 q">
-          <p class="info_title">합석 T</p>
-        </div>
-
-        <div class="info_table5">
-          <p class="info_title">&nbsp;빈 T</p>
-        </div>
-      </div>
-
-      <div class="box-lists">
-        <div className="box-container">
-          {Array.from({ length: boxesPerRow }, (_, columnIndex) => (
-            <div className="table-column" key={columnIndex}>
-              {Array.from({ length: totalRows }, (_, rowIndex) => {
-                const boxIndex = rowIndex * boxesPerRow + columnIndex;
-                const box = boxData[boxIndex];
-                if (box) {
-                  return (
-                    <AdminBox
-                      key={box.number}
-                      number={box.number}
-                      value={box.value}
-                      person={box.person}
-                      time={box.time}
-                      isSelected={selectedBox === box.number}
-                      onBoxClick={() => handleBoxClick(box)}
-                      onButtonClick={handleButtonClick}
-                    />
-                  );
-                }
-                return null;
-              })}
-            </div>
-          ))}
-        </div>
-      </div>
-      {isOpenTableInfoModal && (
-        <TableInfoModal
-          open={isOpenTableInfoModal}
-          onClose={() => onCloseModal("tableInfo")}
-          boxNumber={selectedBox}
-          boxGender={selectedBoxGender}
-          boxTime={selectedBoxTime}
-        ></TableInfoModal>
-      )}
-
-      {/* TODO: 테이블의 시간추가, 하트추가 등 기능 연결 */}
-
-      <div className="admin-footer">
-        <div className="footer-button">
-          <button className="time-plus" onClick={() => onClickButton("time")}>
-            시간 추가
-          </button>
-          {isOpenTimeModal && (
-            <TimeModal
-              selectedBoxes={selectedBoxes}
-              open={isOpenTimeModal}
-              onClose={() => onCloseModal("time")}
-            ></TimeModal>
-          )}
-          <button className="heart-plus" onClick={() => onClickButton("heart")}>
-            하트 충전
-          </button>
-          {isOpenHeartModal && (
-            <HeartModal
-              selectedBoxes={selectedBoxes}
-              open={isOpenHeartModal}
-              onClose={() => onCloseModal("heart")}
-            ></HeartModal>
-          )}
-          <button className="table-exit" onClick={() => onClickButton("exit")}>
-            퇴장 처리
-          </button>
-          {isOpenExitModal && (
-            <ExitTableModal
-              selectedBoxes={selectedBoxes}
-              open={isOpenExitModal}
-              onClose={() => onCloseModal("exit")}
-            ></ExitTableModal>
-          )}
-          <button
-            className="table-mix"
-            onClick={() => onClickButton("joinTable")}
-          >
-            합석 처리
-          </button>
-          {isOpenJoinTableModal && (
-            <JoinTableModal
-              selectedBoxes={selectedBoxes}
-              open={isOpenJoinTableModal}
-              onClose={() => onCloseModal("joinTable")}
-            ></JoinTableModal>
-          )}
-          {/* TODO: 테이블 선택을 눌렀을 때 적용할 코드 적용 */}
-          {/* <button class="table_choice" onClick={handleAllClick}> */}
-          <button class="table_choice">테이블 선택</button>
-        </div>
-      </div>
+      </main>
     </div>
   );
 }

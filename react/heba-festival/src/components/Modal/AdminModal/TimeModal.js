@@ -1,16 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
 import "styles/Modal.scss";
 import useOutSideClick from "../useOutSideClick";
 import ModalContainer from "../ModalContainer";
 
-function TimeModal({ onClose, selectedBoxes, zIndex }) {
+function TimeModal({ onClose, targetTables }) {
   const modalRef = useRef(null);
   const [time, setTime] = useState(0);
+  const { token } = useParams();
 
   // selectedBoxes가 배열이 아닌 경우, 배열로 변환
-  let selectedBoxesArray = Array.isArray(selectedBoxes)
-    ? selectedBoxes
-    : [selectedBoxes];
+  let targetTableArray = Array.isArray(targetTables)
+    ? targetTables
+    : [targetTables];
 
   const handleClose = () => {
     onClose?.();
@@ -21,10 +23,36 @@ function TimeModal({ onClose, selectedBoxes, zIndex }) {
   };
 
   const handleTimeDecrement = () => {
-    if (time > 0) {
-      setTime((prevTime) => prevTime - 10);
-    }
+    setTime((prevTime) => prevTime - 10);
   };
+
+  const adjustTime = async() => {
+    const response = await fetch('http://150.230.252.177:5000/admin/add-time', {
+      mode: 'cors',
+      method: 'POST',
+      headers: {'Content-Type': 'application/json',},
+      body: JSON.stringify({
+        'token': token,
+        'table_list': targetTableArray,
+	'mins': time,
+      }),
+    })
+    .then((res) => res.json())
+    .then((res) => {
+      let successList = Object.keys(res.result)
+
+      if(successList.length > 0) {
+        alert(String(successList.join(', ')) + "번 테이블에 " + time + "분 추가완료!");
+      } else {
+        alert('에러 발생! 개발자에게 문의해주세요');
+      }
+
+      return res;
+    });
+    handleClose();
+
+    return response;
+  }
 
   useOutSideClick(modalRef, handleClose);
   useEffect(() => {
@@ -37,12 +65,12 @@ function TimeModal({ onClose, selectedBoxes, zIndex }) {
   }, []);
 
   return (
-    <ModalContainer style={{ zIndex: zIndex }}>
+    <ModalContainer>
       <div className="overlay">
         <div className="adminModalWrap" ref={modalRef}>
           <div className="adminModalTitle">
             <span className="selectnum">
-              {selectedBoxesArray.join(", ")}번 테이블
+              {targetTableArray.join(", ")}번 테이블
             </span>
           </div>
           <div className="adminModalContent timeSet">
@@ -51,11 +79,11 @@ function TimeModal({ onClose, selectedBoxes, zIndex }) {
             <span className="subtext">분</span>
             <button onClick={handleTimeIncrement}>+</button>
           </div>
-          <div className="adminModalBtn">
-            <button onClick={handleClose}>
-              <span>시간 추가</span>
-            </button>
-          </div>
+            <div className="adminModalBtn">
+              <button onClick={adjustTime}>
+                <span>시간 추가</span>
+              </button>
+            </div>
         </div>
       </div>
     </ModalContainer>

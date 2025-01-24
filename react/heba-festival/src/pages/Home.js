@@ -1,4 +1,4 @@
-import React,{ Component, useState, useEffect } from "react";
+import React,{ Component, useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import secureLocalStorage from "react-secure-storage";
@@ -11,7 +11,7 @@ import HomeImg from "assets/images/home.svg";
 import AlarmImg from "assets/images/alarm.svg";
 import RedAlarmImg from "assets/images/RedAlarm.svg";
 import SendHeartImg from "assets/images/SendHeart.svg";
-import TimeImg from "assets/images/time.svg";
+import TimeImg from "assets/images/Time.svg";
 import CallServerImg from "assets/images/server.svg";
 import HeartChargeImg from "assets/images/chargeHeart.svg";
 import OrderImg from "assets/images/order.svg";
@@ -25,57 +25,91 @@ import ReceivedHeartModal from "components/Modal/ReceivedHeartModal";
 import HuntingSuccessModal from "components/Modal/HuntingSucessModal"; 
 
 import AlarmModal from "components/Modal/Alarm/AlarmModal";
-
 const Home = () => {
   const [isOpenServerModal, setIsOpenServerModal] = useState(false);
   const [isOpenHeartChargeModal, setIsOpenHeartChargeModal] = useState(false);
   const [isOpenMyPageModal, setIsOpenMyPageModal] = useState(false);
   const [isOpenAlarmModal, setIsOpenAlarmModal] = useState(false);
   const [filter, setFilter] = useState('all'); // 기본 필터는 전체
-
-  // TODO: 알람 상태 확인을 위한 임시 코드, 알람이 있으면 빨간색 알람 이미지로 전환
-  const [alarms, setAlarms] = useState([]);
+  let hasNotice = useRef(false);
 
   let myTableInfo = null;
   let likes = 0;
   let remainedTime = 0;
 
-  let timerIntervalId = null;
+  let record = [];
+  let timeRecord = useRef([]);
+  let totalRecord = [];
+  let hasNoticedTimeAlert = useRef(false);
+  let hasNoticedTimeOut = useRef(false);
 
   const setMyTableInfo = (tableData) => {
-    if (tableData == null) return
 
     myTableInfo = tableData;
 
-    if (timerIntervalId) clearInterval(timerIntervalId);
-
-    remainedTime = (new Date(myTableInfo.end_time).getTime() - new Date()) / 1000;
+    const today = new Date();
+    const endTime = new Date(myTableInfo.end_time);
+    remainedTime = (endTime.getTime() - today) / 1000;
     likes = myTableInfo.likes;
 
-    timerIntervalId = setInterval(() => {
-      remainedTime = remainedTime - 1;
-    }, 1000);
+    record = myTableInfo.record;
 
     if (remainedTime <= 0) {
-      clearInterval(timerIntervalId);
       remainedTime = 0;
+      if (!hasNoticedTimeOut.current) {
+	timeRecord.current.push({
+		"type": "timeout", 
+		"time": String(endTime.getHours()).padStart(2, '0') + ":"
+		        + String(endTime.getMinutes()).padStart(2, '0'), 
+		"index": 999999999});
+	hasNoticedTimeOut.current = true;
+      }
+    } else if (remainedTime <= 600) {
+	if (!hasNoticedTimeAlert.current) { // don't combine this with upper line
+	  const alertTime = new Date(endTime.getTime() - (10 * 60 * 1000))
+	  timeRecord.current.push({
+		  "type": "timeAlert",
+		  "time": String(alertTime.getHours()).padStart(2, '0') + ":"
+		          + String(alertTime.getMinutes()).padStart(2, '0'),
+		  "index": 999999999});
+	  hasNoticedTimeAlert.current = true;
+	}
+    } else {
+      // to ensure notice if time is added by admin
+      hasNoticedTimeAlert.current = false;
+      hasNoticedTimeOut.current = false;
     }
-  }
 
-  useEffect(() => {
-    return () => clearInterval(timerIntervalId);
-  },[])
-  
+    let noticeFilter = secureLocalStorage.getItem('notice_filter');
+    if (noticeFilter == null) {
+      noticeFilter = [];
+      secureLocalStorage.setItem('notice_filter', noticeFilter);
+    }
+
+    totalRecord = record.concat(timeRecord.current).filter(
+	    (record) => !noticeFilter.includes(record.index)).sort((a,b) => b.index - a.index);
+
+    // I don't want to use this logic, but...
+    const noticeBefore = secureLocalStorage.getItem('notice');
+    if (noticeBefore == null) {
+      // it's first time connection, so set notice to local storage and disable alert
+      secureLocalStorage.setItem('notice', totalRecord);
+    } else if (JSON.stringify(noticeBefore) !== JSON.stringify(totalRecord)) {
+      hasNotice.current = true;
+      secureLocalStorage.setItem('notice', totalRecord);
+    }
+  }  
 
   const navigate = useNavigate();
 
   function getHuntingState(data) {
-    if (myTableInfo.received.includes(data.table_no)) {
+    if (myTableInfo.rejected.includes(data.table_no) || 
+	data.rejected.includes(myTableInfo.table_no)) {
+      return "broken";
+    } else if (myTableInfo.received.includes(data.table_no)) {
       return "received";
     } else if (myTableInfo.sent.includes(data.table_no)) {
       return "sent";
-    } else if (myTableInfo.rejected.includes(data.table_no) || data.rejected.includes(myTableInfo.table_no)) {
-      return "broken";
     }
     return "";
   }
@@ -84,7 +118,9 @@ const Home = () => {
     // 이게 여기가 아니면 동작을 안해서 일단 임시로 여기 넣어둠...
     // 이거 위치 수정하다 2시간 넘게 썼으니 수정 시 유의.. 
     setMyTableInfo(datas.find((elem) => elem.table_no === secureLocalStorage.getItem('table_no')));
-    const transformTableData = (data) => <Table tableNumber={data.table_no} gender={data.gender} headCount={data.nums} tableIntro={data.note} huntingSuccess={data.join} huntingStatus={getHuntingState(data)}  remainedLikes={myTableInfo.likes}/>
+    const transformTableData = (data) => <Table tableData={data} myGender={myTableInfo.gender}
+                                          huntingStatus={getHuntingState(data)}
+                                          remainedLikes={myTableInfo.likes}/>
     return datas.map((data) => transformTableData(data));
   }
 
@@ -104,7 +140,6 @@ const Home = () => {
 	}),
       })
       .then((res) => res.json())
-      console.log(response);
       return response;
     },
     select: (data) => {
@@ -130,6 +165,7 @@ const Home = () => {
     } else if (modalType === "myPage") {
       setIsOpenMyPageModal(true);
     } else if (modalType === "alarm") {
+      hasNotice.current = false;
       setIsOpenAlarmModal(true);
     }
   };
@@ -156,7 +192,6 @@ const Home = () => {
     navigate('/error');
   }
 
-
   return (
     <div>
       <div id="wrapper">
@@ -166,13 +201,12 @@ const Home = () => {
               <img className="landing" src={HomeImg} alt="homepage img"></img>
             </Link>   
             <span>바른주점</span>
-            {/* TODO: 알람 상황별로  display */}
             <button className="alarmBtn" onClick={() => onClickButton("alarm")}>
-              <img className="alarmImg" src={alarms.length > 0 ? RedAlarmImg : AlarmImg} alt="alarm img"></img>
+              <img className={`alarmImg ${hasNotice.current ? 'red': ''}`} src={hasNotice.current ? RedAlarmImg : AlarmImg} alt="alarm img"></img>
             </button>
             {isOpenAlarmModal && (
-            <AlarmModal open={isOpenAlarmModal} onClose={() => onCloseModal("alarm")}></AlarmModal>
-          )} 
+            <AlarmModal onClose={() => onCloseModal("alarm")} alarmData={totalRecord}></AlarmModal>
+	    )} 
           </nav>
           <div id="subNav">
             <div id="subNavFilter">
@@ -195,8 +229,7 @@ const Home = () => {
             <div id="statusWindow">
               <div className="showEnterCode">
                 <img src={KeyImg} alt="key img"></img>
-                {/* TODO: 보안코드 */}
-                <span>NNNN</span>
+                <span>{code}</span>
               </div>
               <div className="leftoverHeart">
                 <img src={SendHeartImg} alt="sendHeart img"></img>
@@ -250,7 +283,8 @@ const Home = () => {
             </div>         
           </button>
           {isOpenMyPageModal && (
-            <MyPageModal open={isOpenMyPageModal} onClose={() => onCloseModal("myPage")}></MyPageModal>
+            <MyPageModal open={isOpenMyPageModal} onClose={() => onCloseModal("myPage")}
+             myInfo={myTableInfo}></MyPageModal>
           )} 
         </footer>
       </div>

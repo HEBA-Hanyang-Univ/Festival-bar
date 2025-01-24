@@ -1,15 +1,18 @@
-import React, {useEffect, useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import "styles/Modal.scss";
 import useOutSideClick from "./useOutSideClick";
 import ModalContainer from "./ModalContainer";
 import { Link } from "react-router-dom";
 import secureLocalStorage from "react-secure-storage";
+import MessageModal from "components/Modal/MessageModal";
 
 function HeartChargeModal({ onClose }) {
   const modalRef = useRef(null)
   const handleClose = () => {
     onClose ?.();
   };
+  const [openModal, setOpenModal] = useState(false);
+  const message = useRef("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -25,7 +28,18 @@ function HeartChargeModal({ onClose }) {
       }),
     })
     .then((res) => res.json())
-    .then((res) => { handleClose(); })
+    .then((res) => {
+      if (res.result && res.result == 'ok') {
+        message.current = '직원을 호출하였습니다!\n잠시만 기다려주세요.';
+      } else {
+	message.current = '직원 호출에 실패하였습니다.\n다시 시도해주세요';
+      }
+      setOpenModal(true);
+    })
+  }
+  const onCloseMessageModal = () => {
+    setOpenModal(false);
+    handleClose();
   }
 
   useOutSideClick(modalRef, handleClose);
@@ -41,13 +55,14 @@ function HeartChargeModal({ onClose }) {
   return (
     <ModalContainer>
       <div className="overlay">
-        <div className="modalWrap" ref={modalRef}>
+	{openModal && <MessageModal onClose={onCloseMessageModal} message={message.current}></MessageModal>}
+        <div className="modalWrap" ref={modalRef} style={{height: '20rem'}}>
           <div className="modalTitle">
-            <span>하트 충전하기</span>
+            <span style={{fontWeight: '900', fontSize: '1.5rem'}}>하트 충전하기</span>
           </div>
           <div className="modalContent heartContent">
-            <span style={{fontSize: '1rem'}}>
-              하트는 칩 4개로 구매 가능합니다.
+            <span style={{fontSize: '1.3rem', lineHeight: '150%'}}>
+              하트는 칩 2개로 구매 가능합니다.
               <br></br>
               칩이 있으시면 '직원 호출'을
               <br></br>
@@ -56,10 +71,10 @@ function HeartChargeModal({ onClose }) {
               칩을 구매해 주세요.
             </span>
             <div className="heartChargeBtnBox">
-              <button className="whiteBtn" type="submit" onClick={handleSubmit}>
+              <button className="whiteBtn heartChargeBtn" type="submit" onClick={handleSubmit}>
                 <span>직원호출</span>
               </button>
-              <button>
+              <button className="heartChargeBtn">
                 <Link to={"https://order.sicpama.com/?token="+secureLocalStorage.getItem('token')} style={{textDecoration: 'none'}}>
                   <span>주문하기</span>
                 </Link>
